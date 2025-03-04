@@ -2,7 +2,11 @@ NAME = minishell
 
 CC = cc -Wall -Wextra -Werror
 
-SRC = src/main.c src/exec/testem.c src/exec/exec.c src/parse/parse.c
+SRC = src/main.c \
+	src/exec/exec.c \
+	src/parse/parse.c \
+	src/init/init.c src/init/prompt.c \
+	src/exit/exit.c
 
 OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
 
@@ -32,6 +36,12 @@ obj/exec/%.o: src/exec/%.c
 	$(CC) -c $< -o $@
 obj/parse/%.o: src/parse/%.c 
 	@mkdir -p obj/parse/
+	$(CC) -c $< -o $@
+obj/init/%.o: src/init/%.c 
+	@mkdir -p obj/init/
+	$(CC) -c $< -o $@
+obj/exit/%.o: src/exit/%.c 
+	@mkdir -p obj/exit/
 	$(CC) -c $< -o $@
 
 clean:
