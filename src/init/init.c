@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/03/04 20:16:17 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/04 20:41:06 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	init(t_hell *hell, char **envp)
 	t_free	free;
 
 	hell->freeme = &free;
-	(void)envp;
+	hell->envp = envp;
 	
 	return (1);
 }

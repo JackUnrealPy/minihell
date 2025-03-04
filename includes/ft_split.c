@@ -3,57 +3,66 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42vienna.com>         +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 12:03:58 by agara             #+#    #+#             */
-/*   Updated: 2024/09/13 19:55:41 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/04 21:59:38 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-static char	*getword(int *index, char const *str, char c)
+#include <stdio.h>
+static int		countwords(char const *s, char *charset)
 {
-	int		i;
-	char	*word;
-
-	i = 0;
-	while (str[*index + i] && str[*index + i] != c)
-		i++;
-	word = malloc(sizeof(char) * (i + 1));
-	if (!word)
-		return (NULL);
-	i = 0;
-	while (str[*index] && str[*index] != c)
-		word[i++] = str[(*index)++];
-	word[i] = '\0';
-	return (word);
-}
-
-static int	countwords(char const *s, char c)
-{
-	int	count;
 	int	i;
 	int	inword;
+	int	res;
 
-	count = 0;
-	i = 0;
+	res = 0;
 	inword = 0;
-	while (s[i])
+	i = -1;
+	while(s[++i])
 	{
-		if (s[i] != c && inword == 0)
+		if (ft_strchr(charset, s[i]) && !inword)
 		{
-			count++;
+			res++;
 			inword = 1;
 		}
-		else if (s[i] == c && inword == 1)
+		else if (inword && !ft_strchr(charset, s[i]))
 			inword = 0;
-		i++;
 	}
-	return (count);
+	if (!res && s[0])
+		res++;
+	return (res);
 }
 
-char	**ft_split(char const *s, char c)
+static char	*getword(char const *s, char *charset)
+{
+	int		i;
+	char	*res;
+
+	i = -1;
+	while (s[++i])
+	{
+		if (ft_strchr(charset, s[i]))
+			break;
+	}
+	res = malloc(sizeof(char) * i + 2);
+	if (!res)
+		return (NULL);
+	i = -1;
+	while (s[++i])
+	{
+		if (ft_strchr(charset, s[i]))
+			break;
+		res[i] = s[i];
+	}
+	res[i + 1] = 0;
+	return (res);
+
+}
+
+char	**ft_split(char const *s, char *charset)
 {
 	char	**res;
 	int		i;
@@ -61,43 +70,43 @@ char	**ft_split(char const *s, char c)
 
 	if (!s)
 		return (NULL);
-	res = malloc(sizeof(char *) * (countwords(s, c) + 1));
+	if (!countwords(s, charset))
+		return (NULL);
+	res = malloc(sizeof(char *) * (countwords(s, charset) + 1));
 	if (!res)
 		return (NULL);
-	i = 0;
-	j = 0;
-	while (s[i])
+	i = -1;
+	j = -1;
+	while (s[++i])
 	{
-		if (s[i] != c)
+		if (!ft_strchr(charset, s[i]))
 		{
-			res[j++] = getword(&i, s, c);
-			if (!res[j - 1])
-				return (ft_cleanstrarr(res), NULL);
+			res[++j] = getword(s + i, charset);
+			i += ft_strlen(res[j]);
 		}
-		else
-			i++;
 	}
-	res[j] = NULL;
+	res[j + 1] = NULL;
 	return (res);
 }
 
-// #include <stdio.h>
-// int main()
-// {
-// 	char	str[] = "aadddavadddvvaa";
-// 	char	**res;
-// 	int		i;
+#include <stdio.h>
+int main(int argc, char **argv)
+{
+	char	**res;
+	int		i;
 
-// 	res = ft_split(str, 'd');
-// 	i = 0;
-// 	while(res[i])
-// 		printf("%s  ", res[i++]);
-// 	i = 0;
-// 	// while(res[i])
-// 	// {
-// 	// 	free(res[i]);
-// 	// 	i++;
-// 	// }
-// 	free(res);	
-// 	return 0;
-// }
+	res = ft_split(argv[1], argv[2]);
+	if (!res)
+		return 0;
+	i = 0;
+	while(res[i])
+		printf("[%s]", res[i++]);
+	i = 0;
+	while(res[i])
+	{
+		free(res[i]);
+		i++;
+	}
+	free(res);	
+	return 0;
+}
