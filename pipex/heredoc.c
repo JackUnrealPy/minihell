@@ -12,14 +12,16 @@ void	redirection(int argc, char **argv, char *txt, char *delimitor)
 {
 	int	redirection;
 	int	fd;
+    char *path;
 
 	redirection = 0;
 	if (argc >= 2)
 	{
 		if (redirection)
-			fd = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            path = ft_strdup(argv[2]);
 		else
-			fd = open(".heredoc", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            path = ft_strdup(".heredoc");
+        fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	}
 	if (!redirection)
 	{
@@ -28,8 +30,11 @@ void	redirection(int argc, char **argv, char *txt, char *delimitor)
 	}
 	ft_putstr_fd(txt, fd);
 	close(fd);
+    if (!redirection)
+        unlink(path);
 	free(delimitor);
 	free(txt);
+    free(path);
 }
 
 void	heredoc(int argc, char **argv)
