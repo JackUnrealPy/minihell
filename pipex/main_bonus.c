@@ -45,7 +45,10 @@ void	create_cmd(t_pipe *data, char *argv[], int i)
 	data->args = ft_split(argv[i + 2], ' ');
 	if (!data->args || data->args[0] == NULL)
 		free_struct(data, errno);
-	data->path = ft_strjoin("/bin/", data->args[0]);
+	if (ft_strncmp(data->args[0], "/bin/", 5) == 0 || ft_strncmp(data->args[0], "/usr/bin/", 9) == 0 || ft_strncmp(data->args[0], "../", 3) == 0)
+		data->path = ft_strdup(data->args[0]);
+	else
+		data->path = ft_strjoin("/bin/", data->args[0]);
 	if (!data->path)
 		free_struct(data, errno);
 	if (access(data->path, R_OK | X_OK) == -1)

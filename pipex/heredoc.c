@@ -8,13 +8,20 @@ void	error_handling(int argc)
 		exit(0);
 }
 
+void free_heredoc(char *delimitor, char *txt, char *path)
+{
+	free(delimitor);
+	free(txt);
+    free(path);
+}
+
 void	redirection(int argc, char **argv, char *txt, char *delimitor)
 {
 	int	redirection;
 	int	fd;
     char *path;
 
-	redirection = 0;
+	redirection = 1;
 	if (argc >= 2)
 	{
 		if (redirection)
@@ -32,9 +39,7 @@ void	redirection(int argc, char **argv, char *txt, char *delimitor)
 	close(fd);
     if (!redirection)
         unlink(path);
-	free(delimitor);
-	free(txt);
-    free(path);
+	free_heredoc(delimitor, txt, path);
 }
 
 void	heredoc(int argc, char **argv)
