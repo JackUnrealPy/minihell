@@ -11,7 +11,6 @@ libft updates:
     Flag return 1 on success, returns 0 on error. Set it to -1 and call gnl to free static buffer.
     char	*get_next_line(int fd, int *flag);
 
-
-    Im working on this right now so it can separate strings based on a charset, not only a single char
-    ft_split()
+    It can now separate a string with a set of delimeter charachters
+    char	**ft_split(char const *s, char *charset)
 

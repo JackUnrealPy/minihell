@@ -15,23 +15,19 @@
 int	main(int argc, char **argv, char **envp)
 {
 	char	*cmd;
-	int		flag;
 	t_hell	hell;
+	int		flag;
 
-	flag = 0;
 	(void)argc;
 	(void)argv;
+	flag = 0;
+	cmd = NULL;
 	init(&hell, envp);
 	while (1)
 	{
 		writeprompt();
+		ft_terminate(1, &cmd);
 		cmd = get_next_line(0, &flag);
-		if (!flag)
-		{
-			flag = -1;
-			get_next_line(0, &flag);
-			jumpship(hell);
-		}
 		parse(cmd);
 		printf("%s",cmd);
 	}

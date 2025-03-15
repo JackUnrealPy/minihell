@@ -17,8 +17,6 @@
 # include <sys/wait.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <readline/readline.h>
-# include <readline/history.h>
 # include <sys/types.h>
 
 // linked list with all the stuff to free
