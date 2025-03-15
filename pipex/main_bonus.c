@@ -14,6 +14,7 @@
 
 void	initialise(int argc, char *argv[], t_pipe *data)
 {
+	// int append = 1;
 	data->args = NULL;
 	data->path = NULL;
 	data->path = NULL;
@@ -23,7 +24,10 @@ void	initialise(int argc, char *argv[], t_pipe *data)
 	data->input_fd = open(argv[1], O_RDONLY);
 	if (data->input_fd < 0)
 		perror(argv[1]);
-	data->output_fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	// if (append)
+	// 	data->output_fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		data->output_fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (data->output_fd < 0)
 	{
 		perror(argv[argc - 1]);

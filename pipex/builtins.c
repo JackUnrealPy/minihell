@@ -1,6 +1,38 @@
 #include "pipex_bonus.h"
 #include <linux/limits.h>
 
+// echo -n
+// pwd
+// cd
+// export
+// unset
+// env
+// exit
+
+void ft_export()
+{
+	;
+}
+
+void ft_unset()
+{
+	;
+}
+
+void ft_exit(char *arg)
+{
+	;
+}
+
+void ft_env(char **envp)
+{
+	while (*envp)
+	{
+		printf("%s\n", *envp);
+		envp++;
+	}
+}
+
 void	ft_echo(char **args, int newline)
 {
 	int	i;
@@ -16,6 +48,7 @@ void	ft_echo(char **args, int newline)
     if (newline == 2)
         ft_putchar('\n');
 }
+
 char	**ft_double_strdup(char **args, int i)
 {
 	int		a;
@@ -61,7 +94,7 @@ void cd_init(char **argv)
         exit(errno);
 }
 
-void determine_builtin(char *argv[])
+void determine_builtin(char *argv[], char **envp)
 {
 	if (strcmp("echo", argv[1]) == 0)
         echo_init(argv);
@@ -69,10 +102,12 @@ void determine_builtin(char *argv[])
         pwd_init(argv);
     if (strcmp("cd", argv[1]) == 0)
         cd_init(argv);
+	if (strcmp("env", argv[1]) == 0)
+        ft_env(envp);
 }
 
-int	main(int argc, char *argv[])
+int	main(int argc, char *argv[], char **envp)
 {
 	(void)argc;
-	determine_builtin(argv);
+	determine_builtin(argv, envp);
 }
