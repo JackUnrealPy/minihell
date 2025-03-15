@@ -26,12 +26,23 @@ typedef struct	s_free
 	struct s_free	*next;
 }	t_free;
 
+typedef	struct	s_proc
+{
+	int				type;
+	struct s_proc	*next;
+	struct s_proc	*prev;
+	char			*cmd;
+	int				fds[2];
+}	t_proc;
+
 // struct to have everything ,we should have only one instance of this
+
 typedef struct	s_hell
 {
 	t_free	*freeme;
 	char	**argv;
 	char	**envp;
+	t_proc	*head;
 
 }	t_hell;
 
@@ -40,7 +51,8 @@ typedef struct	s_hell
 int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
-void	parse(char *str);
+void	parse(t_hell *hell, const char *str);
+t_proc	*create_proc(const char *cmd);
 
 void	jumpship(t_hell hell);
 
