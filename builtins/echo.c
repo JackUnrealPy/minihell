@@ -8,12 +8,12 @@ void	print_echo(char **args, int newline)
 	while (args[i])
 	{
 		ft_putstr(args[i]);
-        if (args[i + 1])
-            ft_putchar(' ');
+		if (args[i + 1])
+			ft_putchar(' ');
 		i++;
 	}
-    if (newline == 2)
-        ft_putchar('\n');
+	if (newline == 2)
+		ft_putchar('\n');
 	ft_freedata(args);
 }
 
@@ -40,10 +40,10 @@ char	**ft_double_strdup(char **args)
 
 void	ft_echo(char *argv[])
 {
-    char **args;
-    int i = 2;
-    if (strcmp("-n", argv[2]) == 0)
-        i = 3;
+	char **args;
+	int i = 2;
+	if (strcmp("-n", argv[2]) == 0)
+		i = 3;
 	args = ft_double_strdup(argv + i);
 	print_echo(args, i);
 }

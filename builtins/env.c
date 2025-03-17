@@ -1,6 +1,6 @@
 #include "builtins.h"
 
-void ft_env(char **envp, int fd)
+void	ft_env(char **envp, int fd)
 {
 	while (*envp)
 	{
