@@ -1,0 +1,116 @@
+test:
+pipes |
+heredoc <<
+append >>
+redirect >
+invalid permissions
+check exit code
+check output
+absolute and relative paths
+
+
+commands:
+<< eof
+<< eof >> output.txt
+<< eof | cat -e > output.txt
+
+to-do 16/3:
+adapt multiple pipes to handle builtins as well
+single commands
+export
+
+
+to-do:
+single commands
+builtins: unset, exit, export, cd
+
+
+
+builtins:
+Your shell must implement the following built-in commands:
+◦ echo with option -n
+◦ cd with only a relative or absolute path
+◦ pwd with no options
+◦ export with no options
+◦ unset with no options
+◦ env with no options or arguments
+◦ exit with no options
+
+readline:
+
+rl_clear_history:
+
+rl_on_new_line:
+
+rl_replace_line:
+
+rl_redisplay:
+
+add_history:
+
+wait:
+
+wait3:
+
+wait4:
+
+signal:
+
+sigaction:
+
+sigemptyset:
+
+sigaddset:
+
+kill:
+
+
+cd:
+getcwd
+chdir
+readdir
+closedir
+
+getcwd: returns absolute pathname of current pwd
+
+chdir:
+
+stat:
+
+lstat:
+
+fstat:
+
+opendir:
+
+readdir:
+
+closedir:
+
+isatty: tests if fd is open fd
+
+ttyname: returns a pointer to the null-terminated
+       pathname of the terminal device that is open on the file
+       descriptor fd
+
+ttyslot:
+
+ioctl:
+
+getenv:
+
+tcsetattr:
+
+tcgetattr:
+
+tgetent:
+
+tgetflag:
+
+tgetnum:
+
+tgetstr:
+
+tgoto:
+
+tputs

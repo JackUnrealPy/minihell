@@ -93,7 +93,7 @@ char				*ft_remainder(char *dest);
 char				*create_line(char *dest);
 char				*ft_free(char *dest, char *buf, int join_temp);
 char				*read_lines(int fd, char *dest, char *buf);
-char				*get_next_line(int fd);
+char				*get_next_line(int fd, int flag);
 char				*get_next_line_bonus(int fd);
 
 #endif

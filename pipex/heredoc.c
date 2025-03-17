@@ -1,5 +1,5 @@
 #include "libft/libft.h"
-#include "pipex.h"
+#include "pipex_bonus.h"
 #include <string.h>
 
 void	free_heredoc(char *delimitor, char *txt, char *path)
@@ -63,10 +63,10 @@ void	heredoc(int argc, char **argv)
 	free(path);
 }
 
-int	main(int argc, char *argv[])
-{
-	if (argc == 1)
-		return (0);
-	heredoc(argc, argv);
-	return (0);
-}
+// int	main(int argc, char *argv[])
+// {
+// 	if (argc == 1)
+// 		return (0);
+// 	heredoc(argc, argv);
+// 	return (0);
+// }

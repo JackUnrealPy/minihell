@@ -100,30 +100,30 @@ void	middle_child(t_pipe *data, char *argv[], int i, char *envp[])
 	}
 }
 
-int	main(int argc, char *argv[], char *envp[])
-{
-	t_pipe	*data;
-	int		i;
+// int	main(int argc, char *argv[], char *envp[])
+// {
+// 	t_pipe	*data;
+// 	int		i;
 
-	if (argc < 5)
-		exit(errno);
-	data = malloc(sizeof(t_pipe) + (sizeof(pid_t) * (argc - 3)));
-	if (!data)
-		exit(errno);
-	initialise(argc, argv, data);
-	data->pipe_fd = malloc(sizeof(int) * (data->cmdcount - 1) * 2);
-	if (!data->pipe_fd)
-		free_struct(data, errno);
-	i = 0;
-	while (i < (data->cmdcount - 1))
-	{
-		if (pipe(&data->pipe_fd[i++ *2]) == -1)
-			free_struct(data, errno);
-	}
-	first_child(data, argv, envp);
-	i = 1;
-	while (i < data->cmdcount)
-		middle_child(data, argv, i++, envp);
-	ft_close(data);
-	ft_wait(data);
-}
+// 	if (argc < 5)
+// 		exit(errno);
+// 	data = malloc(sizeof(t_pipe) + (sizeof(pid_t) * (argc - 3)));
+// 	if (!data)
+// 		exit(errno);
+// 	initialise(argc, argv, data);
+// 	data->pipe_fd = malloc(sizeof(int) * (data->cmdcount - 1) * 2);
+// 	if (!data->pipe_fd)
+// 		free_struct(data, errno);
+// 	i = 0;
+// 	while (i < (data->cmdcount - 1))
+// 	{
+// 		if (pipe(&data->pipe_fd[i++ *2]) == -1)
+// 			free_struct(data, errno);
+// 	}
+// 	first_child(data, argv, envp);
+// 	i = 1;
+// 	while (i < data->cmdcount)
+// 		middle_child(data, argv, i++, envp);
+// 	ft_close(data);
+// 	ft_wait(data);
+// }

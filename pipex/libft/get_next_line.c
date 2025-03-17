@@ -108,12 +108,14 @@ char	*read_lines(int fd, char *dest, char *buf)
 	return (dest);
 }
 
-char	*get_next_line(int fd)
+char	*get_next_line(int fd, int flag)
 {
 	static char	*dest;
 	char		*ret_line;
 	char		*buf;
 
+	if (flag)
+		return (free(dest), NULL);
 	buf = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
