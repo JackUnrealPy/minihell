@@ -37,7 +37,16 @@ typedef struct	s_hell
 
 }	t_hell;
 
-
+enum Type {
+	CMD,
+	INPUT_REDIR,
+	OUTPUT_REDIR,
+	HEREDOC,
+	APPEND,
+	BUILTIN,
+	PIPE,
+	STRING
+};
 
 int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
