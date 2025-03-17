@@ -14,10 +14,10 @@ void	print_echo(char **args, int newline)
 	}
     if (newline == 2)
         ft_putchar('\n');
+	ft_freedata(args);
 }
 
-
-char	**ft_double_strdup(char **args, int i)
+char	**ft_double_strdup(char **args)
 {
 	int		a;
 	int		b;
@@ -27,11 +27,11 @@ char	**ft_double_strdup(char **args, int i)
 	while (args[a])
 		a++;
 	b = a;
-	cpy = ft_calloc((a - i) + 1, sizeof(char *));
+	cpy = ft_calloc(a + 1, sizeof(char *));
 	a = 0;
-	while (a < b - i)
+	while (a < b)
 	{
-		cpy[a] = ft_strdup(args[a + i]);
+		cpy[a] = ft_strdup(args[a]);
 		a++;
 	}
 	cpy[a] = NULL;
@@ -44,6 +44,6 @@ void	ft_echo(char *argv[])
     int i = 2;
     if (strcmp("-n", argv[2]) == 0)
         i = 3;
-	args = ft_double_strdup(argv, i);
+	args = ft_double_strdup(argv + i);
 	print_echo(args, i);
 }

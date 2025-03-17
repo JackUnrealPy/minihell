@@ -1,6 +1,4 @@
-#include "libft/libft.h"
-#include "pipex_bonus.h"
-#include <string.h>
+#include "execution.h"
 
 void	free_heredoc(char *delimitor, char *txt, char *path)
 {

@@ -9,8 +9,8 @@ LIBFT = $(LIBFT_DIR)/libft.a
 INCLUDES = -I $(LIBFT_DIR) -I .
 
 # Source files
-SRC = main_bonus.c helpers_bonus.c
-B_SRC = main_bonus.c helpers_bonus.c
+SRC = main.c helpers.c
+B_SRC = main.c helpers.c
 
 OBJ = $(SRC:.c=.o)
 B_OBJ = $(B_SRC:.c=.o)
