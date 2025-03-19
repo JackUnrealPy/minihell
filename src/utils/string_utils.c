@@ -1,34 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_terminate.c                                     :+:      :+:    :+:   */
+/*   string_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/16 21:54:35 by agara             #+#    #+#             */
-/*   Updated: 2025/03/19 20:17:02 by agara            ###   ########.fr       */
+/*   Created: 2025/03/04 19:50:23 by agara             #+#    #+#             */
+/*   Updated: 2025/03/19 19:31:43 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/minishell.h"
 
-void	ft_terminate(int count, ...)
+int	ft_isspace(char c)
 {
-	va_list	args;
-	char	**garbage;
-	int		i;
-
-	va_start(args, count);
-	i = 0;
-	while (i < count)
-	{
-		garbage = va_arg(args, char **);
-		if (!garbage)
-			return ;
-		if (*garbage)
-			free(*garbage);
-		*garbage = NULL;
-		i++;
-	}
-	va_end(args);
+	if (c == ' ' || (c >= 9 && c <= 13))
+		return (1);
+	return (0);
 }

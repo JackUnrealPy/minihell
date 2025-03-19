@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/03/04 20:16:03 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/19 20:49:47 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,21 @@ typedef struct	s_free
 	struct s_free	*next;
 }	t_free;
 
+typedef	struct	s_redir
+{
+	int				type;
+	char			*path;
+	struct s_proc	*next;
+}	t_redir;
+
 typedef	struct	s_proc
 {
 	int				type;
+	t_redir			*redirs;
+	char			**cmd;
+	char			*input;
 	struct s_proc	*next;
 	struct s_proc	*prev;
-	char			*cmd;
-	int				fds[2];
 }	t_proc;
 
 // struct to have everything ,we should have only one instance of this
@@ -42,7 +50,7 @@ typedef struct	s_hell
 	t_free	*freeme;
 	char	**argv;
 	char	**envp;
-	t_proc	*head;
+	t_proc	**head;
 
 }	t_hell;
 
@@ -55,5 +63,7 @@ void	parse(t_hell *hell, char *str);
 t_proc	*create_proc(const char *cmd);
 
 void	jumpship(t_hell hell);
+
+int		ft_isspace(char c);
 
 #endif

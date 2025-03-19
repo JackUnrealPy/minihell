@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:50:23 by agara             #+#    #+#             */
-/*   Updated: 2025/03/04 20:05:03 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/19 19:41:36agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,50 +85,81 @@ char	*getquote(char *cmd, int *index)
 	*index += len;
 	return (str);
 }
-void	addproc(t_proc *head, t_proc *next)
+
+void	addproc(t_proc **head, t_proc *next)
 {
 	t_proc	*node;
 
-	node = head;
+	node = *head;
 	while (node->next)
 		node = node->next;
 	next->prev = node;
 	node->next = next;
 }
 
+int	pipecommandcheck(t_proc **head)
+{
+	t_proc	*node;
+
+	if (!*head)
+		return (-1);
+	node = *head;
+	while (node->next)
+		node = node->next;
+	if (node->cmd)
+		return 1;
+	return 0;
+}
+
+void	handlepipe(t_hell *hell, char *cmd, int i)
+{
+	t_proc	*next;
+	
+	next = NULL;
+	if (!pipecommandcheck(hell->head))
+		sysntaxerr();
+	if (cmd[i + 1])
+		next = create_proc((char*)(cmd + i + 1));
+	addproc(hell->head ,next);
+	parse(hell, ft_strdup(cmd + i + 1));
+}
+
+int	get_expandlen(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (!ft_isspace(str[++i]));
+	return (i);
+}
+
+
+
+
+
 void	parse(t_hell *hell, char *fullcmd)
 {
 	int		i;
-	int		ch;
-	char	*unit;
-	t_proc	*next;
 	char	*cmd;
 	
+	if (!hell->head)
+		*(hell->head) = create_proc(fullcmd);
 	cmd = ft_strtrim((const char*)fullcmd, " 	");
-	free(fullcmd);
+	ft_terminate(1, &fullcmd);
 	i = -1;
-	unit = NULL;	
 	while (cmd[++i])
 	{
-		ch = ismeta(cmd + i);
-		if (ch)
+		if (ft_isspace(cmd[i]))
+			continue ;
+		if (cmd[i] == '$')
+			i += get_expandlen(cmd + i);
+		if (cmd[i] == '|')
 		{
-			if (ch == '|')
-			{
-				if (!i)
-					sysntaxerr();
-				next = create_proc((char*)(cmd + i + 1));
-				addproc(hell->head ,next);
-				unit = ft_calloc(sizeof(char) , i + 1);
-				if (!unit)
-					exit(1);
-				ft_strlcpy(unit, cmd, i + 1);
-				parse(hell, ft_strdup(cmd + i + 1));
-				break ;
-			}
-			if (ch == '\'' || ch == '\"')
-				i += get_quotelen(cmd + i);
+			handlepipe(hell, cmd, i);
+			break ;
 		}
+		if (cmd[i] == '\'' || cmd[i] == '\"')
+			i += get_quotelen(cmd + i);
 	}
-	free(cmd);
+	ft_terminate(1, &cmd);
 }

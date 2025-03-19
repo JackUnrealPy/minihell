@@ -6,7 +6,8 @@ SRC = src/main.c \
 	src/exec/exec.c \
 	src/parse/parse.c \
 	src/init/init.c src/init/prompt.c \
-	src/exit/exit.c
+	src/exit/exit.c \
+	src/utils/string_utils.c
 
 OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
 
@@ -42,6 +43,9 @@ obj/init/%.o: src/init/%.c
 	$(CC) -c $< -o $@
 obj/exit/%.o: src/exit/%.c 
 	@mkdir -p obj/exit/
+	$(CC) -c $< -o $@
+obj/utils/%.o: src/utils/%.c 
+	@mkdir -p obj/utils/
 	$(CC) -c $< -o $@
 
 clean:
