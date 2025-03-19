@@ -12,6 +12,7 @@
 
 #include "pipex.h"
 
+
 void	initialise(int argc, char *argv[], t_pipe *data)
 {
 	// int append = 1;
@@ -70,6 +71,8 @@ void	first_child(t_pipe *data, char *argv[], char *envp[])
 		if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
 			free_struct(data, errno);
 		ft_close(data);
+		if (determine_builtin(data->args, envp))
+			exit(0);
 		execve(data->path, data->args, envp);
 		strerror(errno);
 		free_struct(data, 127);
@@ -95,35 +98,37 @@ void	middle_child(t_pipe *data, char *argv[], int i, char *envp[])
 				free_struct(data, errno);
 		}
 		ft_close(data);
+		if (determine_builtin(data->args, envp))
+			exit(0);
 		execve(data->path, data->args, envp);
 		free_struct(data, 127);
 	}
 }
 
-// int	main(int argc, char *argv[], char *envp[])
-// {
-// 	t_pipe	*data;
-// 	int		i;
+int	main(int argc, char *argv[], char *envp[])
+{
+	t_pipe	*data;
+	int		i;
 
-// 	if (argc < 5)
-// 		exit(errno);
-// 	data = malloc(sizeof(t_pipe) + (sizeof(pid_t) * (argc - 3)));
-// 	if (!data)
-// 		exit(errno);
-// 	initialise(argc, argv, data);
-// 	data->pipe_fd = malloc(sizeof(int) * (data->cmdcount - 1) * 2);
-// 	if (!data->pipe_fd)
-// 		free_struct(data, errno);
-// 	i = 0;
-// 	while (i < (data->cmdcount - 1))
-// 	{
-// 		if (pipe(&data->pipe_fd[i++ *2]) == -1)
-// 			free_struct(data, errno);
-// 	}
-// 	first_child(data, argv, envp);
-// 	i = 1;
-// 	while (i < data->cmdcount)
-// 		middle_child(data, argv, i++, envp);
-// 	ft_close(data);
-// 	ft_wait(data);
-// }
+	if (argc < 5)
+		exit(errno);
+	data = malloc(sizeof(t_pipe) + (sizeof(pid_t) * (argc - 3)));
+	if (!data)
+		exit(errno);
+	initialise(argc, argv, data);
+	data->pipe_fd = malloc(sizeof(int) * (data->cmdcount - 1) * 2);
+	if (!data->pipe_fd)
+		free_struct(data, errno);
+	i = 0;
+	while (i < (data->cmdcount - 1))
+	{
+		if (pipe(&data->pipe_fd[i++ *2]) == -1)
+			free_struct(data, errno);
+	}
+	first_child(data, argv, envp);
+	i = 1;
+	while (i < data->cmdcount)
+		middle_child(data, argv, i++, envp);
+	ft_close(data);
+	ft_wait(data);
+}

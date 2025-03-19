@@ -2,15 +2,15 @@
 
 int	determine_builtin(char *argv[], char **envp)
 {
-	if (strcmp("echo", argv[1]) == 0 || strcmp("/usr/bin/echo", argv[1]) == 0 || strcmp("/bin/echo", argv[1]) == 0)
+	if (strcmp("echo", argv[0]) == 0 || strcmp("/usr/bin/echo", argv[0]) == 0 || strcmp("/bin/echo", argv[0]) == 0)
 		ft_echo(argv);
-	else if (strcmp("pwd", argv[1]) == 0)
+	else if (strcmp("pwd", argv[0]) == 0)
 		ft_pwd(argv);
-	else if (strcmp("cd", argv[1]) == 0)
+	else if (strcmp("cd", argv[0]) == 0)
 		ft_cd(argv);
-	else if (strcmp("env", argv[1]) == 0)
+	else if (strcmp("env", argv[0]) == 0)
 		ft_env(envp, 1);
-	else if (strcmp("export", argv[1]) == 0)
+	else if (strcmp("export", argv[0]) == 0)
 		ft_export(envp);
 	// else if (strcmp("unset", argv[1]) == 0)
 	//     ft_unset(argv);
