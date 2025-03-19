@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static int	get_quotelen(const char *cmd)
+static int	get_quotelen(char *cmd)
 {
 	int	i;
 	int	inquote;
@@ -37,7 +37,7 @@ static int	get_quotelen(const char *cmd)
 	return (0);
 }
 
-int	ismeta(const char *c)
+int	ismeta(char *c)
 {
 	if (*c == '|' || *c == '\'' || *c == '\"' || *c == '$')
 		return (*c);
@@ -62,7 +62,7 @@ void	sysntaxerr()
 	exit(2);
 }
 
-char	*getquote(const char *cmd, int *index)
+char	*getquote(char *cmd, int *index)
 {
 	char	*str;
 	int		len;
@@ -96,13 +96,16 @@ void	addproc(t_proc *head, t_proc *next)
 	node->next = next;
 }
 
-void	parse(t_hell *hell, const char *cmd)
+void	parse(t_hell *hell, char *fullcmd)
 {
 	int		i;
 	int		ch;
 	char	*unit;
 	t_proc	*next;
+	char	*cmd;
 	
+	cmd = ft_strtrim((const char*)fullcmd, " 	");
+	free(fullcmd);
 	i = -1;
 	unit = NULL;	
 	while (cmd[++i])
@@ -114,19 +117,18 @@ void	parse(t_hell *hell, const char *cmd)
 			{
 				if (!i)
 					sysntaxerr();
-				next = create_proc((const char*)(cmd + i + 1));
+				next = create_proc((char*)(cmd + i + 1));
 				addproc(hell->head ,next);
 				unit = ft_calloc(sizeof(char) , i + 1);
 				if (!unit)
 					exit(1);
 				ft_strlcpy(unit, cmd, i + 1);
-				parse(hell, cmd + i + 1);
+				parse(hell, ft_strdup(cmd + i + 1));
 				break ;
-			
 			}
 			if (ch == '\'' || ch == '\"')
-				char *str = getquote(cmd + i, &i);
+				i += get_quotelen(cmd + i);
 		}
 	}
-	(void)hell;
+	free(cmd);
 }

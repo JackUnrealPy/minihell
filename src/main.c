@@ -28,8 +28,8 @@ int	main(int argc, char **argv, char **envp)
 		writeprompt();
 		ft_terminate(1, &cmd);
 		cmd = get_next_line(0, &flag);
-		parse(&hell, cmd);
 		printf("%s",cmd);
+		parse(&hell, ft_strdup(cmd));
 	}
 	return (0);
 }

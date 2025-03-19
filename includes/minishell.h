@@ -51,7 +51,7 @@ typedef struct	s_hell
 int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
-void	parse(t_hell *hell, const char *str);
+void	parse(t_hell *hell, char *str);
 t_proc	*create_proc(const char *cmd);
 
 void	jumpship(t_hell hell);
