@@ -1,47 +1,28 @@
 #include "execution.h"
 
-void	free_heredoc(char *delimitor, char *txt, char *path)
+typedef struct s_heredoc
 {
-	free(delimitor);
-	free(txt);
-	free(path);
-}
+	int pipe_fd[2];
+}	t_heredoc;
 
-int	redirection(int argc, char **argv)
-{
-	int		redirection;
-	int		fd;
-	char	*path;
-
-	redirection = 0;
-	if (argc >= 2)
-	{
-		if (redirection)
-			path = ft_strdup(argv[2]);
-		else
-			path = ft_strdup(".heredoc");
-		// if (append)
-		// 	fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-		// else
-		fd = open(path, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	}
-	return (fd);
-}
-
-void	heredoc(int argc, char **argv)
+void	heredoc_loop(int argc, char **argv, t_heredoc *hdoc, int *fd)
 {
 	char	*buffer;
-	int		fd;
-	char	*path;
+	int		append;
 
+	append = 0;
 	if (argc == 3)
-		path = ft_strdup(argv[2]);
-	else
-		path = ft_strdup(".heredoc");
-	// if (append)
-	// 	fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-	// else
-	fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	{
+		if (append)
+			*fd = open(argv[2], O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else
+			*fd = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	}
+	if (pipe(&hdoc->pipe_fd[0]) == -1)
+	{
+		printf("pipe error");
+		exit(1);
+	}
 	while (1)
 	{
 		write(0, "> ", 2);
@@ -52,19 +33,44 @@ void	heredoc(int argc, char **argv)
 			get_next_line(0, 1);
 			break ;
 		}
-		ft_putstr_fd(buffer, fd);
+		ft_putstr_fd(buffer, hdoc->pipe_fd[1]);
 		free(buffer);
 	}
-	close(fd);
-	if (argc == 2)
-		unlink(path);
-	free(path);
 }
 
-// int	main(int argc, char *argv[])
-// {
-// 	if (argc == 1)
-// 		return (0);
-// 	heredoc(argc, argv);
-// 	return (0);
-// }
+void	heredoc(int argc, char **argv)
+{
+	t_heredoc hdoc;
+	int		fd;
+	int		cmd;
+	int		redir;
+	heredoc_loop(argc, argv, &hdoc, &fd);
+	char	*args[2] = {"cat", NULL};
+
+	cmd = 0;
+	redir = 0;
+	if (cmd)
+	{
+		dup2(hdoc.pipe_fd[0], STDIN_FILENO);
+		if (redir)
+		{
+			dup2(fd, STDOUT_FILENO);
+			close(fd);
+		}
+		close(hdoc.pipe_fd[0]);
+		close(hdoc.pipe_fd[1]);
+		execve("/bin/cat", args, 0);
+	}
+	if (redir)
+		close(fd);
+	close(hdoc.pipe_fd[0]);
+	close(hdoc.pipe_fd[1]);
+}
+
+int	main(int argc, char *argv[])
+{
+	if (argc == 1)
+		return (0);
+	heredoc(argc, argv);
+	return (0);
+}

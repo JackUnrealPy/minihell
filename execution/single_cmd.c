@@ -16,9 +16,6 @@ void	cmd_init(int argc, char *argv[], t_hell *data)
 {
 	data->cmd = NULL;
 	data->path = NULL;
-	data->input_redir = NULL;
-	data->output_redir = NULL;
-	data->append = NULL;
     // if (data->input_redir)
 	// data->input_fd = open(argv[1], O_RDONLY);
 	// if (data->input_fd < 0)
@@ -63,18 +60,18 @@ void	cmd_exec(t_hell *data, char *argv[], char *envp[])
 	waitpid(data->pid, &status, 0);
 }
 
-int	main(int argc, char *argv[], char *envp[])
-{
-	t_hell	*data;
-	int		i;
-	if (determine_builtin(argv, envp) == 1)
-		return(0);
-	data = malloc(sizeof(t_hell));
-	if (!data)
-		exit(errno);
-	cmd_init(argc, argv, data);
-	cmd_exec(data, argv, envp);
-	ft_freedata(data->cmd);
-	free(data->path);
-	free(data);
-}
+// int	main(int argc, char *argv[], char *envp[])
+// {
+// 	t_hell	*data;
+// 	int		i;
+// 	if (determine_builtin(argv, envp) == 1)
+// 		return(0);
+// 	data = malloc(sizeof(t_hell));
+// 	if (!data)
+// 		exit(errno);
+// 	cmd_init(argc, argv, data);
+// 	cmd_exec(data, argv, envp);
+// 	ft_freedata(data->cmd);
+// 	free(data->path);
+// 	free(data);
+// }
