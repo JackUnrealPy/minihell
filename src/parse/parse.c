@@ -12,31 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-static int	get_quotelen(char *cmd)
-{
-	int	i;
-	int	inquote;
-
-	i = -1;
-	inquote = 0;
-	while (cmd[++i])
-	{
-		if (!inquote)
-		{
-			if (cmd[i] == '\"')
-				inquote = 1;
-			if (cmd[i] == '\'')
-				inquote = 2;
-			continue ;
-		}
-		if (inquote == 1 && cmd[i] == '\"')
-			return (i + 1);
-		if (inquote == 2 && cmd[i] == '\'')
-			return (i + 1);
-	}
-	return (0);
-}
-
 int	ismeta(char *c)
 {
 	if (*c == '|' || *c == '\'' || *c == '\"' || *c == '$')
@@ -60,6 +35,40 @@ void	sysntaxerr()
 {
 	perror("syntax error");
 	exit(2);
+}
+
+int	get_expandlen(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (!ft_isspace(str[++i]));
+	return (i);
+}
+
+static int	get_quotelen(char *cmd)
+{
+	int	i;
+	int	inquote;
+
+	i = -1;
+	inquote = 0;
+	while (cmd[++i])
+	{
+		if (!inquote)
+		{
+			if (cmd[i] == '\"')
+				inquote = 1;
+			if (cmd[i] == '\'')
+				inquote = 2;
+			continue ;
+		}
+		if (inquote == 1 && cmd[i] == '\"')
+			return (i + 1);
+		if (inquote == 2 && cmd[i] == '\'')
+			return (i + 1);
+	}
+	return (0);
 }
 
 char	*getquote(char *cmd, int *index)
@@ -106,7 +115,7 @@ int	pipecommandcheck(t_proc **head)
 	node = *head;
 	while (node->next)
 		node = node->next;
-	if (node->cmd)
+	if (node->input)
 		return 1;
 	return 0;
 }
@@ -124,28 +133,11 @@ void	handlepipe(t_hell *hell, char *cmd, int i)
 	parse(hell, ft_strdup(cmd + i + 1));
 }
 
-int	get_expandlen(char *str)
-{
-	int	i;
 
-	i = -1;
-	while (!ft_isspace(str[++i]));
-	return (i);
-}
-
-
-
-
-
-void	parse(t_hell *hell, char *fullcmd)
+void	parse(t_hell *hell, char *cmd)
 {
 	int		i;
-	char	*cmd;
 	
-	if (!hell->head)
-		*(hell->head) = create_proc(fullcmd);
-	cmd = ft_strtrim((const char*)fullcmd, " 	");
-	ft_terminate(1, &fullcmd);
 	i = -1;
 	while (cmd[++i])
 	{

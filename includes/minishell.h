@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/03/19 20:49:47 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/20 20:35:08 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	parse(t_hell *hell, char *str);
 t_proc	*create_proc(const char *cmd);
 
 void	jumpship(t_hell hell);
+void	ft_procclear(t_proc **proc);
 
 int		ft_isspace(char c);
 

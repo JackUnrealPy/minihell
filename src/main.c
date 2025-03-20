@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/03/19 20:54:16 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/20 20:46:05 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,27 @@
 
 void	ft_procclear(t_proc **proc)
 {
-	void	*tempnext;
+	t_proc	*tempnext;
+	t_proc	*node;
 
-	if (!*proc)
+	if (!proc || !*proc)
 		return ;
-	while (*proc)
+	node = *proc;
+	while (node)
 	{
-		tempnext = (*proc)->next;
-		ft_terminate(1, (*proc)->input);
-		ft_terminate(1, proc);
-		proc = tempnext;
+		tempnext = node->next;
+		ft_terminate(1, &(node->input));
+		ft_terminate(1, &node);
+		node = tempnext;
 	}
+}
+
+void	local_init(t_hell *hell, char *cmd)
+{
+	t_proc	*proc;
+
+	proc = create_proc(cmd);
+	*(hell->head) = proc;
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -38,12 +48,16 @@ int	main(int argc, char **argv, char **envp)
 	flag = 0;
 	cmd = NULL;
 	init(&hell, envp);
-	while (1)
+	int i = -1;
+	while (++i < 2)
 	{
 		writeprompt();
 		cmd = get_next_line(0, &flag);
+		local_init(&hell, cmd);
 		parse(&hell, cmd);
 		ft_procclear(hell.head);
 	}
+	
+	ft_terminate(1, &(hell.head));
 	return (0);
 }
