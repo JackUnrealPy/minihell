@@ -20,6 +20,7 @@
 # include <string.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include "../builtins/builtins.h"
 
 typedef struct s_pipe
 {

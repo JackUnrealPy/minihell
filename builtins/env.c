@@ -1,11 +1,14 @@
 #include "builtins.h"
 
-void	ft_env(char **envp, int fd)
+int	ft_env(char **argv, char **envp, int fd)
 {
+	(void)argv;
+	// if (argv && argv[1])
+	// 	return (perror("too many arguments"), 1);
 	while (*envp)
 	{
-		ft_putstr_fd(*envp, fd);
-		ft_putstr_fd("\n", fd);
+		ft_putendl_fd(*envp, fd);
 		envp++;
 	}
+	return (0);
 }

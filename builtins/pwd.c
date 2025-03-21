@@ -1,9 +1,12 @@
 #include "builtins.h"
 
-void	ft_pwd(char **argv)
+int	ft_pwd(char **argv)
 {
+	(void)argv;
 	char buf[PATH_MAX];
-
-	getcwd(buf, sizeof(buf));
-	printf("%s\n", buf);
+	char *success = NULL;
+	success = getcwd(buf, sizeof(buf));
+	if (success)
+		return (printf("%s\n", buf), 1);
+	return (1);
 }
