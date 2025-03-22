@@ -133,6 +133,17 @@ void	handlepipe(t_hell *hell, char *cmd, int i)
 	parse(hell, ft_strdup(cmd + i + 1));
 }
 
+int	get_cmdarr(t_hell *hell, char *cmds)
+{
+	int	len;
+
+	(void)hell;
+	len = -1;
+	while (cmds[++len]);
+	return (len - 1);
+}
+
+
 
 void	parse(t_hell *hell, char *cmd)
 {
@@ -141,17 +152,22 @@ void	parse(t_hell *hell, char *cmd)
 	i = -1;
 	while (cmd[++i])
 	{
+		printf("before i [%d]\n", i);
 		if (ft_isspace(cmd[i]))
 			continue ;
-		if (cmd[i] == '$')
+		else if (cmd[i] == '$')
 			i += get_expandlen(cmd + i);
-		if (cmd[i] == '|')
+		else if (cmd[i] == '|')
 		{
 			handlepipe(hell, cmd, i);
 			break ;
 		}
-		if (cmd[i] == '\'' || cmd[i] == '\"')
+		else if (cmd[i] == '\'' || cmd[i] == '\"')
 			i += get_quotelen(cmd + i);
+		else
+		{
+			i += get_cmdarr(hell, cmd + i);
+		}
 	}
 	ft_terminate(1, &cmd);
 }

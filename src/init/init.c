@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/03/20 19:57:51 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/22 21:22:34 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,20 @@ t_proc	*create_proc(const char *cmd)
 
 int	init(t_hell *hell, char **envp)
 {
-	// t_free	*free;
+	t_proc	**node;
+	t_free	**free;
 
-
-	// free = malloc(sizeof(t_free));
-	// if (!free)
-	// 	exit(1);
-	// hell->freeme = free;
+	free = malloc(sizeof(t_free*));
+	if (!free)
+		exit (1);
+	hell->freeme = free;
 	hell->envp = envp;
-	hell->head = malloc(sizeof(t_proc*)); 
-	
+	node = malloc(sizeof(t_proc*)); 
+	if (!node)
+	{
+		ft_terminate(1, &(hell->freeme));
+		exit (1);
+	}
+	hell->head = node;
 	return (1);
 }

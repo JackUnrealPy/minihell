@@ -6,34 +6,24 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/03/20 20:46:05 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/22 21:28:09 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_procclear(t_proc **proc)
-{
-	t_proc	*tempnext;
-	t_proc	*node;
 
-	if (!proc || !*proc)
-		return ;
-	node = *proc;
-	while (node)
-	{
-		tempnext = node->next;
-		ft_terminate(1, &(node->input));
-		ft_terminate(1, &node);
-		node = tempnext;
-	}
-}
 
 void	local_init(t_hell *hell, char *cmd)
 {
 	t_proc	*proc;
+	t_free	**freeme_head;
 
 	proc = create_proc(cmd);
+	freeme_head = malloc(sizeof(t_free*));
+	if (!freeme_head)
+		jump_ship(hell, 1);
+	proc->freeme = freeme_head;
 	*(hell->head) = proc;
 }
 
@@ -55,9 +45,9 @@ int	main(int argc, char **argv, char **envp)
 		cmd = get_next_line(0, &flag);
 		local_init(&hell, cmd);
 		parse(&hell, cmd);
-		ft_procclear(hell.head);
+		
 	}
-	
+	throw_garbage(hell.freeme);
 	ft_terminate(1, &(hell.head));
 	return (0);
 }

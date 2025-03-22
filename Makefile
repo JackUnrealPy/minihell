@@ -7,7 +7,7 @@ SRC = src/main.c \
 	src/parse/parse.c \
 	src/init/init.c src/init/prompt.c \
 	src/exit/exit.c \
-	src/utils/string_utils.c
+	src/utils/string_utils.c src/utils/alloc_utils.c src/utils/process_utils.c \
 
 OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
 
