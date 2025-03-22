@@ -1,17 +1,16 @@
-#include "../pipex/pipex.h"
-#include "../builtins/builtins.h"
+#include "../../includes/minishell.h"
 
-typedef struct s_hell
-{
-	char **cmd;
-	int argc;
-    char *path;
-	char **argv;
-	char *input_redir;
-	char *output_redir;
-	char *append;
-    pid_t pid;
-}		t_hell;
+// typedef struct s_hell
+// {
+// 	char **cmd;
+// 	int argc;
+//     char *path;
+// 	char **argv;
+// 	char *input_redir;
+// 	char *output_redir;
+// 	char *append;
+//     pid_t pid;
+// }		t_hell;
 
 // env_list.c
 t_list	*create_env_list(char **envp);

@@ -92,6 +92,7 @@ char	**ft_split(char const *s, char *charset)
 #include <stdio.h>
 int main(int argc, char **argv)
 {
+	(void)argc;
 	char	**res;
 	int		i;
 

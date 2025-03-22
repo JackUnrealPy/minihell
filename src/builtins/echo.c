@@ -1,19 +1,38 @@
-#include "builtins.h"
+#include "../../includes/minishell.h"
+
+void	ft_freedata(char **arr)
+{
+	int	a;
+
+	a = 0;
+	if (!arr)
+		return ;
+	while (arr[a])
+		a++;
+	while (a >= 0)
+	{
+		free(arr[a]);
+		a--;
+	}
+	free(arr);
+	arr = NULL;
+}
 
 void	print_echo(char **args, int newline)
 {
 	int	i;
+	int fd = 1;
 
 	i = 0;
 	while (args[i])
 	{
-		ft_putstr(args[i]);
+		ft_putstr_fd(args[i], fd);
 		if (args[i + 1])
-			ft_putchar(' ');
+			ft_putchar_fd(' ', fd);
 		i++;
 	}
 	if (newline == 2)
-		ft_putchar('\n');
+		ft_putchar_fd('\n', fd);
 	ft_freedata(args);
 }
 

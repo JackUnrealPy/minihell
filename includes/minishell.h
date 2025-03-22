@@ -14,6 +14,9 @@
 # define MINISHELL_H
 
 # include "libft.h"
+# include "../src/builtins/builtins.h"
+# include "../src/exec/execution.h"
+# include "../src/exec/pipex.h"
 # include <sys/wait.h>
 # include <stdio.h>
 # include <stdlib.h>

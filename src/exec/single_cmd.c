@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h"
+#include "../../includes/minishell.h"
 
 void	cmd_init(int argc, char *argv[], t_hell *data)
 {

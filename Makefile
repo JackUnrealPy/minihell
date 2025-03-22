@@ -3,7 +3,8 @@ NAME = minishell
 CC = cc -Wall -Wextra -Werror
 
 SRC = src/main.c \
-	src/exec/exec.c \
+	src/builtins/*.c \
+	src/exec/*.c \
 	src/parse/parse.c \
 	src/init/init.c src/init/prompt.c \
 	src/exit/exit.c
@@ -33,6 +34,9 @@ obj/%.o: src/%.c  $(HEADERS)
 	$(CC) -c $< -o $@
 obj/exec/%.o: src/exec/%.c 
 	@mkdir -p obj/exec
+	$(CC) -c $< -o $@
+obj/builtins/%.o: src/builtins/%.c 
+	@mkdir -p obj/builtins
 	$(CC) -c $< -o $@
 obj/parse/%.o: src/parse/%.c 
 	@mkdir -p obj/parse/

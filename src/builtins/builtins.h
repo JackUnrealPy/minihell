@@ -1,4 +1,5 @@
-#include "../pipex/pipex.h"
+#include "../../includes/minishell.h"
+#include "../exec/pipex.h"
 
 #include <linux/limits.h>
 
