@@ -12,21 +12,6 @@
 
 #include "../includes/minishell.h"
 
-
-
-void	local_init(t_hell *hell, char *cmd)
-{
-	t_proc	*proc;
-	t_free	**freeme_head;
-
-	proc = create_proc(cmd);
-	freeme_head = malloc(sizeof(t_free*));
-	if (!freeme_head)
-		jump_ship(hell, 1);
-	proc->freeme = freeme_head;
-	*(hell->head) = proc;
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	char	*cmd;
@@ -45,6 +30,8 @@ int	main(int argc, char **argv, char **envp)
 		cmd = get_next_line(0, &flag);
 		local_init(&hell, cmd);
 		parse(&hell, cmd);
+		ft_terminate(1, &cmd);
+		close_proc(&hell);
 		
 	}
 	throw_garbage(hell.freeme);

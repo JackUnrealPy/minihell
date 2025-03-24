@@ -18,3 +18,22 @@ int	ft_isspace(char c)
 		return (1);
 	return (0);
 }
+
+int	ismeta(char *c)
+{
+	if (*c == '|' || *c == '\'' || *c == '\"' || *c == '$')
+		return (*c);
+	if (*c == '<')
+	{
+		if (*(c + 1) == '<')
+			return ('-');
+		return (*c);
+	}
+	if (*c == '>')
+	{
+		if (*(c + 1) == '>')
+			return ('+');
+		return (*c);
+	}
+	return (0);
+}

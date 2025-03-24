@@ -16,17 +16,21 @@ static void	add_garbage(t_free **head, t_free *node)
 {
 	t_free	*tmp;
 
+	if (!(*head))
+	{
+		(*head) = node;
+		return ;
+	}
 	tmp = *head;
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = node;
 }
 
-void	*ft_malloc(t_hell *hell, t_free **head, void *obj)
+void	*ft_malloc(t_free **head, void *obj)
 {
 	t_free	*new;
 
-	(void)hell;
 	if (!obj)
 		exit(1);
 	new = malloc(sizeof(t_free));

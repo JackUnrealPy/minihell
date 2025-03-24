@@ -12,30 +12,20 @@
 
 #include "../../includes/minishell.h"
 
-t_proc	*create_proc(const char *cmd)
+void	local_init(t_hell *hell, char *cmd)
 {
 	t_proc	*proc;
-	
-	proc = malloc(sizeof(t_proc));
-	if (!proc)
-		exit(1);
-	proc->prev = NULL;
-	proc->next = NULL;
-	proc->input = ft_strdup(cmd);
-	if (!proc->input)
-		exit(1);
-	return (proc);
+
+	proc = create_proc(hell);
+	*(hell->head) = proc;
+	proc->input = ft_malloc(proc->freeme, ft_strdup(cmd));
 }
 
 int	init(t_hell *hell, char **envp)
 {
 	t_proc	**node;
-	t_free	**free;
 
-	free = malloc(sizeof(t_free*));
-	if (!free)
-		exit (1);
-	hell->freeme = free;
+	hell->freeme = NULL;
 	hell->envp = envp;
 	node = malloc(sizeof(t_proc*)); 
 	if (!node)

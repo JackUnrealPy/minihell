@@ -59,10 +59,11 @@ typedef struct	s_hell
 int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
+void	local_init(t_hell *hell, char *cmd);
 void	parse(t_hell *hell, char *str);
 
 // Alloctracker
-void	*ft_malloc(t_hell *hell, t_free **head, void *obj);
+void	*ft_malloc(t_free **head, void *obj);
 
 // cleares a t_free llist
 void	throw_garbage(t_free **head);
@@ -70,10 +71,15 @@ void	throw_garbage(t_free **head);
 // clears all memory and exits
 void	jump_ship(t_hell *hell, short int exitcode);
 
+void	sysntaxerr();
 
 //	 Utils
-t_proc	*create_proc(const char *cmd);
+void	close_proc(t_hell *hell);
+t_proc	*create_proc(t_hell *hell);
+void	addproc(t_proc **head, t_proc *next);
+
+// void	ft_procclear(t_proc **proc);
 
 int		ft_isspace(char c);
-
+int		ismeta(char *c);
 #endif

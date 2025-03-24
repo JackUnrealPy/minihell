@@ -3,10 +3,10 @@
 
 void	jump_ship(t_hell *hell, short int exitcode)
 {
-    t_proc  *proc;
+	t_proc  *proc;
 	t_proc	*tmp;
 
-    proc = *(hell->head);
+	proc = *(hell->head);
 	while (proc)
 	{
 		tmp = proc->next;
@@ -15,6 +15,12 @@ void	jump_ship(t_hell *hell, short int exitcode)
 		proc = tmp;
 	}
 	throw_garbage(hell->freeme);
-	ft_terminate(1, &hell);
-    exit(exitcode);
+	ft_terminate(1, &(hell->head));
+	exit(exitcode);
+}
+
+void	sysntaxerr()
+{
+	perror("syntax error");
+	exit(2);
 }
