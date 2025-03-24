@@ -12,8 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
-
 void	ft_close(t_hell *hell)
 {
 	int	i;

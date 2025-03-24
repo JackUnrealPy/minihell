@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+/* #include "../../includes/minishell.h"
 #include "../exec/pipex.h"
 
 #include <linux/limits.h>
@@ -16,4 +16,4 @@ int     ft_pwd(char **argv);
 int	ft_env(char **argv, char **envp, int fd);
 void add_list_element(t_list *a, void *content);
 char	**ft_realloc_envp(char **args, int new_element, char *new);
-t_list *create_env_list(char **envp);
+t_list *create_env_list(char **envp); */

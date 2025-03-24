@@ -14,12 +14,14 @@
 # define MINISHELL_H
 
 # include "../pipex/libft/libft.h"
+# include "../execution.h"
 # include <sys/wait.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/types.h>
 # include <errno.h>
-# include "../src/exec/execution.h"
+# include <linux/limits.h>
+# include <string.h>
 
 // linked list with all the stuff to free
 typedef struct	s_free

@@ -1,6 +1,25 @@
-// #include "../../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-// char	**ft_realloc_envp(char **args, int new_element, char *new)
+void	ft_double_strdup(t_hell *hell, char **envp)
+{
+	int		a;
+	int		b;
+
+	a = 0;
+	while (envp[a])
+		a++;
+	b = a;
+	hell->envp = ft_calloc(a + 1, sizeof(char *));
+	a = 0;
+	while (a < b)
+	{
+		hell->envp[a] = ft_strdup(envp[a]);
+		a++;
+	}
+	hell->envp[a] = NULL;
+}
+
+// char	**ft_realloc_envp(char **envp, int new_element, char *new)
 // {
 // 	int		a;
 // 	int		b;

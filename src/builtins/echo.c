@@ -1,26 +1,5 @@
 #include "../../includes/minishell.h"
 
-// char	**ft_double_strdup(char **args)
-// {
-// 	int		a;
-// 	int		b;
-// 	char	**cpy;
-
-// 	a = 0;
-// 	while (args[a])
-// 		a++;
-// 	b = a;
-// 	cpy = ft_calloc(a + 1, sizeof(char *));
-// 	a = 0;
-// 	while (a < b)
-// 	{
-// 		cpy[a] = ft_strdup(args[a]);
-// 		a++;
-// 	}
-// 	cpy[a] = NULL;
-// 	return (cpy);
-// }
-
 void	ft_echo(t_proc *head, int pipe)
 {
 	int fd = 1;

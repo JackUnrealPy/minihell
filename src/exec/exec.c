@@ -16,7 +16,7 @@ int loop_cmds(t_hell *hell)
 
     if ((*hell->head) && !(*hell->head)->next)
     {
-        if (!determine_builtin(hell, (*hell->head), 0))
+        if (!determine_builtin(hell, (*hell->head), 0)) // && !heredoc()
             single_cmd((*hell->head), hell->envp);
     }
     else if ((*hell->head) && (*hell->head)->next)

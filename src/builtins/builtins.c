@@ -1,5 +1,5 @@
 #include "../../includes/minishell.h"
-#include <string.h>
+
 
 void	ft_echo(t_proc *head, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
