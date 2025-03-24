@@ -44,30 +44,4 @@ void	free_struct(t_pipe *data, int exitnum)
 	exit(exitnum);
 }
 
-void	ft_close(t_pipe *data)
-{
-	int	i;
 
-	close(data->input_fd);
-	close(data->output_fd);
-	i = 0;
-	while (i < (data->cmdcount - 1) * 2)
-	{
-		close(data->pipe_fd[i]);
-		i++;
-	}
-}
-
-void	ft_wait(t_pipe *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < (data->cmdcount))
-	{
-		if (waitpid(data->pid[i], &data->wstatus, 0) == -1)
-			exit(WEXITSTATUS(data->wstatus));
-		i++;
-	}
-	free_struct(data, WEXITSTATUS(data->wstatus));
-}

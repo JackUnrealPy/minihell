@@ -1,4 +1,4 @@
-#include "../includesminishell.h"
+#include "../includes/minishell.h"
 
 void	env_export(char **my_envp, int fd)
 {

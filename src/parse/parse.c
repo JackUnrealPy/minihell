@@ -16,3 +16,15 @@ void	parse(char *cmd)
 {
 	(void)cmd;
 }
+
+
+/* ft_malloc()
+{
+	var = malloc(asdasd);
+if !var
+	jumpship(hell);
+append(var, hell->freeme,  scope);
+}
+
+var = malloc(size);
+ft_mallocchararr(malloc(size), hell) */

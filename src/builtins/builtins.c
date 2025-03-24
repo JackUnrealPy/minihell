@@ -1,20 +1,42 @@
 #include "../../includes/minishell.h"
 
-int	determine_builtin(int argc, char *argv[], char ***my_envp)
+// int	determine_builtin(int argc, char *argv[], char ***my_envp)
+// {
+// 	if (strcmp("echo", argv[1]) == 0 || strcmp("/usr/bin/echo", argv[1]) == 0 || strcmp("/bin/echo", argv[1]) == 0)
+// 		ft_echo(argv);
+// 	else if (strcmp("pwd", argv[1]) == 0)
+// 		ft_pwd(argv);
+// 	else if (strcmp("cd", argv[2]) == 0)
+// 		ft_cd(argv);
+// 	else if (strcmp("env", argv[1]) == 0)
+// 		ft_env(argv, *my_envp, 1);
+// 	else if (strcmp("export", argv[1]) == 0)
+// 		*my_envp = export_init(argc, argv, *my_envp);
+// 	else if (strcmp("unset", argv[1]) == 0)
+// 	    ft_unset(*my_envp, argv[2]);
+// 	// else if (strcmp("exit", argv[1]) == 0)
+// 	//     ft_exit(envp, 1);
+// 	else
+// 		return(0);
+// 	return(1);
+// }
+
+// using struct
+int	determine_builtin(t_hell *hell, char ***my_envp)
 {
-	if (strcmp("echo", argv[1]) == 0 || strcmp("/usr/bin/echo", argv[1]) == 0 || strcmp("/bin/echo", argv[1]) == 0)
-		ft_echo(argv);
-	else if (strcmp("pwd", argv[1]) == 0)
-		ft_pwd(argv);
-	else if (strcmp("cd", argv[2]) == 0)
-		ft_cd(argv);
-	else if (strcmp("env", argv[1]) == 0)
-		ft_env(argv, *my_envp, 1);
-	else if (strcmp("export", argv[1]) == 0)
+	if (strcmp((*hell->head)->cmd[0], "echo" == 0 || strcmp("/usr/bin/echo", (*hell->head)->cmd[0]) == 0 || strcmp("/bin/echo", (*hell->head)->cmd[0]) == 0))
+		ft_echo(hell);
+	else if (strcmp("pwd", (*hell->head)->cmd[0]) == 0)
+		ft_pwd(hell);
+	else if (strcmp("cd", (*hell->head)->cmd[0]) == 0)
+		ft_cd(hell);
+	else if (strcmp("env", (*hell->head)->cmd[0]) == 0)
+		ft_env(hell, *my_envp, 1);
+	else if (strcmp("export", (*hell->head)->cmd[0]) == 0)
 		*my_envp = export_init(argc, argv, *my_envp);
-	else if (strcmp("unset", argv[1]) == 0)
+	else if (strcmp("unset", (*hell->head)->cmd[0]) == 0)
 	    ft_unset(*my_envp, argv[2]);
-	// else if (strcmp("exit", argv[1]) == 0)
+	// else if (strcmp("exit", (*hell->head)->cmd[0]) == 0)
 	//     ft_exit(envp, 1);
 	else
 		return(0);

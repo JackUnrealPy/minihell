@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-int	ft_env(char **argv, char **envp, int fd)
+int	ft_env(t_hell *hell, char **envp, int fd)
 {
-	(void)argv;
+
 	// if (argv && argv[1])
 	// 	return (perror("too many arguments"), 1);
 	while (*envp)

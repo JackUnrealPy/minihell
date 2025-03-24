@@ -1,24 +1,24 @@
 #include "../../includes/minishell.h"
 
-void	ft_freedata(char **arr)
-{
-	int	a;
+// void	ft_freedata(char **arr)
+// {
+// 	int	a;
 
-	a = 0;
-	if (!arr)
-		return ;
-	while (arr[a])
-		a++;
-	while (a >= 0)
-	{
-		free(arr[a]);
-		a--;
-	}
-	free(arr);
-	arr = NULL;
-}
+// 	a = 0;
+// 	if (!arr)
+// 		return ;
+// 	while (arr[a])
+// 		a++;
+// 	while (a >= 0)
+// 	{
+// 		free(arr[a]);
+// 		a--;
+// 	}
+// 	free(arr);
+// 	arr = NULL;
+// }
 
-void	print_echo(char **args, int newline)
+void	print_echo(char **args, int newline, t_proc *lst)
 {
 	int	i;
 	int fd = 1;
@@ -26,14 +26,13 @@ void	print_echo(char **args, int newline)
 	i = 0;
 	while (args[i])
 	{
-		ft_putstr_fd(args[i], fd);
-		if (args[i + 1])
+		ft_putstr_fd(args[i], fd); // change fd
+		if (args[i] && args[i + 1])
 			ft_putchar_fd(' ', fd);
 		i++;
 	}
-	if (newline == 2)
+	if (newline == 1)
 		ft_putchar_fd('\n', fd);
-	ft_freedata(args);
 }
 
 char	**ft_double_strdup(char **args)
@@ -57,12 +56,11 @@ char	**ft_double_strdup(char **args)
 	return (cpy);
 }
 
-void	ft_echo(char *argv[])
+void	ft_echo(t_hell *hell)
 {
-	char **args;
-	int i = 2;
-	if (strcmp("-n", argv[2]) == 0)
-		i = 3;
-	args = ft_double_strdup(argv + i);
-	print_echo(args, i);
+	int i = 1;
+	if (strcmp("-n", (*hell->head)->cmd[1]) == 0) // forbidden function
+		i = 2;
+	print_echo((*hell->head)->cmd+i, i, *(hell->head));
+	// where are args saved?
 }
