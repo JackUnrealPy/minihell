@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+/* #include "../../includes/minishell.h"
 
 void	env_export(char **my_envp, int fd)
 {
@@ -88,3 +88,4 @@ char	**export_init(int argc, char **argv, char **my_envp)
 	
 	//ft_lstclear(&env_lst, del);
 }
+ */

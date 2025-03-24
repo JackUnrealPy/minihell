@@ -36,7 +36,7 @@ void	ft_echo(t_proc *head, int pipe)
 		}
 	}
 	int i = 1;
-	if (head->cmd[1] && head->cmd[1] == "-n")
+	if (head->cmd[1] && ft_strncmp(head->cmd[1], "-n", ft_strlen(head->cmd[1])) == 0)
 		i = 2;
 	while (head->cmd[i])
 	{
@@ -45,7 +45,7 @@ void	ft_echo(t_proc *head, int pipe)
 			ft_putchar_fd(' ', fd);
 		i++;
 	}
-	if (head->cmd[1] != "-n")
+	if (ft_strncmp(head->cmd[1], "-n", ft_strlen(head->cmd[1])) != 0)
 		ft_putchar_fd('\n', fd);
 	if (!pipe)
 		close(fd);

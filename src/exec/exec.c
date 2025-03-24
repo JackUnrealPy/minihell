@@ -11,31 +11,123 @@ int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
 
 int loop_cmds(t_hell *hell)
 {
-    // ft_pipex(hell);
     // create envp -> built into struct
     // hell->new_envp = ft_double_strdup(hell->envp);
 
-    //if ((*hell->head) && !(*hell->head)->next && !determine_builtin(hell, (*hell->head), 0))
-    single_cmd((*hell->head), hell->envp);
-    // else
-    //     return(printf("nop"), 0); //ft_pipex(hell);
-    // {
-    //     while ((*hell->head))
-    //     {
-    //         // else if ((*hell->head) && (*hell->head)->redirs->type == 3) // heredoc
-    //         //     heredoc();
-    //         if ((*hell->head) && (*hell->head)->next) // pipe
-    //             ft_pipes((*hell->head), hell->envp);
-    //         else
-    //             break;
-    //         (*hell->head) = (*hell->head)->next;
-    //     }
-    // }
+    if ((*hell->head) && !(*hell->head)->next)
+    {
+        if (!determine_builtin(hell, (*hell->head), 0))
+            single_cmd((*hell->head), hell->envp);
+    }
+    else if ((*hell->head) && (*hell->head)->next)
+         ft_pipex(hell);
+    else
+        return (1);
     return (0);
 }
 
 
+// function from chatgpt to fill struct and be able to test
+#include "../../includes/minishell.h"
 
+// Initialize the t_hell structure
+t_hell *init_hell(char **envp)
+{
+    t_hell *hell;
+
+    hell = malloc(sizeof(t_hell) + sizeof(int) * 6);
+    if (!hell)
+        return (NULL);
+    hell->freemeglobal = NULL;
+    hell->argv = NULL;
+    hell->argc = 0;
+    hell->cmd_count = 0;
+    hell->pipe_fd = NULL;
+    hell->envp = envp;
+    hell->head = malloc(sizeof(t_proc *));  // Allocate space for a double pointer
+    if (!hell->head)
+    {
+        free(hell); // Free if head allocation fails
+        return (NULL);
+    }
+    *(hell->head) = NULL; // Initialize the pointer to NULL
+    hell->lastexit = 0;
+    return (hell);
+}
+
+// Function to create and fill the process list for the given command
+void fill_hell(t_hell *hell)
+{
+    t_proc *proc1 = malloc(sizeof(t_proc));
+    t_proc *proc2 = malloc(sizeof(t_proc));
+    if (!proc1 || !proc2)
+        return;
+
+    // Process 1: `env` with input redirection from Makefile
+    proc1->cmd = ft_split("pwd", ' ');
+    proc1->cmd_path = NULL;
+
+    proc1->redirs = malloc(sizeof(t_redir));
+    if (!proc1->redirs)
+    {
+        free(proc1);
+        free(proc2);
+        return;
+    }
+
+    // Input Redirection: < Makefile
+    proc1->redirs->type = 0; // Input redirection
+    proc1->redirs->pathordel = ft_strdup("Makefile");
+    proc1->redirs->next = NULL;
+
+    proc1->next = proc2;
+    proc1->prev = NULL;
+
+    // Process 2: `cat -e` with output redirection to "out"
+    proc2->cmd = ft_split("cat -e", ' ');
+    proc2->cmd_path = NULL;
+
+    proc2->redirs = malloc(sizeof(t_redir));
+    if (!proc2->redirs)
+    {
+        free(proc1->redirs);
+        free(proc1);
+        free(proc2);
+        return;
+    }
+
+    // Output Redirection: > out
+    proc2->redirs->type = 1; // Output redirection
+    proc2->redirs->pathordel = ft_strdup("out");
+    proc2->redirs->next = NULL;
+
+    proc2->next = NULL;
+    proc2->prev = proc1;
+
+    // Assign the head pointer
+    *(hell->head) = proc1;
+}
+
+int main(int argc, char **argv, char **envp)
+{
+    t_hell *hell;
+
+    hell = init_hell(envp);
+    if (!hell)
+    {
+        perror("Failed to initialize shell");
+        return (EXIT_FAILURE);
+    }
+
+    fill_hell(hell);
+    loop_cmds(hell);  // Function to handle execution
+
+    return (0);
+}
+
+
+/* 
+// builtins
 // Initialize the t_hell structure
 t_hell *init_hell(char **envp)
 {
@@ -69,7 +161,7 @@ void fill_hell(t_hell *hell)
         return;
 
     // Command: echo "hello there"
-    proc->cmd = ft_split("echo -n hello there", ' ');  // Split the command and arguments
+    proc->cmd = ft_split("env ", ' ');  // Split the command and arguments
     proc->cmd_path = NULL;
 
     // Allocate memory for the redirections
@@ -113,10 +205,10 @@ int main(int argc, char **argv, char **envp)
     loop_cmds(hell);  // Function to handle execution
 
     return (0);
-}
+} */
 
 
-
+// testing pipes without builtins
 // this works
 // Function to initialize the t_hell structure
 /* t_hell *init_hell(char **envp)

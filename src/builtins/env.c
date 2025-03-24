@@ -1,10 +1,7 @@
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 int	ft_env(t_redir *redirs, char **envp, int pipe)
 {
-
-	// if (argv && argv[1])
-	// 	return (perror("too many arguments"), 1);
 	int fd = 1;
 	if (!pipe)
 	{

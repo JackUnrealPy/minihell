@@ -12,6 +12,8 @@
 
 #include "../../includes/minishell.h"
 
+int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
+
 void	ft_close(t_hell *hell)
 {
 	int	i;
@@ -77,8 +79,8 @@ void	first_child(t_proc *head, t_hell *hell)
 		if (dup2(hell->pipe_fd[1], STDOUT_FILENO) == -1)
 			; // free, error msg
 		ft_close(hell);
-		// if (determine_builtin(hell->argc, head->cmd, hell->envp))
-		//  	exit(0);
+		if (determine_builtin(hell, head, 1))
+		 	exit(0);
 		execve(head->cmd_path, head->cmd, hell->envp);
 		exit(errno);
 		// free, error msg
@@ -115,8 +117,8 @@ void	middle_child(t_proc *head, t_hell *hell, int i)
 				exit(0);
 		}
 		ft_close(hell);
-		// if (determine_builtin(1, data->args, &envp)) // change 1 to argc
-		// 	exit(0);
+		if (determine_builtin(hell, head, 1))
+		 	exit(0);
 		execve(head->cmd_path, head->cmd, hell->envp);
 		exit(errno);
 		//free, error msg
