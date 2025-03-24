@@ -7,3 +7,7 @@ void	ft_cd(char **argv)
 	if (chdir("/workspaces/minihell/src") != 0)
 		exit(errno);
 }
+
+// change working directory
+// change PWD in envp
+// change path in terminal

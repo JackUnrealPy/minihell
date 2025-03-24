@@ -1,19 +1,8 @@
-
-// loop through list
-// for each command, check if pipe, heredoc, simple command, or builtin
-
 #include "../../includes/minishell.h"
-#include "execution.h"
 
-void    single_cmd(t_proc *head, char **envp);
-void	ft_pipex(t_hell *hell);
-int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
-
-int loop_cmds(t_hell *hell)
+int loop_cmds(t_hell *hell, char **envp)
 {
-    // create envp -> built into struct
-    // hell->new_envp = ft_double_strdup(hell->envp);
-
+    ft_double_strdup(hell, envp); // create envp before
     if ((*hell->head) && !(*hell->head)->next)
     {
         if (!determine_builtin(hell, (*hell->head), 0)) // && !heredoc()
@@ -43,7 +32,6 @@ t_hell *init_hell(char **envp)
     hell->argc = 0;
     hell->cmd_count = 0;
     hell->pipe_fd = NULL;
-    hell->envp = envp;
     hell->head = malloc(sizeof(t_proc *));  // Allocate space for a double pointer
     if (!hell->head)
     {
@@ -64,9 +52,9 @@ void fill_hell(t_hell *hell)
         return;
 
     // Process 1: `env` with input redirection from Makefile
-    proc1->cmd = ft_split("pwd", ' ');
+    proc1->cmd = ft_split("cat -e", ' ');
     proc1->cmd_path = NULL;
-
+    exit(0);
     proc1->redirs = malloc(sizeof(t_redir));
     if (!proc1->redirs)
     {
@@ -120,7 +108,7 @@ int main(int argc, char **argv, char **envp)
     }
 
     fill_hell(hell);
-    loop_cmds(hell);  // Function to handle execution
+    loop_cmds(hell, envp);  // Function to handle execution
 
     return (0);
 }

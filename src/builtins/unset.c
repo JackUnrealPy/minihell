@@ -15,23 +15,23 @@
 // 	print_list(env_lst);
 // }
 
-void ft_unset(char **my_envp, char *var_to_delete)
+void ft_unset(char **envp, char *var_to_delete)
 {
 	int i = 0;
 	int strcount = 0;
-	while (my_envp[strcount])
+	while (envp[strcount])
 		strcount++;
-	while (my_envp[i])
+	while (envp[i])
 	{
-		if (ft_strncmp(my_envp[i], var_to_delete, ft_strlen(var_to_delete)) == 0)
+		if (ft_strncmp(envp[i], var_to_delete, ft_strlen(var_to_delete)) == 0)
 		{
-			free(my_envp[i]);
-			while (my_envp[i])
+			free(envp[i]);
+			while (envp[i])
 			{
-				my_envp[i] = my_envp[i+1];
+				envp[i] = envp[i+1];
 				i++;
 			}
-			my_envp[i] = NULL;
+			envp[i] = NULL;
 			break;
 		}
 		i++;

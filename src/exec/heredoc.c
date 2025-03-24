@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+/* #include "../../includes/minishell.h"
 
 typedef struct s_heredoc
 {
@@ -74,3 +74,4 @@ void	heredoc(int argc, char **argv)
 // 	heredoc(argc, argv);
 // 	return (0);
 // }
+ */

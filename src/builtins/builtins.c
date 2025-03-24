@@ -17,8 +17,8 @@ int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 		ft_env((*hell->head)->redirs, hell->envp, pipe);
 	// else if (strcmp("export", head->cmd[0]) == 0)
 	// 	export_init(hell, hell->envp);
-	// else if (strcmp("unset", head->cmd[0]) == 0)
-	//     ft_unset(hell->envp, (*hell->head), pipe);
+	else if (ft_strncmp("unset", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
+	    ft_unset(hell->envp, head->cmd[1]);
 	// else if (strcmp("exit", head->cmd[0]) == 0)
 	//     ft_exit(envp, 1);
 	else
