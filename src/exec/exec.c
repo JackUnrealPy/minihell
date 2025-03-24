@@ -7,16 +7,18 @@
 
 void    single_cmd(t_proc *head, char **envp);
 void	ft_pipex(t_hell *hell);
+int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
 
 int loop_cmds(t_hell *hell)
 {
-    ft_pipex(hell);
+    // ft_pipex(hell);
     // create envp -> built into struct
     // hell->new_envp = ft_double_strdup(hell->envp);
 
-    // if ((*hell->head) && !(*hell->head)->next)
-    //     single_cmd((*hell->head), hell->envp);
+    //if ((*hell->head) && !(*hell->head)->next && !determine_builtin(hell, (*hell->head), 0))
+    single_cmd((*hell->head), hell->envp);
     // else
+    //     return(printf("nop"), 0); //ft_pipex(hell);
     // {
     //     while ((*hell->head))
     //     {
@@ -25,13 +27,180 @@ int loop_cmds(t_hell *hell)
     //         if ((*hell->head) && (*hell->head)->next) // pipe
     //             ft_pipes((*hell->head), hell->envp);
     //         else
-    //             exit(1);
+    //             break;
     //         (*hell->head) = (*hell->head)->next;
     //     }
     // }
     return (0);
 }
 
+
+
+// Initialize the t_hell structure
+t_hell *init_hell(char **envp)
+{
+    t_hell *hell;
+
+    hell = malloc(sizeof(t_hell) + sizeof(int) * 6);
+    if (!hell)
+        return (NULL);
+    hell->freemeglobal = NULL;
+    hell->argv = NULL;
+    hell->argc = 0;
+    hell->cmd_count = 0;
+    hell->pipe_fd = NULL;
+    hell->envp = envp;
+    hell->head = malloc(sizeof(t_proc*));  // Allocate space for a double pointer
+    if (!hell->head)
+    {
+        free(hell); // Don't forget to free if head allocation fails
+        return (NULL);
+    }
+    *(hell->head) = NULL; // Initialize the pointer to NULL
+    hell->lastexit = 0;
+    return (hell);
+}
+
+// Function to create and fill the process list for the given command
+void fill_hell(t_hell *hell)
+{
+    t_proc *proc = malloc(sizeof(t_proc));
+    if (!proc)
+        return;
+
+    // Command: echo "hello there"
+    proc->cmd = ft_split("echo -n hello there", ' ');  // Split the command and arguments
+    proc->cmd_path = NULL;
+
+    // Allocate memory for the redirections
+    proc->redirs = malloc(sizeof(t_redir) * 2);
+    if (!proc->redirs)
+    {
+        free(proc);
+        return;
+    }
+
+    // Input Redirection: < Makefile
+    proc->redirs[0].type = 0; // Input redirection
+    proc->redirs[0].pathordel = ft_strdup("Makefile");
+    proc->redirs[0].next = &proc->redirs[1]; // Link to next redirection
+
+    // Output Redirection: > out
+    proc->redirs[1].type = 2; // Output redirection
+    proc->redirs[1].pathordel = ft_strdup("out");
+    proc->redirs[1].next = NULL; // End of redirections
+
+    // This is a single process, so it has no next or prev
+    proc->next = NULL;
+    proc->prev = NULL;
+
+    // Assign the head using the double pointer
+    *(hell->head) = proc; // Set the head pointer to point to proc
+}
+
+int main(int argc, char **argv, char **envp)
+{
+    t_hell *hell;
+
+    hell = init_hell(envp);
+    if (!hell)
+    {
+        perror("Failed to initialize shell");
+        return (EXIT_FAILURE);
+    }
+
+    fill_hell(hell);
+    loop_cmds(hell);  // Function to handle execution
+
+    return (0);
+}
+
+
+
+// this works
+// Function to initialize the t_hell structure
+/* t_hell *init_hell(char **envp)
+{
+    t_hell *hell;
+
+    hell = malloc(sizeof(t_hell) + sizeof(int) * 6);
+    if (!hell)
+        return (NULL);
+    hell->freemeglobal = NULL;
+    hell->argv = NULL;
+    hell->argc = 0;
+    hell->cmd_count = 0;
+    hell->pipe_fd = NULL;
+    hell->envp = envp;
+    hell->head = malloc(sizeof(t_proc*));  // Allocate space for a double pointer
+    if (!hell->head)
+    {
+        free(hell); // Don't forget to free if head allocation fails
+        return (NULL);
+    }
+    *(hell->head) = NULL; // Initialize the pointer to NULL
+    hell->lastexit = 0;
+    return (hell);
+}
+
+
+// Function to manually create and fill the process list for testing
+void fill_hell(t_hell *hell)
+{
+    t_proc *proc1 = malloc(sizeof(t_proc));
+    t_proc *proc2 = malloc(sizeof(t_proc));
+    t_proc *proc3 = malloc(sizeof(t_proc));
+    if (!proc1 || !proc2 || !proc3)
+        return;
+
+    // Command 1: < in cat -e
+    proc1->cmd = ft_split("cat -e", ' ');
+    proc1->cmd_path = NULL;
+    proc1->redirs = malloc(sizeof(t_redir));
+    proc1->redirs->type = 0; // Input redirection
+    proc1->redirs->pathordel = ft_strdup("in");
+    proc1->redirs->next = NULL;
+    proc1->next = proc2;
+    proc1->prev = NULL;
+
+    // Command 2: cat -e
+    proc2->cmd = ft_split("cat -e", ' ');
+    proc2->cmd_path = NULL;
+    proc2->redirs = NULL;
+    proc2->next = proc3;
+    proc2->prev = proc1;
+
+    // Command 3: cat -e > out
+    proc3->cmd = ft_split("cat -e", ' ');
+    proc3->cmd_path = NULL;
+    proc3->redirs = malloc(sizeof(t_redir));
+    proc3->redirs->type = 2; // Output redirection
+    proc3->redirs->pathordel = ft_strdup("out");
+    proc3->redirs->next = NULL;
+    proc3->next = NULL;
+    proc3->prev = proc2;
+
+    // Assign the head using the double pointer
+    *(hell->head) = proc1; // Set the head pointer to point to proc1
+}
+
+
+int main(int argc, char **argv, char **envp)
+{
+    t_hell *hell;
+
+    hell = init_hell(envp);
+    if (!hell)
+    {
+        perror("Failed to initialize shell");
+        return (EXIT_FAILURE);
+    }
+
+    fill_hell(hell);
+    ft_pipex(hell);
+
+    return (0);
+} */
 
 
 

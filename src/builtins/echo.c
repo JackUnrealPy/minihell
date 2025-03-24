@@ -1,66 +1,52 @@
 #include "../../includes/minishell.h"
 
-// void	ft_freedata(char **arr)
+// char	**ft_double_strdup(char **args)
 // {
-// 	int	a;
+// 	int		a;
+// 	int		b;
+// 	char	**cpy;
 
 // 	a = 0;
-// 	if (!arr)
-// 		return ;
-// 	while (arr[a])
+// 	while (args[a])
 // 		a++;
-// 	while (a >= 0)
+// 	b = a;
+// 	cpy = ft_calloc(a + 1, sizeof(char *));
+// 	a = 0;
+// 	while (a < b)
 // 	{
-// 		free(arr[a]);
-// 		a--;
+// 		cpy[a] = ft_strdup(args[a]);
+// 		a++;
 // 	}
-// 	free(arr);
-// 	arr = NULL;
+// 	cpy[a] = NULL;
+// 	return (cpy);
 // }
 
-void	print_echo(char **args, int newline, t_proc *lst)
+void	ft_echo(t_proc *head, int pipe)
 {
-	int	i;
 	int fd = 1;
-
-	i = 0;
-	while (args[i])
+	if (!pipe)
 	{
-		ft_putstr_fd(args[i], fd); // change fd
-		if (args[i] && args[i + 1])
+		while (head->redirs)
+		{
+			if (head->redirs->type == 1)
+				fd = open(head->redirs->pathordel, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+			else if (head->redirs->type == 2)
+				fd = open(head->redirs->pathordel, O_CREAT | O_WRONLY | O_APPEND, 0644);
+			head->redirs = head->redirs->next;
+		}
+	}
+	int i = 1;
+	if (head->cmd[1] && head->cmd[1] == "-n")
+		i = 2;
+	while (head->cmd[i])
+	{
+		ft_putstr_fd(head->cmd[i], fd);
+		if (head->cmd[i+1])
 			ft_putchar_fd(' ', fd);
 		i++;
 	}
-	if (newline == 1)
+	if (head->cmd[1] != "-n")
 		ft_putchar_fd('\n', fd);
-}
-
-char	**ft_double_strdup(char **args)
-{
-	int		a;
-	int		b;
-	char	**cpy;
-
-	a = 0;
-	while (args[a])
-		a++;
-	b = a;
-	cpy = ft_calloc(a + 1, sizeof(char *));
-	a = 0;
-	while (a < b)
-	{
-		cpy[a] = ft_strdup(args[a]);
-		a++;
-	}
-	cpy[a] = NULL;
-	return (cpy);
-}
-
-void	ft_echo(t_hell *hell)
-{
-	int i = 1;
-	if (strcmp("-n", (*hell->head)->cmd[1]) == 0) // forbidden function
-		i = 2;
-	print_echo((*hell->head)->cmd+i, i, *(hell->head));
-	// where are args saved?
+	if (!pipe)
+		close(fd);
 }

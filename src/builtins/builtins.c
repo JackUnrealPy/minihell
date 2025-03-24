@@ -1,71 +1,24 @@
 #include "../../includes/minishell.h"
 
-// int	determine_builtin(int argc, char *argv[], char ***my_envp)
-// {
-// 	if (strcmp("echo", argv[1]) == 0 || strcmp("/usr/bin/echo", argv[1]) == 0 || strcmp("/bin/echo", argv[1]) == 0)
-// 		ft_echo(argv);
-// 	else if (strcmp("pwd", argv[1]) == 0)
-// 		ft_pwd(argv);
-// 	else if (strcmp("cd", argv[2]) == 0)
-// 		ft_cd(argv);
-// 	else if (strcmp("env", argv[1]) == 0)
-// 		ft_env(argv, *my_envp, 1);
-// 	else if (strcmp("export", argv[1]) == 0)
-// 		*my_envp = export_init(argc, argv, *my_envp);
-// 	else if (strcmp("unset", argv[1]) == 0)
-// 	    ft_unset(*my_envp, argv[2]);
-// 	// else if (strcmp("exit", argv[1]) == 0)
-// 	//     ft_exit(envp, 1);
-// 	else
-// 		return(0);
-// 	return(1);
-// }
+void	ft_echo(t_proc *head, int pipe);
 
-// using struct
-int	determine_builtin(t_hell *hell, char ***my_envp)
+int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 {
-	if (strcmp((*hell->head)->cmd[0], "echo" == 0 || strcmp("/usr/bin/echo", (*hell->head)->cmd[0]) == 0 || strcmp("/bin/echo", (*hell->head)->cmd[0]) == 0))
-		ft_echo(hell);
-	else if (strcmp("pwd", (*hell->head)->cmd[0]) == 0)
-		ft_pwd(hell);
-	else if (strcmp("cd", (*hell->head)->cmd[0]) == 0)
-		ft_cd(hell);
-	else if (strcmp("env", (*hell->head)->cmd[0]) == 0)
-		ft_env(hell, *my_envp, 1);
-	else if (strcmp("export", (*hell->head)->cmd[0]) == 0)
-		*my_envp = export_init(argc, argv, *my_envp);
-	else if (strcmp("unset", (*hell->head)->cmd[0]) == 0)
-	    ft_unset(*my_envp, argv[2]);
-	// else if (strcmp("exit", (*hell->head)->cmd[0]) == 0)
+	if (ft_strncmp(head->cmd[0], "echo", ft_strlen(head->cmd[0])) == 0 || ft_strncmp("/usr/bin/echo", head->cmd[0], ft_strlen(head->cmd[0])) == 0 || ft_strncmp("/bin/echo", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
+		ft_echo((*hell->head), pipe);
+	// else if (strcmp("pwd", head->cmd[0]) == 0)
+	// 	ft_pwd(head->redirs, pipe);
+	// else if (strcmp("cd", head->cmd[0]) == 0)
+	// 	ft_cd(hell);
+	// else if (strcmp("env", head->cmd[0]) == 0)
+	// 	ft_env(hell, hell->envp, pipe);
+	// else if (strcmp("export", head->cmd[0]) == 0)
+	// 	export_init(hell, hell->envp);
+	// else if (strcmp("unset", head->cmd[0]) == 0)
+	//     ft_unset(hell->envp, (*hell->head), pipe);
+	// else if (strcmp("exit", head->cmd[0]) == 0)
 	//     ft_exit(envp, 1);
 	else
 		return(0);
 	return(1);
 }
-
-// int	main(int argc, char *argv[], char **envp)
-// {
-// 	char **my_envp = ft_double_strdup(envp);
-// 	if (argc == 1)
-// 		return (1);
-// 	determine_builtin(argc, argv, &my_envp);
-// /* 	int i = 0;
-// 	while (my_envp[i])
-// 	{
-// 		printf("%s\n", my_envp[i]);
-// 		i++;
-// 	} */
-// 	t_hell	*data;
-// 	int		i;
-// 	if (determine_builtin(argv, envp) == 1)
-// 		return(0);
-// 	data = malloc(sizeof(t_hell));
-// 	if (!data)
-// 		exit(errno);
-// 	cmd_init(argc, argv, data);
-// 	cmd_exec(data, argv, envp);
-// 	ft_freedata(data->cmd);
-// 	free(data->path);
-// 	free(data);
-// 	ft_freedata(my_envp);
-// }

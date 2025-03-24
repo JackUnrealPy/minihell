@@ -13,11 +13,12 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "libft.h"
+# include "../pipex/libft/libft.h"
 # include <sys/wait.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/types.h>
+# include <errno.h>
 # include "../src/exec/execution.h"
 
 // linked list with all the stuff to free
@@ -32,8 +33,6 @@ typedef	struct	s_redir
 {
 	int				type; // 0 input, 1output with trunc, 2output with append, 3heredoc
 	char			*pathordel;
-	int				input_fd;
-	int				output_fd;
 	struct s_redir	*next;
 }	t_redir;
 
