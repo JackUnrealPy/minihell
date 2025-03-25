@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/03/22 21:22:34 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/25 18:59:22 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	local_init(t_hell *hell, char *cmd)
 
 	proc = create_proc(hell);
 	*(hell->head) = proc;
-	proc->input = ft_malloc(proc->freeme, ft_strdup(cmd));
+	// proc->input = ft_malloc(proc->freeme, ft_strdup(cmd));
 }
 
 int	init(t_hell *hell, char **envp)

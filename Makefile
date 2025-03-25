@@ -1,13 +1,14 @@
 NAME = minishell
 
-CC = cc -Wall -Wextra -Werror
-
+# CC = cc -Wall -Wextra -Werror
+CC = cc
 SRC = src/main.c \
-	src/exec/exec.c \
+	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c \
 	src/parse/parse.c \
 	src/init/init.c src/init/prompt.c \
 	src/exit/exit.c \
 	src/utils/string_utils.c src/utils/alloc_utils.c src/utils/process_utils.c \
+	src/builtins/builtins.c src/builtins/echo.c src/builtins/env.c src/builtins/pwd.c src/builtins/unset.c
 
 OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
 
@@ -46,6 +47,9 @@ obj/exit/%.o: src/exit/%.c
 	$(CC) -c $< -o $@
 obj/utils/%.o: src/utils/%.c 
 	@mkdir -p obj/utils/
+	$(CC) -c $< -o $@
+obj/builtins/%.o: src/builtins/%.c 
+	@mkdir -p obj/builtins/
 	$(CC) -c $< -o $@
 
 clean:

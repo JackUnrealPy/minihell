@@ -98,9 +98,9 @@ void	handlepipe(t_hell *hell, char *cmd, int i)
 	// 	sysntaxerr();
 	if (cmd[i + 1])
 		next = create_proc(hell);
-	next->input = ft_malloc(next->freeme, ft_strdup(cmd + i + 1));
+	// next->input = ft_malloc(next->freeme, ft_strdup(cmd + i + 1));
 	addproc(hell->head ,next);
-	parse(hell, next->input);
+	parse(hell, ft_malloc(next->freeme, ft_strdup(cmd + i + 1)));
 }
 
 int	get_cmdarr(t_hell *hell, char *cmds)
