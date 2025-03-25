@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/03/22 21:28:09 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/25 21:17:52 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ int	main(int argc, char **argv, char **envp)
 		writeprompt();
 		cmd = get_next_line(0, &flag);
 		local_init(&hell, cmd);
-		parse(&hell, cmd);
+		parse(&hell, cmd, *(hell.head));
+		print_list(*(hell.head));
 		ft_terminate(1, &cmd);
 		close_proc(&hell);
 		

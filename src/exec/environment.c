@@ -66,11 +66,15 @@ void	ft_double_strdup(t_hell *hell, char **envp)
 // // 	return (env_lst);
 // // }
 
-// // void print_list(t_list *a)
-// // {
-// // 	while (a->next)
-// // 	{
-// // 		printf("%s\n", (char *)a->content);
-// // 		a = a->next;
-// // 	}
-// // }
+void print_list(t_proc *a)
+{
+	int	i;
+
+	while (a)
+	{
+		i = -1;
+		while (a->cmd[++i])
+			printf("cmd [%d]:{%s}\n", i, a->cmd[i]);
+		a = a->next;
+	}
+}

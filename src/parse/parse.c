@@ -89,7 +89,7 @@ char	*getquote(char *cmd, int *index)
 // 	return 0;
 // }
 
-void	handlepipe(t_hell *hell, char *cmd, int i)
+void	handlepipe(t_hell *hell, char *cmd, int i, t_proc *proc)
 {
 	t_proc	*next;
 	
@@ -98,27 +98,27 @@ void	handlepipe(t_hell *hell, char *cmd, int i)
 	// 	sysntaxerr();
 	if (cmd[i + 1])
 		next = create_proc(hell);
-	// next->input = ft_malloc(next->freeme, ft_strdup(cmd + i + 1));
 	addproc(hell->head ,next);
-	parse(hell, ft_malloc(next->freeme, ft_strdup(cmd + i + 1)));
+	parse(hell, ft_malloc(hell, next->freeme, ft_strdup(cmd + i + 1)), proc->next);
 }
 
-int	get_cmdarr(t_hell *hell, char *cmds)
+int	get_cmdarr(t_hell *hell, char *cmds, t_proc *proc)
 {
-	int	len;
+	int		len;
+	char	*cmd;
 
+	cmd = NULL;
 	(void)hell;
 	len = -1;
-	while (cmds[++len])
-	{
-		if (ismeta(cmds + len) || ft_isspace(cmds[len]))
-			return (len - 1);
-	}
+	while (cmds[++len] && !ismeta(cmds + len))
+		;
+	cmd = ft_malloc(hell, proc->freeme, ft_substr(cmds, 0, len));
+	proc->cmd = (char **)ft_mallocarr(hell, proc->freeme ,(void **)ft_split(cmd, "\n\t\v\f\r "));
 	return (len - 1);
 }
 
 
-void	parse(t_hell *hell, char *cmd)
+void	parse(t_hell *hell, char *cmd, t_proc *proc)
 {
 	int		i;
 	
@@ -130,21 +130,20 @@ void	parse(t_hell *hell, char *cmd)
 			ft_terminate(1, &cmd);
 			jump_ship(hell, 0);
 		}
-		printf("token: [%s] i: %d \n", cmd + i, i);
 		if (ft_isspace(cmd[i]))
 			continue ;
 		else if (cmd[i] == '$')
 			i += get_expandlen(cmd + i);
 		else if (cmd[i] == '|')
 		{
-			handlepipe(hell, cmd, i);
+			handlepipe(hell, cmd, i, proc);
 			break ;
 		}
 		else if (cmd[i] == '\'' || cmd[i] == '\"')
 			i += get_quotelen(cmd + i);
 		else
 		{
-			i += get_cmdarr(hell, cmd + i);
+			i += get_cmdarr(hell, cmd + i, proc);
 		}
 	}
 }

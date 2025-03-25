@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/03/25 19:01:00 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/25 21:21:53 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,14 +90,15 @@ void	ft_redirection(t_redir *redirs);
 void	single_cmd(t_proc *head, char **envp);
 
 
-
-// void	local_init(t_hell *hell, char *cmd);
+// Init
+void	local_init(t_hell *hell, char *cmd);
 int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
-void	parse(t_hell *hell, char *str);
+void	parse(t_hell *hell, char *cmd, t_proc *proc);
 // Alloctracker
-void	*ft_malloc(t_free **head, void *obj);
+void	*ft_malloc(t_hell *hell, t_free **head, void *obj);
+void	**ft_mallocarr(t_hell *hell, t_free **head, void **obj);
 
 // cleares a t_free llist
 void	throw_garbage(t_free **head);
@@ -106,15 +107,17 @@ void	throw_garbage(t_free **head);
 void	jump_ship(t_hell *hell, short int exitcode);
 
 void	sysntaxerr();
-
-void	local_init(t_hell *hell, char *cmd);
-//	 Utils
+//	Utils
+// 		Proc utils
 void	close_proc(t_hell *hell);
 t_proc	*create_proc(t_hell *hell);
 void	addproc(t_proc **head, t_proc *next);
 
-// void	ft_procclear(t_proc **proc);
-
+//		String utils
 int		ft_isspace(char c);
 int		ismeta(char *c);
+
+// dev		tooks for development
+void 	print_list(t_proc *a);
+
 #endif
