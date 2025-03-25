@@ -1,7 +1,7 @@
 NAME = minishell
 
-# CC = cc -Wall -Wextra -Werror
-CC = cc
+CC = cc -Wall -Wextra -Werror
+
 SRC = src/main.c \
 	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c \
 	src/parse/parse.c \
