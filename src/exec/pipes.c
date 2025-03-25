@@ -12,6 +12,37 @@
 
 #include "../../includes/minishell.h"
 
+void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
+{
+    char	*buffer;
+    int     heredoc = 0;
+    // put result in pipe
+    while (redirs)
+    {
+        if (redirs->type == 3)
+        {
+            heredoc = 1;
+            break;
+        }
+        redirs = redirs->next;
+    }
+    if (!heredoc)
+        return ;
+    while (1)
+    {
+        write(0, "> ", 2);
+        buffer = get_next_line(STDIN_FILENO, 0);
+        if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer)) == 0)
+        {
+            free(buffer);
+            get_next_line(STDIN_FILENO, 1);
+            break ;
+        }
+        ft_putstr_fd(buffer, STDOUT_FILENO); // change to hell->pipe_fd[i]? should be okay if after dup2
+        free(buffer);
+    }
+}
+
 void	ft_close(t_hell *hell)
 {
 	int	i;
@@ -67,6 +98,7 @@ void	first_child(t_proc *head, t_hell *hell)
 	head->pid = fork();
 	if (head->pid == 0)
 	{
+		// make while loop here
 		if (head->redirs && head->redirs->type == 0)
 		{
 			input_fd = open(head->redirs->pathordel, O_RDONLY, 0644);
@@ -77,9 +109,11 @@ void	first_child(t_proc *head, t_hell *hell)
 		if (dup2(hell->pipe_fd[1], STDOUT_FILENO) == -1)
 			; // free, error msg
 		ft_close(hell);
+		// heredoc(hell, head, head->redirs);
 		if (determine_builtin(hell, head, 1))
 		 	exit(0);
 		execve(head->cmd_path, head->cmd, hell->envp);
+		perror("execve failed");
 		exit(errno);
 		// free, error msg
 	}
@@ -105,7 +139,7 @@ void	middle_child(t_proc *head, t_hell *hell, int i)
 					output_fd = open(head->redirs->pathordel, O_CREAT | O_WRONLY | O_APPEND,
 							0644);
 				if (dup2(output_fd, STDOUT_FILENO) == -1)
-					exit(0); //free_struct(data, errno);
+					(perror("wrong"), exit(0)); //free_struct(data, errno);
 				close(output_fd);
 			}		
 		}
@@ -115,9 +149,11 @@ void	middle_child(t_proc *head, t_hell *hell, int i)
 				exit(0);
 		}
 		ft_close(hell);
+		// heredoc(hell, head, head->redirs);
 		if (determine_builtin(hell, head, 1))
 		 	exit(0);
 		execve(head->cmd_path, head->cmd, hell->envp);
+		perror("execve failed");
 		exit(errno);
 		//free, error msg
 	}

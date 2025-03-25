@@ -16,7 +16,10 @@ int loop_cmds(t_hell *hell, char **envp)
 }
 
 
-// function from chatgpt to fill struct and be able to test
+// functions from chatgpt to fill struct and be able to test
+
+// heredoc test
+
 #include "../../includes/minishell.h"
 
 // Initialize the t_hell structure
@@ -43,7 +46,7 @@ t_hell *init_hell(char **envp)
     return (hell);
 }
 
-// Function to create and fill the process list for the given command
+// Function to create and fill the process list for `cat << eof | cat -e`
 void fill_hell(t_hell *hell)
 {
     t_proc *proc1 = malloc(sizeof(t_proc));
@@ -51,10 +54,10 @@ void fill_hell(t_hell *hell)
     if (!proc1 || !proc2)
         return;
 
-    // Process 1: `env` with input redirection from Makefile
-    proc1->cmd = ft_split("cat -e", ' ');
+    // Process 1: `cat` with heredoc redirection
+    proc1->cmd = ft_split("cat", ' ');
     proc1->cmd_path = NULL;
-    exit(0);
+
     proc1->redirs = malloc(sizeof(t_redir));
     if (!proc1->redirs)
     {
@@ -63,31 +66,18 @@ void fill_hell(t_hell *hell)
         return;
     }
 
-    // Input Redirection: < Makefile
-    proc1->redirs->type = 0; // Input redirection
-    proc1->redirs->pathordel = ft_strdup("Makefile");
+    // Heredoc Redirection: << eof
+    proc1->redirs->type = 3; // Heredoc type
+    proc1->redirs->pathordel = ft_strdup("eof"); // Delimiter for heredoc
     proc1->redirs->next = NULL;
 
     proc1->next = proc2;
     proc1->prev = NULL;
 
-    // Process 2: `cat -e` with output redirection to "out"
+    // Process 2: `cat -e`
     proc2->cmd = ft_split("cat -e", ' ');
     proc2->cmd_path = NULL;
-
-    proc2->redirs = malloc(sizeof(t_redir));
-    if (!proc2->redirs)
-    {
-        free(proc1->redirs);
-        free(proc1);
-        free(proc2);
-        return;
-    }
-
-    // Output Redirection: > out
-    proc2->redirs->type = 1; // Output redirection
-    proc2->redirs->pathordel = ft_strdup("out");
-    proc2->redirs->next = NULL;
+    proc2->redirs = NULL;  // No redirections
 
     proc2->next = NULL;
     proc2->prev = proc1;
@@ -112,6 +102,103 @@ int main(int argc, char **argv, char **envp)
 
     return (0);
 }
+
+
+// #include "../../includes/minishell.h"
+
+// Initialize the t_hell structure
+// t_hell *init_hell(char **envp)
+// {
+//     t_hell *hell;
+
+//     hell = malloc(sizeof(t_hell) + sizeof(int) * 6);
+//     if (!hell)
+//         return (NULL);
+//     hell->freemeglobal = NULL;
+//     hell->argv = NULL;
+//     hell->argc = 0;
+//     hell->cmd_count = 0;
+//     hell->pipe_fd = NULL;
+//     hell->head = malloc(sizeof(t_proc *));  // Allocate space for a double pointer
+//     if (!hell->head)
+//     {
+//         free(hell); // Free if head allocation fails
+//         return (NULL);
+//     }
+//     *(hell->head) = NULL; // Initialize the pointer to NULL
+//     hell->lastexit = 0;
+//     return (hell);
+// }
+
+// // Function to create and fill the process list for the given command
+// void fill_hell(t_hell *hell)
+// {
+//     t_proc *proc1 = malloc(sizeof(t_proc));
+//     t_proc *proc2 = malloc(sizeof(t_proc));
+//     if (!proc1 || !proc2)
+//         return;
+
+//     // Process 1: `env` with input redirection from Makefile
+//     proc1->cmd = ft_split("cat -e", ' ');
+//     proc1->cmd_path = NULL;
+//     exit(0);
+//     proc1->redirs = malloc(sizeof(t_redir));
+//     if (!proc1->redirs)
+//     {
+//         free(proc1);
+//         free(proc2);
+//         return;
+//     }
+
+//     // Input Redirection: < Makefile
+//     proc1->redirs->type = 0; // Input redirection
+//     proc1->redirs->pathordel = ft_strdup("Makefile");
+//     proc1->redirs->next = NULL;
+
+//     proc1->next = proc2;
+//     proc1->prev = NULL;
+
+//     // Process 2: `cat -e` with output redirection to "out"
+//     proc2->cmd = ft_split("cat -e", ' ');
+//     proc2->cmd_path = NULL;
+
+//     proc2->redirs = malloc(sizeof(t_redir));
+//     if (!proc2->redirs)
+//     {
+//         free(proc1->redirs);
+//         free(proc1);
+//         free(proc2);
+//         return;
+//     }
+
+//     // Output Redirection: > out
+//     proc2->redirs->type = 1; // Output redirection
+//     proc2->redirs->pathordel = ft_strdup("out");
+//     proc2->redirs->next = NULL;
+
+//     proc2->next = NULL;
+//     proc2->prev = proc1;
+
+//     // Assign the head pointer
+//     *(hell->head) = proc1;
+// }
+
+// int main(int argc, char **argv, char **envp)
+// {
+//     t_hell *hell;
+
+//     hell = init_hell(envp);
+//     if (!hell)
+//     {
+//         perror("Failed to initialize shell");
+//         return (EXIT_FAILURE);
+//     }
+
+//     fill_hell(hell);
+//     loop_cmds(hell, envp);  // Function to handle execution
+
+//     return (0);
+// }
 
 
 /* 
