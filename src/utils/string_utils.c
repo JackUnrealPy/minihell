@@ -1,40 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   string_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/03/22 21:28:09 by agara            ###   ########.fr       */
+/*   Created: 2025/03/04 19:50:23 by agara             #+#    #+#             */
+/*   Updated: 2025/03/19 19:31:43 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+int	ft_isspace(char c)
 {
-	char	*cmd;
-	t_hell	hell;
-	int		flag;
+	if (c == ' ' || (c >= 9 && c <= 13))
+		return (1);
+	return (0);
+}
 
-	(void)argc;
-	(void)argv;
-	flag = 0;
-	cmd = NULL;
-	init(&hell, envp);
-	int i = -1;
-	while (++i < 2)
+int	ismeta(char *c)
+{
+	if (*c == '|' || *c == '\'' || *c == '\"' || *c == '$')
+		return (*c);
+	if (*c == '<')
 	{
-		writeprompt();
-		cmd = get_next_line(0, &flag);
-		local_init(&hell, cmd);
-		parse(&hell, cmd);
-		ft_terminate(1, &cmd);
-		close_proc(&hell);
-		
+		if (*(c + 1) == '<')
+			return ('-');
+		return (*c);
 	}
-	throw_garbage(hell.freeme);
-	ft_terminate(1, &(hell.head));
+	if (*c == '>')
+	{
+		if (*(c + 1) == '>')
+			return ('+');
+		return (*c);
+	}
 	return (0);
 }

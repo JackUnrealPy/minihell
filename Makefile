@@ -1,9 +1,14 @@
 NAME = minishell
 
-CC = cc -Wall -Wextra -Werror
-
-SRC = src/exec/exec.c \
-	src/exec/new_single_cmd.c 
+# CC = cc -Wall -Wextra -Werror
+CC = cc
+SRC = src/main.c \
+	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c \
+	src/parse/parse.c \
+	src/init/init.c src/init/prompt.c \
+	src/exit/exit.c \
+	src/utils/string_utils.c src/utils/alloc_utils.c src/utils/process_utils.c \
+	src/builtins/builtins.c src/builtins/echo.c src/builtins/env.c src/builtins/pwd.c src/builtins/unset.c
 
 OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
 
@@ -21,28 +26,31 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@echo "$(GREEN)Linking...$(RESET)"
 	make -C includes
-	$(CC) $(OBJ) -o $(NAME) includes/libft.a -g
+	$(CC) $(OBJ) -o $(NAME) includes/libft.a
 	@echo "$(GREEN) MINISHELL compiled.$(NO_COLOR)"
 
 obj/%.o: src/%.c  $(HEADERS)
 	@mkdir -p obj
 	@echo "$(YELLOW)Compiling $<...$(RESET)"
-	$(CC) -c $< -o $@ -g
+	$(CC) -c $< -o $@
 obj/exec/%.o: src/exec/%.c 
 	@mkdir -p obj/exec
 	$(CC) -c $< -o $@
-obj/builtins/%.o: src/builtins/%.c 
-	@mkdir -p obj/builtins
-	$(CC) -c $< -o $@ -g
 obj/parse/%.o: src/parse/%.c 
 	@mkdir -p obj/parse/
-	$(CC) -c $< -o $@ -g
+	$(CC) -c $< -o $@
 obj/init/%.o: src/init/%.c 
 	@mkdir -p obj/init/
 	$(CC) -c $< -o $@
 obj/exit/%.o: src/exit/%.c 
 	@mkdir -p obj/exit/
-	$(CC) -c $< -o $@ -g
+	$(CC) -c $< -o $@
+obj/utils/%.o: src/utils/%.c 
+	@mkdir -p obj/utils/
+	$(CC) -c $< -o $@
+obj/builtins/%.o: src/builtins/%.c 
+	@mkdir -p obj/builtins/
+	$(CC) -c $< -o $@
 
 clean:
 	@echo "$(BLUE)Cleaning up...$(RESET)"

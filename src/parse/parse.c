@@ -12,30 +12,8 @@
 
 #include "../../includes/minishell.h"
 
-int	ismeta(char *c)
-{
-	if (*c == '|' || *c == '\'' || *c == '\"' || *c == '$')
-		return (*c);
-	if (*c == '<')
-	{
-		if (*(c + 1) == '<')
-			return ('-');
-		return (*c);
-	}
-	if (*c == '>')
-	{
-		if (*(c + 1) == '>')
-			return ('+');
-		return (*c);
-	}
-	return (0);
-}
 
-void	sysntaxerr()
-{
-	perror("syntax error");
-	exit(2);
-}
+
 
 int	get_expandlen(char *str)
 {
@@ -64,9 +42,9 @@ static int	get_quotelen(char *cmd)
 			continue ;
 		}
 		if (inquote == 1 && cmd[i] == '\"')
-			return (i + 1);
+			return (i);
 		if (inquote == 2 && cmd[i] == '\'')
-			return (i + 1);
+			return (i);
 	}
 	return (0);
 }
@@ -91,46 +69,38 @@ char	*getquote(char *cmd, int *index)
 		while (++i < len - 2)
 			str[i] = cmd[i + 1];
 	}
-	*index += len;
+	*index += len ;
 	return (str);
 }
 
-void	addproc(t_proc **head, t_proc *next)
-{
-	t_proc	*node;
 
-	node = *head;
-	while (node->next)
-		node = node->next;
-	next->prev = node;
-	node->next = next;
-}
 
-int	pipecommandcheck(t_proc **head)
-{
-	t_proc	*node;
+// int	pipecommandcheck(t_proc **head)
+// {
+// 	t_proc	*node;
 
-	if (!*head)
-		return (-1);
-	node = *head;
-	while (node->next)
-		node = node->next;
-	if (node->input)
-		return 1;
-	return 0;
-}
+// 	if (!*head)
+// 		return (-1);
+// 	node = *head;
+// 	while (node->next)
+// 		node = node->next;
+// 	if (node->input)
+// 		return 1;
+// 	return 0;
+// }
 
 void	handlepipe(t_hell *hell, char *cmd, int i)
 {
 	t_proc	*next;
 	
 	next = NULL;
-	if (!pipecommandcheck(hell->head))
-		sysntaxerr();
+	// if (!pipecommandcheck(hell->head))
+	// 	sysntaxerr();
 	if (cmd[i + 1])
-		next = create_proc((char*)(cmd + i + 1));
+		next = create_proc(hell);
+	// next->input = ft_malloc(next->freeme, ft_strdup(cmd + i + 1));
 	addproc(hell->head ,next);
-	parse(hell, ft_strdup(cmd + i + 1));
+	parse(hell, ft_malloc(next->freeme, ft_strdup(cmd + i + 1)));
 }
 
 int	get_cmdarr(t_hell *hell, char *cmds)
@@ -139,10 +109,13 @@ int	get_cmdarr(t_hell *hell, char *cmds)
 
 	(void)hell;
 	len = -1;
-	while (cmds[++len]);
+	while (cmds[++len])
+	{
+		if (ismeta(cmds + len) || ft_isspace(cmds[len]))
+			return (len - 1);
+	}
 	return (len - 1);
 }
-
 
 
 void	parse(t_hell *hell, char *cmd)
@@ -152,7 +125,12 @@ void	parse(t_hell *hell, char *cmd)
 	i = -1;
 	while (cmd[++i])
 	{
-		printf("before i [%d]\n", i);
+		if (!ft_strncmp(cmd, "exit",4))
+		{
+			ft_terminate(1, &cmd);
+			jump_ship(hell, 0);
+		}
+		printf("token: [%s] i: %d \n", cmd + i, i);
 		if (ft_isspace(cmd[i]))
 			continue ;
 		else if (cmd[i] == '$')
@@ -169,5 +147,4 @@ void	parse(t_hell *hell, char *cmd)
 			i += get_cmdarr(hell, cmd + i);
 		}
 	}
-	ft_terminate(1, &cmd);
 }

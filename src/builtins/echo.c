@@ -5,13 +5,13 @@ void	ft_echo(t_proc *head, int pipe)
 	int fd = 1;
 	if (!pipe)
 	{
-		while (head->redirs)
+		while ((*head->redirs))
 		{
-			if (head->redirs->type == 1)
-				fd = open(head->redirs->pathordel, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-			else if (head->redirs->type == 2)
-				fd = open(head->redirs->pathordel, O_CREAT | O_WRONLY | O_APPEND, 0644);
-			head->redirs = head->redirs->next;
+			if ((*head->redirs)->type == 1)
+				fd = open((*head->redirs)->pathordel, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+			else if ((*head->redirs)->type == 2)
+				fd = open((*head->redirs)->pathordel, O_CREAT | O_WRONLY | O_APPEND, 0644);
+			(*head->redirs) = (*head->redirs)->next;
 		}
 	}
 	int i = 1;

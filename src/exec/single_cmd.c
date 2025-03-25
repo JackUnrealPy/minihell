@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_bonus.c                                       :+:      :+:    :+:   */
+/*   single_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/02/01 17:16:38 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/03/25 18:58:07 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	single_cmd(t_proc *head, char **envp)
 		perror(head->cmd[0]);
 	int status;
 	head->pid = fork();
-	ft_redirection(head->redirs);
+	ft_redirection(*(head->redirs));
 	if (head->pid == 0)
 	{
 		execve(head->cmd_path, head->cmd, envp);
