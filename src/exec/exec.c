@@ -16,101 +16,330 @@ int loop_cmds(t_hell *hell, char **envp)
 }
 
 
+static void	ft_freeme(char **arr, int a)
+{
+	while (a >= 0)
+	{
+		free(arr[a]);
+		a--;
+	}
+	free(arr);
+}
+
+static char	**ft_nbarr(const char *s, char c)
+{
+	int		i;
+	char	**arr;
+	int		count;
+
+	i = 0;
+	count = 0;
+	while (s[i])
+	{
+		if (s[i] != c)
+		{
+			while (s[i] != c && s[i])
+				i++;
+			count++;
+		}
+		while (s[i] && s[i] == c)
+			i++;
+	}
+	arr = (char **)malloc((count + 1) * sizeof(char *));
+	if (arr == NULL)
+		return (NULL);
+	return (arr);
+}
+
+static char	**ft_charlen(const char *s, char c, char **arr, int count)
+{
+	int	a;
+
+	a = 0;
+	while (*s)
+	{
+		while (*s && *s == c)
+			s++;
+		while (*s && *s != c)
+		{
+			count++;
+			s++;
+		}
+		if (count != 0)
+		{
+			arr[a] = (char *)malloc(count + 1);
+			if (arr[a] == NULL)
+			{
+				ft_freeme(arr, a);
+				return (NULL);
+			}
+			a++;
+			count = 0;
+		}
+	}
+	return (arr);
+}
+
+static char	**ft_assign(const char *s, char c, char **arr)
+{
+	int	i;
+	int	a;
+	int	b;
+
+	i = 0;
+	a = 0;
+	b = 0;
+	while (s[i] && s[i] == c)
+		i++;
+	while (s[i])
+	{
+		while (s[i] && s[i] != c)
+		{
+			arr[a][b] = s[i];
+			b++;
+			i++;
+		}
+		arr[a][b] = '\0';
+		a++;
+		b = 0;
+		while (s[i] && s[i] == c)
+			i++;
+	}
+	arr[a] = NULL;
+	return (arr);
+}
+
+char	**split(char const *s, char c)
+{
+	char	**arr;
+	int		count;
+
+	arr = NULL;
+	count = 0;
+	if (s != NULL)
+	{
+		arr = ft_nbarr(s, c);
+		if (arr == NULL)
+			return (NULL);
+		arr = ft_charlen(s, c, arr, count);
+		if (arr == NULL)
+			return (NULL);
+		arr = ft_assign(s, c, arr);
+	}
+	return (arr);
+}
+
+
+t_hell *init_hell(char **envp)
+{
+    t_hell *hell;
+
+    hell = malloc(sizeof(t_hell));
+    if (!hell)
+        return (NULL);
+    hell->freeme = malloc(sizeof(t_free));
+    if (!hell->freeme)
+    {
+        free(hell);
+        return (NULL);
+    }
+    hell->freeme[0] = NULL;
+    hell->argv = NULL;
+    hell->argc = 0;
+    hell->cmd_count = 0;
+    hell->pipe_fd = NULL;
+    hell->envp = envp;
+    hell->head = malloc(sizeof(t_proc *));
+    if (!hell->head)
+    {
+        free(hell->freeme);
+        free(hell);
+        return (NULL);
+    }
+    *(hell->head) = NULL;
+    hell->lastexit = 0;
+    return (hell);
+}
+
+void fill_hell(t_hell *hell)
+{
+    t_proc *proc1 = malloc(sizeof(t_proc));
+    t_proc *proc2 = malloc(sizeof(t_proc));
+    if (!proc1 || !proc2)
+    {
+        free(proc1);
+        free(proc2);
+        return;
+    }
+
+    proc1->freeme = hell->freeme;
+    proc1->cmd = split("cat -e", ' ');
+    proc1->cmd_path = NULL;
+    proc1->redirs = malloc(sizeof(t_redir *));
+    if (!proc1->redirs)
+    {
+        free(proc1);
+        free(proc2);
+        return;
+    }
+    proc1->redirs[0] = malloc(sizeof(t_redir));
+    if (!proc1->redirs[0])
+    {
+        free(proc1->redirs);
+        free(proc1);
+        free(proc2);
+        return;
+    }
+    proc1->redirs[0]->type = 0;
+    proc1->redirs[0]->pathordel = ft_strdup("Makefile");
+    proc1->redirs[0]->next = NULL;
+    proc1->next = proc2;
+    proc1->prev = NULL;
+
+    proc2->freeme = hell->freeme;
+    proc2->cmd = split("cat -e", ' ');
+    proc2->cmd_path = NULL;
+    proc2->redirs = malloc(sizeof(t_redir *));
+    if (!proc2->redirs)
+    {
+        free(proc1->redirs[0]);
+        free(proc1->redirs);
+        free(proc1);
+        free(proc2);
+        return;
+    }
+    proc2->redirs[0] = malloc(sizeof(t_redir));
+    if (!proc2->redirs[0])
+    {
+        free(proc2->redirs);
+        free(proc1->redirs[0]);
+        free(proc1->redirs);
+        free(proc1);
+        free(proc2);
+        return;
+    }
+    proc2->redirs[0]->type = 1;
+    proc2->redirs[0]->pathordel = ft_strdup("out");
+    proc2->redirs[0]->next = NULL;
+    proc2->next = NULL;
+    proc2->prev = proc1;
+    *(hell->head) = proc1;
+}
+
+int main(int argc, char **argv, char **envp)
+{
+    (void)argc;
+    (void)argv;
+    t_hell *hell = init_hell(envp);
+    if (!hell)
+    {
+        perror("Failed to initialize shell");
+        return (EXIT_FAILURE);
+    }
+
+    fill_hell(hell);
+    loop_cmds(hell, envp);
+
+    return (0);
+}
+
+
+
 // function from chatgpt to fill struct and be able to test
 
 // Initialize the t_hell structure
-// t_hell *init_hell(char **envp)
-// {
-//     t_hell *hell;
+/* t_hell *init_hell(char **envp)
+{
+    t_hell *hell;
 
-//     hell = malloc(sizeof(t_hell) + sizeof(int) * 6);
-//     if (!hell)
-//         return (NULL);
-//     hell->freemeglobal = NULL;
-//     hell->argv = NULL;
-//     hell->argc = 0;
-//     hell->cmd_count = 0;
-//     hell->pipe_fd = NULL;
-//     hell->head = malloc(sizeof(t_proc *));  // Allocate space for a double pointer
-//     if (!hell->head)
-//     {
-//         free(hell); // Free if head allocation fails
-//         return (NULL);
-//     }
-//     *(hell->head) = NULL; // Initialize the pointer to NULL
-//     hell->lastexit = 0;
-//     return (hell);
-// }
+    hell = malloc(sizeof(t_hell) + sizeof(int) * 6);
+    if (!hell)
+        return (NULL);
+    hell->freemeglobal = NULL;
+    hell->argv = NULL;
+    hell->argc = 0;
+    hell->cmd_count = 0;
+    hell->pipe_fd = NULL;
+    hell->head = malloc(sizeof(t_proc *));  // Allocate space for a double pointer
+    if (!hell->head)
+    {
+        free(hell); // Free if head allocation fails
+        return (NULL);
+    }
+    *(hell->head) = NULL; // Initialize the pointer to NULL
+    hell->lastexit = 0;
+    return (hell);
+}
 
-// // Function to create and fill the process list for the given command
-// void fill_hell(t_hell *hell)
-// {
-//     t_proc *proc1 = malloc(sizeof(t_proc));
-//     t_proc *proc2 = malloc(sizeof(t_proc));
-//     if (!proc1 || !proc2)
-//         return;
+// Function to create and fill the process list for the given command
+void fill_hell(t_hell *hell)
+{
+    t_proc *proc1 = malloc(sizeof(t_proc));
+    t_proc *proc2 = malloc(sizeof(t_proc));
+    if (!proc1 || !proc2)
+        return;
 
-//     // Process 1: `env` with input redirection from Makefile
-//     proc1->cmd = ft_split("cat -e", ' ');
-//     proc1->cmd_path = NULL;
-//     exit(0);
-//     proc1->redirs = malloc(sizeof(t_redir));
-//     if (!proc1->redirs)
-//     {
-//         free(proc1);
-//         free(proc2);
-//         return;
-//     }
+    // Process 1: `env` with input redirection from Makefile
+    proc1->cmd = ft_split("cat -e", ' ');
+    proc1->cmd_path = NULL;
+    exit(0);
+    proc1->redirs = malloc(sizeof(t_redir));
+    if (!proc1->redirs)
+    {
+        free(proc1);
+        free(proc2);
+        return;
+    }
 
-//     // Input Redirection: < Makefile
-//     proc1->redirs->type = 0; // Input redirection
-//     proc1->redirs->pathordel = ft_strdup("Makefile");
-//     proc1->redirs->next = NULL;
+    // Input Redirection: < Makefile
+    proc1->redirs->type = 0; // Input redirection
+    proc1->redirs->pathordel = ft_strdup("Makefile");
+    proc1->redirs->next = NULL;
 
-//     proc1->next = proc2;
-//     proc1->prev = NULL;
+    proc1->next = proc2;
+    proc1->prev = NULL;
 
-//     // Process 2: `cat -e` with output redirection to "out"
-//     proc2->cmd = ft_split("cat -e", ' ');
-//     proc2->cmd_path = NULL;
+    // Process 2: `cat -e` with output redirection to "out"
+    proc2->cmd = ft_split("cat -e", ' ');
+    proc2->cmd_path = NULL;
 
-//     proc2->redirs = malloc(sizeof(t_redir));
-//     if (!proc2->redirs)
-//     {
-//         free(proc1->redirs);
-//         free(proc1);
-//         free(proc2);
-//         return;
-//     }
+    proc2->redirs = malloc(sizeof(t_redir));
+    if (!proc2->redirs)
+    {
+        free(proc1->redirs);
+        free(proc1);
+        free(proc2);
+        return;
+    }
 
-//     // Output Redirection: > out
-//     proc2->redirs->type = 1; // Output redirection
-//     proc2->redirs->pathordel = ft_strdup("out");
-//     proc2->redirs->next = NULL;
+    // Output Redirection: > out
+    proc2->redirs->type = 1; // Output redirection
+    proc2->redirs->pathordel = ft_strdup("out");
+    proc2->redirs->next = NULL;
 
-//     proc2->next = NULL;
-//     proc2->prev = proc1;
+    proc2->next = NULL;
+    proc2->prev = proc1;
 
-//     // Assign the head pointer
-//     *(hell->head) = proc1;
-// }
+    // Assign the head pointer
+    *(hell->head) = proc1;
+}
 
-// int main(int argc, char **argv, char **envp)
-// {
-//     t_hell *hell;
+int main(int argc, char **argv, char **envp)
+{
+    t_hell *hell;
 
-//     hell = init_hell(envp);
-//     if (!hell)
-//     {
-//         perror("Failed to initialize shell");
-//         return (EXIT_FAILURE);
-//     }
+    hell = init_hell(envp);
+    if (!hell)
+    {
+        perror("Failed to initialize shell");
+        return (EXIT_FAILURE);
+    }
 
-//     fill_hell(hell);
-//     loop_cmds(hell, envp);  // Function to handle execution
+    fill_hell(hell);
+    loop_cmds(hell, envp);  // Function to handle execution
 
-//     return (0);
-// }
+    return (0);
+} */
 
 
 /* 

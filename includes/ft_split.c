@@ -12,7 +12,23 @@
 
 #include "libft.h"
 #include <stdio.h>
-static int		countwords(char const *s, char *charset)
+
+static int	inset(char const *s, char const c)
+{
+	int	i;
+
+	i = -1;
+	if (!s || !c || !s[0])
+		return (0);
+	while (s[++i])
+	{
+		if (s[i] == c)
+			return (1);
+	}
+	return (0);
+}
+
+static int	countwords(char const *s, char *charset)
 {
 	int	i;
 	int	inword;
@@ -21,14 +37,14 @@ static int		countwords(char const *s, char *charset)
 	res = 0;
 	inword = 0;
 	i = -1;
-	while(s[++i])
+	while (s[++i])
 	{
-		if (ft_strchr(charset, s[i]) && !inword)
+		if (!inset(charset, s[i]) && !inword)
 		{
 			res++;
 			inword = 1;
 		}
-		else if (inword && !ft_strchr(charset, s[i]))
+		else if (inword && inset(charset, s[i]))
 			inword = 0;
 	}
 	if (!res && s[0])
@@ -44,22 +60,21 @@ static char	*getword(char const *s, char *charset)
 	i = -1;
 	while (s[++i])
 	{
-		if (ft_strchr(charset, s[i]))
-			break;
+		if (inset(charset, s[i]))
+			break ;
 	}
-	res = malloc(sizeof(char) * i + 2);
+	res = malloc(sizeof(char) * i + 1);
 	if (!res)
 		return (NULL);
 	i = -1;
 	while (s[++i])
 	{
-		if (ft_strchr(charset, s[i]))
-			break;
+		if (inset(charset, s[i]))
+			break ;
 		res[i] = s[i];
 	}
-	res[i + 1] = 0;
+	res[i] = 0;
 	return (res);
-
 }
 
 char	**ft_split(char const *s, char *charset)
@@ -79,7 +94,7 @@ char	**ft_split(char const *s, char *charset)
 	j = -1;
 	while (s[++i])
 	{
-		if (!ft_strchr(charset, s[i]))
+		if (!inset(charset, s[i]))
 		{
 			res[++j] = getword(s + i, charset);
 			i += ft_strlen(res[j]);
@@ -89,25 +104,24 @@ char	**ft_split(char const *s, char *charset)
 	return (res);
 }
 
-#include <stdio.h>
-int main(int argc, char **argv)
-{
-	(void)argc;
-	char	**res;
-	int		i;
+// #include <stdio.h>
+// int main(int argc, char **argv)
+// {
+// 	char	**res;
+// 	int		i;
 
-	res = ft_split(argv[1], argv[2]);
-	if (!res)
-		return 0;
-	i = 0;
-	while(res[i])
-		printf("[%s]", res[i++]);
-	i = 0;
-	while(res[i])
-	{
-		free(res[i]);
-		i++;
-	}
-	free(res);	
-	return 0;
-}
+// 	res = ft_split(argv[1], argv[2]);
+// 	if (!res)
+// 		return 0;
+// 	i = 0;
+// 	while(res[i])
+// 		printf("[%s]", res[i++]);
+// 	i = 0;
+// 	while(res[i])
+// 	{
+// 		free(res[i]);
+// 		i++;
+// 	}
+// 	free(res);	
+// 	return 0;
+// }

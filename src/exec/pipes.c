@@ -55,9 +55,9 @@ void	create_cmd(t_proc *head)
 	else
 		head->cmd_path = ft_strjoin("/bin/", head->cmd[0]);
 	if (!head->cmd_path)
-		; // free, error msg
+		return; // free, error msg
 	if (access(head->cmd_path, R_OK | X_OK) == -1)
-		; // free, error msg
+		return; // free, error msg
 }
 
 void	first_child(t_proc *head, t_hell *hell)
@@ -71,11 +71,11 @@ void	first_child(t_proc *head, t_hell *hell)
 		{
 			input_fd = open((*head->redirs)->pathordel, O_RDONLY, 0644);
 			if (dup2(input_fd, STDIN_FILENO) == -1)
-				; // free, error msg
+				return; // free, error msg
 			close(input_fd);
 		}
 		if (dup2(hell->pipe_fd[1], STDOUT_FILENO) == -1)
-			; // free, error msg
+			return; // free, error msg
 		ft_close(hell);
 		if (determine_builtin(hell, head, 1))
 		 	exit(0);
@@ -93,7 +93,7 @@ void	middle_child(t_proc *head, t_hell *hell, int i)
 	if (head->pid == 0)
 	{
 		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
-			; //free_struct(data, errno);
+			return; //free_struct(data, errno);
 		if (i == hell->cmd_count - 1)
 		{
 			if ((*head->redirs))
@@ -128,12 +128,12 @@ void	ft_pipex(t_hell *hell)
 	initialise((*hell->head), hell);
 	hell->pipe_fd = malloc(sizeof(int) * (hell->cmd_count - 1) * 2);
 	if (!hell->pipe_fd)
-		;// free, error msg
+		return;// free, error msg
 	int i = 0;
 	while (i < hell->cmd_count - 1)
 	{
 		if (pipe(&hell->pipe_fd[i++ *2]) == -1)
-			;// free, error msg
+			return;// free, error msg
 	}
 	first_child((*hell->head), hell);
 	i = 1;

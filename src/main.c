@@ -9,7 +9,7 @@
 /*   Updated: 2025/03/22 21:28:09 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+/* 
 #include "../includes/minishell.h"
 
 int	main(int argc, char **argv, char **envp)
@@ -37,4 +37,4 @@ int	main(int argc, char **argv, char **envp)
 	throw_garbage(hell.freeme);
 	ft_terminate(1, &(hell.head));
 	return (0);
-}
+} */
