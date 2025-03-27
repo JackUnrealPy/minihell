@@ -2,6 +2,8 @@
 
 int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 {
+	if (!head->cmd || !head->cmd[0])
+		return (0);
 	if (ft_strncmp(head->cmd[0], "echo", ft_strlen(head->cmd[0])) == 0 || ft_strncmp("/usr/bin/echo", head->cmd[0], ft_strlen(head->cmd[0])) == 0 || ft_strncmp("/bin/echo", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
 		ft_echo((*hell->head), pipe);
 	else if (strcmp("pwd", head->cmd[0]) == 0)

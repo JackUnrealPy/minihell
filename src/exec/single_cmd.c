@@ -32,7 +32,7 @@ void	ft_redirection(t_redir *redirs)
 			output_fd = open(redirs->pathordel, O_CREAT | O_WRONLY | O_APPEND,
 					0644);
 		else
-			continue; // heredoc
+			continue ; // heredoc
 		redirs = redirs->next;
 	}
 	if (input_fd > 2)

@@ -2,8 +2,8 @@
 
 void	ft_double_strdup(t_hell *hell, char **envp)
 {
-	int		a;
-	int		b;
+	int	a;
+	int	b;
 
 	a = 0;
 	while (envp[a])

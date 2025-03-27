@@ -44,6 +44,7 @@ typedef	struct	s_proc
 	char			**cmd;
 	char			*cmd_path;
 	pid_t			pid;
+	pid_t			hpid;
 	struct s_proc	*next;
 	struct s_proc	*prev;
 }	t_proc;
@@ -55,7 +56,9 @@ typedef struct	s_hell
 	char	**argv;
 	int 	argc;
 	int		cmd_count;
+	int		hdoc_count;
 	int		*pipe_fd;
+	int		*hdoc_fd;
 	char	**envp;
 	t_proc	**head;
 	int		lastexit;
@@ -78,12 +81,17 @@ int loop_cmds(t_hell *hell, char **envp);
 
 // pipes
 void	ft_close(t_hell *hell);
-void	ft_wait(t_proc *head);
+void	ft_wait(t_hell *hell);
 void	initialise(t_proc *head, t_hell *hell);
 void	create_cmd(t_proc *head);
-void	first_child(t_proc *head, t_hell *hell);
-void	middle_child(t_proc *head, t_hell *hell, int i);
+void	children(t_proc *head, t_hell *hell, int i);
 void	ft_pipex(t_hell *hell);
+
+// heredoc
+int	heredoc_check(t_redir *redirs);
+void	init_hdoc(t_hell *hell, t_proc *head, int i);
+void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i);
+int     hdoc_pipes(t_hell *hell, t_proc *head);
 
 // single command
 void	ft_redirection(t_redir *redirs);
