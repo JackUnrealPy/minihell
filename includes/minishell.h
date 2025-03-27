@@ -114,6 +114,7 @@ t_proc	*create_proc(t_hell *hell);
 void	addproc(t_proc **head, t_proc *next);
 
 //		String utils
+void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
 int		ft_isspace(char c);
 int		ismeta(char *c);
 

@@ -12,9 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-
-
-
 int	get_expandlen(char *str)
 {
 	int	i;
@@ -48,32 +45,48 @@ static int	get_quotelen(char *cmd)
 	}
 	return (0);
 }
+void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme)
+{
+	int		len;
+	char	**res;
 
-char	*getquote(char *cmd, int *index)
+	len = -1;
+	while (proc->cmd[++len])
+		;
+	res = ft_malloc(hell ,proc->freeme, malloc(sizeof(char *) * (len + 2)));
+	len = -1;
+	while (proc->cmd[++len])
+		res[len] = proc->cmd[len];
+	res[len++] = addme;
+	res[len] = NULL;
+	proc->cmd = res;
+}
+
+int	get_squote(t_hell *hell, t_proc *proc, char *quote)
 {
 	char	*str;
 	int		len;
 	int		i;
 
-	i = -1;
 	len = 0;
+	len = get_quotelen(quote);
+	if (!len)
+		sysntaxerr();
 	str = NULL;
-	if (*cmd == '\'' || *cmd == '\"')
+	str = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) ,len + 1));
+	i = -1;
+	while (++i < len - 1)
+		str[i] = quote[i + 1];
+	if (!proc->cmd)
 	{
-		len = get_quotelen(cmd);
-		if (!len)
-			sysntaxerr();
-		str = ft_calloc(sizeof(char) ,len);
-		if (!str)
-			exit(1);
-		while (++i < len - 2)
-			str[i] = cmd[i + 1];
+		proc->cmd = ft_malloc(hell, proc->freeme, malloc(sizeof (char *) * 2));
+		proc->cmd[0] = str;
+		proc->cmd[1] = NULL;
 	}
-	*index += len ;
-	return (str);
+	else
+		add_to_cmdarr(hell, proc, str);
+	return (len);
 }
-
-
 
 // int	pipecommandcheck(t_proc **head)
 // {
@@ -102,18 +115,43 @@ void	handlepipe(t_hell *hell, char *cmd, int i, t_proc *proc)
 	parse(hell, ft_malloc(hell, next->freeme, ft_strdup(cmd + i + 1)), proc->next);
 }
 
+void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme)
+{
+	int		lendest;
+	int		lensrc;
+	char	**res;
+
+	lensrc = -1;
+	while (proc->cmd[++lensrc])
+		;
+	lendest = -1;
+	while (addme[++lendest])
+		;
+	res = ft_malloc(hell ,proc->freeme, malloc(sizeof(char *) * (lendest  + lensrc + 1)));
+	lensrc = -1;
+	while (proc->cmd[++lensrc])
+		res[lensrc] = proc->cmd[lensrc];
+	lendest = -1;
+	while (addme[++lendest])
+		res[lensrc + lendest] = addme[lendest];
+	res[lendest + lensrc] = NULL;
+	proc->cmd = res;
+}
+
 int	get_cmdarr(t_hell *hell, char *cmds, t_proc *proc)
 {
 	int		len;
 	char	*cmd;
 
 	cmd = NULL;
-	(void)hell;
 	len = -1;
 	while (cmds[++len] && !ismeta(cmds + len))
 		;
 	cmd = ft_malloc(hell, proc->freeme, ft_substr(cmds, 0, len));
-	proc->cmd = (char **)ft_mallocarr(hell, proc->freeme ,(void **)ft_split(cmd, "\n\t\v\f\r "));
+	if (!proc->cmd)
+		proc->cmd = (char **)ft_mallocarr(hell, proc->freeme ,(void **)ft_split(cmd, "\n\t\v\f\r "));
+	else
+		add_arr_to_cmdarr(hell, proc, (char **)ft_mallocarr(hell, proc->freeme ,(void **)ft_split(cmd, "\n\t\v\f\r ")));
 	return (len - 1);
 }
 
@@ -139,11 +177,9 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 			handlepipe(hell, cmd, i, proc);
 			break ;
 		}
-		else if (cmd[i] == '\'' || cmd[i] == '\"')
-			i += get_quotelen(cmd + i);
+		else if (cmd[i] == '\'')
+			i += get_squote(hell, proc, cmd + i);
 		else
-		{
 			i += get_cmdarr(hell, cmd + i, proc);
-		}
 	}
 }

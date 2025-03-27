@@ -24,7 +24,7 @@ int	main(int argc, char **argv, char **envp)
 	cmd = NULL;
 	init(&hell, envp);
 	int i = -1;
-	while (++i < 2)
+	while (1)
 	{
 		writeprompt();
 		cmd = get_next_line(0, &flag);
