@@ -20,7 +20,7 @@ int	ft_pwd(t_redir *redirs, int pipe)
 	char *success = NULL;
 	success = getcwd(buf, sizeof(buf));
 	if (!success)
-		; // free, error msg
+		return (10); // free, error msg
 	ft_putendl_fd(buf, fd);
 	if (fd != 1)
 		close(fd);

@@ -15,7 +15,7 @@
 void	local_init(t_hell *hell, char *cmd)
 {
 	t_proc	*proc;
-
+	(void)cmd;
 	proc = create_proc(hell);
 	*(hell->head) = proc;
 }
