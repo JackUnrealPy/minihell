@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/03/25 21:21:53 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/28 17:54:08 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
 void	parse(t_hell *hell, char *cmd, t_proc *proc);
+int		get_redir(t_hell *hell, t_proc *proc, char *str);
+
 // Alloctracker
 void	*ft_malloc(t_hell *hell, t_free **head, void *obj);
 void	**ft_mallocarr(t_hell *hell, t_free **head, void **obj);

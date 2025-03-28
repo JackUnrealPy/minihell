@@ -156,6 +156,7 @@ int	get_cmdarr(t_hell *hell, char *cmds, t_proc *proc)
 }
 
 
+
 void	parse(t_hell *hell, char *cmd, t_proc *proc)
 {
 	int		i;
@@ -177,6 +178,8 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 			handlepipe(hell, cmd, i, proc);
 			break ;
 		}
+		else if (cmd[i] == '>' || cmd[i] == '<')
+			i += get_redir(hell, proc, cmd + i);
 		else if (cmd[i] == '\'')
 			i += get_squote(hell, proc, cmd + i);
 		else

@@ -68,13 +68,23 @@ void	ft_double_strdup(t_hell *hell, char **envp)
 
 void print_list(t_proc *a)
 {
-	int	i;
+	t_redir	*reds;
+	int		i;
 
 	while (a)
 	{
-		i = -1;
-		while (a->cmd[++i])
-			printf("cmd [%d]:{%s}\n", i, a->cmd[i]);
+		if (a->cmd && *(a->cmd))
+		{
+			i = -1;
+			while (a->cmd[++i])
+				printf("cmd [%d]:{%s}\n", i, a->cmd[i]);
+		}
+		reds = *(a->redirs);
+		while (reds)
+		{
+			printf("reds [%d]:{%s}\n", reds->type, reds->pathordel);
+			reds = reds->next;
+		}	
 		a = a->next;
 	}
 }
