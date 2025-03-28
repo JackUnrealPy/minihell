@@ -38,6 +38,7 @@ int	hdoc_pipes(t_hell *hell, t_proc *head)
 	}
 	return (0);
 }
+
 void	heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i)
 {
 	char	*buffer;

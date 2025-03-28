@@ -3,7 +3,7 @@ NAME = minishell
 CC = cc -Wall -Wextra -Werror -g
 
 SRC = src/main.c \
-	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c \
+	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c src/exec/helpers.c src/exec/redirection.c\
 	src/parse/parse.c \
 	src/init/init.c src/init/prompt.c \
 	src/exit/exit.c \

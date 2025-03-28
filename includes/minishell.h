@@ -66,6 +66,7 @@ typedef struct	s_hell
 }	t_hell;
 
 // EXECUTION
+
 // builtins
 int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
 void	ft_echo(t_proc *head, int pipe);
@@ -80,23 +81,28 @@ void	ft_double_strdup(t_hell *hell, char **envp);
 int loop_cmds(t_hell *hell, char **envp);
 
 // pipes
-void	ft_close(t_hell *hell);
-void	ft_wait(t_hell *hell);
-void	initialise(t_proc *head, t_hell *hell);
+void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs);
 void	create_cmd(t_proc *head);
 void	children(t_proc *head, t_hell *hell, int i);
 void	ft_pipex(t_hell *hell);
 
 // heredoc
-int	heredoc_check(t_redir *redirs);
+int		heredoc_check(t_redir *redirs);
 void	init_hdoc(t_hell *hell, t_proc *head, int i);
 void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i);
 int     hdoc_pipes(t_hell *hell, t_proc *head);
 
-// single command
-void	ft_redirection(t_redir *redirs);
-void	single_cmd(t_proc *head, char **envp);
+// redirection
+void	input_redirection(t_hell *hell, t_proc *head, int i);
+void	output_redirection(t_hell *hell, t_proc *head, int i);
 
+// single command
+void	single_cmd(t_hell *hell, t_proc *head);
+
+// helpers
+void	ft_close(t_hell *hell);
+void	ft_wait(t_hell *hell);
+void	initialise_struct( t_hell *hell, t_proc *head);
 
 
 // void	local_init(t_hell *hell, char *cmd);

@@ -6,7 +6,7 @@ int loop_cmds(t_hell *hell, char **envp)
     if ((*hell->head) && !(*hell->head)->next)
     {
         if (!determine_builtin(hell, (*hell->head), 0)) // && !heredoc()
-            single_cmd((*hell->head), hell->envp);
+            single_cmd(hell, (*hell->head));
     }
     else if ((*hell->head) && (*hell->head)->next)
          ft_pipex(hell);
@@ -128,6 +128,95 @@ char	**split(char const *s, char c)
 	}
 	return (arr);
 }
+
+t_hell *init_hell(char **envp)
+{
+    t_hell *hell = malloc(sizeof(t_hell));
+    if (!hell)
+        return (NULL);
+    hell->freeme = malloc(sizeof(t_free *));
+    if (!hell->freeme)
+    {
+        free(hell);
+        return (NULL);
+    }
+    hell->freeme[0] = NULL;
+    hell->argv = NULL;
+    hell->argc = 0;
+    hell->cmd_count = 0;
+    hell->pipe_fd = NULL;
+    hell->hdoc_fd = NULL;
+    hell->envp = envp;
+    hell->head = malloc(sizeof(t_proc *));
+    if (!hell->head)
+    {
+        free(hell->freeme);
+        free(hell);
+        return (NULL);
+    }
+    *(hell->head) = NULL;
+    hell->lastexit = 0;
+    return (hell);
+}
+
+void fill_hell(t_hell *hell)
+{
+    t_proc *proc = malloc(sizeof(t_proc));
+    if (!proc)
+        return;
+
+    proc->freeme = hell->freeme;
+    proc->cmd = split("echo -n hello", ' ');
+    proc->cmd_path = NULL;
+    proc->redirs = malloc(sizeof(t_redir *));
+    if (!proc->redirs)
+    {
+        free(proc);
+        return;
+    }
+    proc->redirs[0] = malloc(sizeof(t_redir));
+    if (!proc->redirs[0])
+    {
+        free(proc->redirs);
+        free(proc);
+        return;
+    }
+    proc->redirs[0]->type = 0;
+    proc->redirs[0]->pathordel = ft_strdup("Makefile");
+    proc->redirs[0]->next = malloc(sizeof(t_redir));
+    if (!proc->redirs[0]->next)
+    {
+        free(proc->redirs[0]);
+        free(proc->redirs);
+        free(proc);
+        return;
+    }
+    proc->redirs[0]->next->type = 1;
+    proc->redirs[0]->next->pathordel = ft_strdup("out");
+    proc->redirs[0]->next->next = NULL;
+    proc->next = NULL;
+    proc->prev = NULL;
+
+    *(hell->head) = proc;
+}
+
+int main(int argc, char **argv, char **envp)
+{
+    (void)argc;
+    (void)argv;
+    t_hell *hell = init_hell(envp);
+    if (!hell)
+    {
+        perror("Failed to initialize shell");
+        return (EXIT_FAILURE);
+    }
+
+    fill_hell(hell);
+    loop_cmds(hell, envp);
+
+    return (0);
+}
+
 
 // for command cat << eof | cat << eof1 | cat -e << eof2 | cat -e > outfile
 /* t_hell *init_hell(char **envp)
@@ -613,7 +702,7 @@ int main(int argc, char **argv, char **envp)
  */
 
 
-
+/* 
 t_hell *init_hell(char **envp)
 {
     t_hell *hell;
@@ -727,3 +816,4 @@ int main(int argc, char **argv, char **envp)
     return (0);
 }
 
+ */
