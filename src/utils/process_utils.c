@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:50:23 by agara             #+#    #+#             */
-/*   Updated: 2025/03/22 19:53:27 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/28 17:26:15 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,17 @@ t_proc	*create_proc(t_hell *hell)
 		jump_ship(hell, 1);
 	freeme = malloc(sizeof(t_free*));
 	if (!freeme)
+	{
+		ft_terminate(1, &proc);
 		jump_ship(hell, 1);
+	}
 	proc->freeme = freeme;
+	proc->cmd = NULL;
 	*(proc->freeme) = NULL;
 	proc->prev = NULL;
 	proc->next = NULL;
+	proc->redirs =  ft_malloc(hell ,proc->freeme, malloc(sizeof(t_redir*)));
+	*(proc->redirs) = NULL;
 	return (proc);
 }
 
@@ -55,7 +61,6 @@ static void	ft_procclear(t_proc **proc)
 		ft_terminate(1, &node);
 		node = tempnext;
 	}
-	proc = NULL;
 }
 
 void	close_proc(t_hell *hell)
