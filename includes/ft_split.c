@@ -83,7 +83,7 @@ char	**ft_split(char const *s, char *charset)
 	int		i;
 	int		j;
 
-	if (!s)
+	if (!*s)
 		return (NULL);
 	if (!countwords(s, charset))
 		return (NULL);
@@ -97,7 +97,7 @@ char	**ft_split(char const *s, char *charset)
 		if (!inset(charset, s[i]))
 		{
 			res[++j] = getword(s + i, charset);
-			i += ft_strlen(res[j]);
+			i += ft_strlen(res[j]) - 1;
 		}
 	}
 	res[j + 1] = NULL;

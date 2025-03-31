@@ -4,7 +4,7 @@ CC = cc -g
 
 SRC = src/main.c \
 	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c \
-	src/parse/parse.c src/parse/parse_redir.c \
+	src/parse/parse.c src/parse/parse_redir.c src/parse/parse_expand.c src/parse/quotes.c \
 	src/init/init.c src/init/prompt.c \
 	src/exit/exit.c \
 	src/utils/string_utils.c src/utils/alloc_utils.c src/utils/process_utils.c \

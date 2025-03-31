@@ -25,6 +25,7 @@ int	init(t_hell *hell, char **envp)
 	t_proc	**node;
 
 	hell->freeme = NULL;
+	hell->lastexit = 0;
 	hell->envp = envp;
 	node = malloc(sizeof(t_proc*)); 
 	if (!node)

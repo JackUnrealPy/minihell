@@ -96,7 +96,13 @@ int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
 void	parse(t_hell *hell, char *cmd, t_proc *proc);
+int	ft_expand(t_hell *hell, t_proc *proc, char *str);
+int	get_squote(t_hell *hell, t_proc *proc, char *quote);
 int		get_redir(t_hell *hell, t_proc *proc, char *str);
+void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
+void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme);
+int	get_cmdarr(t_hell *hell, char *cmds, t_proc *proc);
+
 
 // Alloctracker
 void	*ft_malloc(t_hell *hell, t_free **head, void *obj);

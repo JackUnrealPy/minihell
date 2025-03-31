@@ -12,39 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-int	get_expandlen(char *str)
-{
-	int	i;
 
-	i = -1;
-	while (!ft_isspace(str[++i]));
-	return (i);
-}
-
-static int	get_quotelen(char *cmd)
-{
-	int	i;
-	int	inquote;
-
-	i = -1;
-	inquote = 0;
-	while (cmd[++i])
-	{
-		if (!inquote)
-		{
-			if (cmd[i] == '\"')
-				inquote = 1;
-			if (cmd[i] == '\'')
-				inquote = 2;
-			continue ;
-		}
-		if (inquote == 1 && cmd[i] == '\"')
-			return (i);
-		if (inquote == 2 && cmd[i] == '\'')
-			return (i);
-	}
-	return (0);
-}
 void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme)
 {
 	int		len;
@@ -62,31 +30,6 @@ void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme)
 	proc->cmd = res;
 }
 
-int	get_squote(t_hell *hell, t_proc *proc, char *quote)
-{
-	char	*str;
-	int		len;
-	int		i;
-
-	len = 0;
-	len = get_quotelen(quote);
-	if (!len)
-		sysntaxerr();
-	str = NULL;
-	str = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) ,len + 1));
-	i = -1;
-	while (++i < len - 1)
-		str[i] = quote[i + 1];
-	if (!proc->cmd)
-	{
-		proc->cmd = ft_malloc(hell, proc->freeme, malloc(sizeof (char *) * 2));
-		proc->cmd[0] = str;
-		proc->cmd[1] = NULL;
-	}
-	else
-		add_to_cmdarr(hell, proc, str);
-	return (len);
-}
 
 // int	pipecommandcheck(t_proc **head)
 // {
@@ -144,11 +87,11 @@ int	get_cmdarr(t_hell *hell, char *cmds, t_proc *proc)
 	char	*cmd;
 
 	cmd = NULL;
-	len = -1;
-	while (cmds[++len] && !ismeta(cmds + len))
-		;
-	cmd = ft_malloc(hell, proc->freeme, ft_substr(cmds, 0, len));
-	if (!proc->cmd)
+	len = 0;
+	while (cmds[len] && !ismeta(cmds + len + 1))
+		len++;
+	cmd = ft_malloc(hell, proc->freeme, ft_substr(cmds, 0, len + 1));
+	if (!(proc->cmd))
 		proc->cmd = (char **)ft_mallocarr(hell, proc->freeme ,(void **)ft_split(cmd, "\n\t\v\f\r "));
 	else
 		add_arr_to_cmdarr(hell, proc, (char **)ft_mallocarr(hell, proc->freeme ,(void **)ft_split(cmd, "\n\t\v\f\r ")));
@@ -171,8 +114,6 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 		}
 		if (ft_isspace(cmd[i]))
 			continue ;
-		else if (cmd[i] == '$')
-			i += get_expandlen(cmd + i);
 		else if (cmd[i] == '|')
 		{
 			handlepipe(hell, cmd, i, proc);
@@ -182,6 +123,8 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 			i += get_redir(hell, proc, cmd + i);
 		else if (cmd[i] == '\'')
 			i += get_squote(hell, proc, cmd + i);
+		else if (cmd[i] == '$')
+			i += ft_expand(hell, proc, cmd + i);
 		else
 			i += get_cmdarr(hell, cmd + i, proc);
 	}
