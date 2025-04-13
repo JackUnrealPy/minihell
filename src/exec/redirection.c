@@ -33,8 +33,8 @@ void	input_redirection(t_hell *hell, t_proc *head, int i)
 
 void	output_redirection(t_hell *hell, t_proc *head, int i)
 {
-	int		output_fd;
-	t_redir	*tmp;
+	int output_fd;
+	t_redir *tmp;
 
 	tmp = (*head->redirs);
 	while (tmp)

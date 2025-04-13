@@ -14,13 +14,14 @@ int	heredoc_check(t_redir *redirs)
 	return (0);
 }
 
-void	init_hdoc(t_hell *hell, t_proc *head, int i)
+void	init_hdoc(t_hell *hell, t_proc *head, int i, char **cmd)
 {
 	head->hpid = fork();
 	if (head->hpid == 0)
 	{
 		heredoc(hell, head, (*head->redirs), i);
-		exit(0);
+		ft_terminate(1, cmd);
+		jump_ship(hell, 0);
 	}
 	waitpid(head->hpid, NULL, 0);
 }
@@ -45,7 +46,6 @@ void	heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i)
 	int		flag;
 
 	flag = 0;
-	(void)head;
 	if (dup2(hell->hdoc_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
 		return ; // free, error msg
 	while (1)
@@ -54,14 +54,14 @@ void	heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i)
 		buffer = get_next_line(0, &flag);
 		if (!buffer)
 			return ;
-		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer)) == 0)
+		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer)-1) == 0)
 		{
 			free(buffer);
 			ft_close(hell, 1);
 			break ;
 		}
-		// if (head->cmd && head->cmd[0])
 		ft_putstr_fd(buffer, hell->hdoc_fd[(i * 2) + 1]);
 		free(buffer);
+		(void)head;
 	}
 }

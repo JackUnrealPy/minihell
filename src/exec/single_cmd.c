@@ -14,9 +14,10 @@
 
 void	single_cmd(t_hell *hell, t_proc *head)
 {
+	int	status;
+
 	hell->cmd_count = 1;
 	create_cmd(hell, head);
-	int status;
 	head->pid = fork();
 	if (head->pid == 0)
 	{
@@ -25,7 +26,5 @@ void	single_cmd(t_hell *hell, t_proc *head)
 		execve(head->cmd_path, head->cmd, hell->envp);
 		exit(0);
 	}
-	//free(head->cmd_path);
 	waitpid(head->pid, &status, 0);
-	//free(head->cmd_path);
 }

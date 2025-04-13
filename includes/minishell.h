@@ -90,7 +90,7 @@ void	ft_pipex(t_hell *hell, char **cmd);
 
 // heredoc
 int		heredoc_check(t_redir *redirs);
-void	init_hdoc(t_hell *hell, t_proc *head, int i);
+void	init_hdoc(t_hell *hell, t_proc *head, int i, char **cmd);
 void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i);
 int     hdoc_pipes(t_hell *hell, t_proc *head);
 

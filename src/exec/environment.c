@@ -1,12 +1,12 @@
 #include "../../includes/minishell.h"
 
-char **	ft_double_strdup(t_hell *hell, char **envp)
+char	**ft_double_strdup(t_hell *hell, char **envp)
 {
-	int	a;
-	int	b;
+	int		a;
+	int		b;
+	char	**my_env;
 
 	a = 0;
-	char **my_env;
 	while (envp[a])
 		a++;
 	b = a;
@@ -22,7 +22,7 @@ char **	ft_double_strdup(t_hell *hell, char **envp)
 		a++;
 	}
 	my_env[a] = NULL;
-	return(my_env);
+	return (my_env);
 }
 
 // char	**ft_realloc_envp(char **envp, int new_element, char *new)
