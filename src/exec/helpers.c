@@ -1,13 +1,16 @@
 #include "../../includes/minishell.h"
 
-void    error_msg(char *error, int errno)
+void    error_msg(t_hell *hell, char *error, int i)
 {
+    (void)hell; // free hell
     ft_putendl_fd(error, STDERR_FILENO);
-    exit(errno);
+	if (i >= 0)
+    	exit(i);
 }
 
-void	ft_close(t_hell *hell)
+void	ft_close(t_hell *hell, int child)
 {
+	//(void)child;
 	int	i;
 
 	i = 0;
@@ -22,20 +25,29 @@ void	ft_close(t_hell *hell)
 		close(hell->hdoc_fd[i]);
 		i++;
 	}
+	(void)child;
+	// if (child)
+	// {
+	// 	free(hell->pipe_fd);
+	// 	free(hell->hdoc_fd);
+	// }
 }
 
 void	ft_wait(t_hell *hell)
 {
 	int	wstatus;
-
-	while ((*hell->head)->next)
+	t_proc *head_cpy = (*hell->head);
+	while (head_cpy)
 	{
-		if (waitpid((*hell->head)->pid, &wstatus, 0) == -1)
+		if (waitpid(head_cpy->pid, &wstatus, 0) == -1)
 			exit(WEXITSTATUS(wstatus)); // and free
-		if ((*(*hell->head)->redirs)->type == 3 && waitpid((*hell->head)->hpid,
+		if ((*head_cpy->redirs) && (*head_cpy->redirs)->type == 3 && waitpid(head_cpy->hpid,
 				&wstatus, 0) == 1)
 			exit(WEXITSTATUS(wstatus)); // and free
-		(*hell->head) = (*hell->head)->next;
+		if (head_cpy && head_cpy->next)
+			head_cpy = head_cpy->next;
+		else
+			break;
 	}
 	// free_struct(hell, WEXITSTATUS(wstatus));
 }

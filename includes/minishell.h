@@ -54,6 +54,7 @@ typedef struct	s_hell
 {
 	t_free	**freeme;
 	char	**argv;
+	char	**test;
 	int 	argc;
 	int		cmd_count;
 	int		hdoc_count;
@@ -68,23 +69,24 @@ typedef struct	s_hell
 // EXECUTION
 
 // builtins
-int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
+int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe);
 void	ft_echo(t_proc *head, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_redir *redirs, int pipe);
 void ft_unset(char **envp, char *var_to_delete);
+void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int pipe);
 
 // environment vars
-void	ft_double_strdup(t_hell *hell, char **envp);
+char **	ft_double_strdup(t_hell *hell, char **envp);
 
 // exec
-int loop_cmds(t_hell *hell, char **envp);
+int loop_cmds(t_hell *hell, char **cmd);
 
 // pipes
 void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs);
-void	create_cmd(t_proc *head);
-void	children(t_proc *head, t_hell *hell, int i);
-void	ft_pipex(t_hell *hell);
+void	create_cmd(t_hell *hell, t_proc *head);
+void	children(t_proc *head, t_hell *hell, char **cmd, int i);
+void	ft_pipex(t_hell *hell, char **cmd);
 
 // heredoc
 int		heredoc_check(t_redir *redirs);
@@ -100,18 +102,23 @@ void	output_redirection(t_hell *hell, t_proc *head, int i);
 void	single_cmd(t_hell *hell, t_proc *head);
 
 // helpers
-void	ft_close(t_hell *hell);
+void	ft_freeme(char **arr);
+void	ft_close(t_hell *hell, int child);
 void	ft_wait(t_hell *hell);
 void	initialise_struct( t_hell *hell, t_proc *head);
+void    error_msg(t_hell *hell, char *error, int i);
 
-
-// void	local_init(t_hell *hell, char *cmd);
+// Init
+void	local_init(t_hell *hell, char *cmd);
 int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
-void	parse(t_hell *hell, char *str);
+void	parse(t_hell *hell, char *cmd, t_proc *proc);
+int		get_redir(t_hell *hell, t_proc *proc, char *str);
+
 // Alloctracker
-void	*ft_malloc(t_free **head, void *obj);
+void	*ft_malloc(t_hell *hell, t_free **head, void *obj);
+void	**ft_mallocarr(t_hell *hell, t_free **head, void **obj);
 
 // cleares a t_free llist
 void	throw_garbage(t_free **head);
@@ -120,15 +127,21 @@ void	throw_garbage(t_free **head);
 void	jump_ship(t_hell *hell, short int exitcode);
 
 void	sysntaxerr();
-
-void	local_init(t_hell *hell, char *cmd);
-//	 Utils
+//	Utils
+// 		Proc utils
 void	close_proc(t_hell *hell);
 t_proc	*create_proc(t_hell *hell);
 void	addproc(t_proc **head, t_proc *next);
 
-// void	ft_procclear(t_proc **proc);
-
+//		String utils
+void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
 int		ft_isspace(char c);
 int		ismeta(char *c);
+
+// list utils
+void print_list(t_proc *a);
+
+// dev		tooks for development
+void 	print_list(t_proc *a);
+
 #endif

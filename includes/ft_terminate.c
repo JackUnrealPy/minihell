@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_terminate.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42vienna.com>         +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 21:54:35 by agara             #+#    #+#             */
-/*   Updated: 2025/01/16 21:54:35 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/19 20:17:02 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	ft_terminate(int count, ...)
 	while (i < count)
 	{
 		garbage = va_arg(args, char **);
+		if (!garbage)
+			return ;
 		if (*garbage)
 			free(*garbage);
 		*garbage = NULL;

@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:50:23 by agara             #+#    #+#             */
-/*   Updated: 2025/03/22 21:15:41 by agara            ###   ########.fr       */
+/*   Updated: 2025/03/25 21:19:50 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,23 @@ static void	add_garbage(t_free **head, t_free *node)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = node;
+	//tmp->next = NULL;
 }
 
-void	*ft_malloc(t_free **head, void *obj)
+void	**ft_mallocarr(t_hell *hell, t_free **head, void **obj)
 {
+	int	i;
+
+	ft_malloc(hell, head, obj);
+	i = -1;
+	while (obj[++i])
+		ft_malloc(hell, head, obj[i]);
+	return (obj);
+}
+
+void	*ft_malloc(t_hell *hell, t_free **head, void *obj)
+{
+	(void)hell;
 	t_free	*new;
 
 	if (!obj)
@@ -50,13 +63,14 @@ void	throw_garbage(t_free **head)
 	t_free	*tempnext;
 	t_free	*node;
 
-	if (!head || !*head)
+	if (!head)
 		return ;
 	node = *head;
 	while (node)
 	{
 		tempnext = node->next;
-		ft_terminate(2, &(node->freeme), &node);
+		ft_terminate(1, &(node->freeme));
+		ft_terminate(1, &node);
 		node = tempnext;
 	}
 	ft_terminate(1, &head);

@@ -1,22 +1,28 @@
 #include "../../includes/minishell.h"
 
-void	ft_double_strdup(t_hell *hell, char **envp)
+char **	ft_double_strdup(t_hell *hell, char **envp)
 {
 	int	a;
 	int	b;
 
 	a = 0;
+	char **my_env;
 	while (envp[a])
 		a++;
 	b = a;
-	hell->envp = ft_calloc(a + 1, sizeof(char *));
+	my_env = malloc((a + 1) * sizeof(char *));
+	if (!my_env)
+		error_msg(hell, "Memory allocation failed", 1);
 	a = 0;
 	while (a < b)
 	{
-		hell->envp[a] = ft_strdup(envp[a]);
+		my_env[a] = ft_strdup(envp[a]);
+		if (!my_env[a])
+			error_msg(hell, "Memory allocation failed", 1);
 		a++;
 	}
-	hell->envp[a] = NULL;
+	my_env[a] = NULL;
+	return(my_env);
 }
 
 // char	**ft_realloc_envp(char **envp, int new_element, char *new)

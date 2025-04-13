@@ -57,7 +57,7 @@ void	heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i)
 		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer)) == 0)
 		{
 			free(buffer);
-			ft_close(hell);
+			ft_close(hell, 1);
 			break ;
 		}
 		// if (head->cmd && head->cmd[0])
