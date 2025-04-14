@@ -1,5 +1,49 @@
 #include "../../includes/minishell.h"
 
+char    *ft_realloc(char *old, char *new)
+{
+    char *combine = ft_strjoin(old, new);
+    free(old);
+    free(new);
+    return (combine);
+}
+void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
+{
+    // change so that pipes and single command both use same heredoc functions
+    // maybe change to hidden file
+    hell->hdoc_count = 1;
+    char *buffer;
+    char *txt = NULL;
+    int flag = 0;
+    while (1)
+    {
+        write(STDIN_FILENO, "> ", 2);
+        buffer = get_next_line(0, &flag);
+        if (!buffer)
+            return ;
+        if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer)-1) == 0)
+        {
+            free(buffer);
+            break ;
+        }
+        txt = ft_realloc(txt, buffer);
+    }
+    output_redirection(hell, head, -1);
+    create_cmd(hell, head);
+    if (head->cmd_path && ft_strncmp(head->cmd_path, "/bin/cat", 8) == 0)
+    {
+        ft_putstr_fd(txt, 1);
+        free(txt);
+        return ;
+    }
+    free(txt);
+    if (head->cmd_path)
+    {
+        if (!determine_builtin(hell, (*hell->head), cmd, 0))
+            single_cmd(hell, (*hell->head));
+    }
+}
+
 int	heredoc_check(t_redir *redirs)
 {
 	t_redir	*tmp;

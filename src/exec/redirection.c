@@ -16,15 +16,15 @@ void	input_redirection(t_hell *hell, t_proc *head, int i)
 			close(input_fd);
 			return ;
 		}
-		else if (tmp->type == 3)
+		else if (i != -1 && tmp->type == 3)
 		{
-			if (dup2(hell->hdoc_fd[i * 2], STDIN_FILENO) == -1)
+			if (dup2(hell->hdoc_fd[i*2 + 1], STDIN_FILENO) == -1)
 				return ;
 			return ;
 		}
 		tmp = tmp->next;
 	}
-	if (i > 0)
+	if (i > 0 && hell->pipe_fd)
 	{
 		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
 			return ; // free_struct(data, errno);
@@ -53,7 +53,7 @@ void	output_redirection(t_hell *hell, t_proc *head, int i)
 		}
 		tmp = tmp->next;
 	}
-	if (i != hell->cmd_count - 1 && i != -1)
+	if (i != -1 && i != hell->cmd_count - 1)
 	{
 		if (dup2(hell->pipe_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
 			return ; // free, error msg

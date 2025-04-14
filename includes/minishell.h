@@ -89,6 +89,7 @@ void	children(t_proc *head, t_hell *hell, char **cmd, int i);
 void	ft_pipex(t_hell *hell, char **cmd);
 
 // heredoc
+void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
 int		heredoc_check(t_redir *redirs);
 void	init_hdoc(t_hell *hell, t_proc *head, int i, char **cmd);
 void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i);

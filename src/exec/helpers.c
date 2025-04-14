@@ -12,7 +12,6 @@ void	ft_close(t_hell *hell, int child)
 {
 	int	i;
 
-	//(void)child;
 	i = 0;
 	while (i < (hell->cmd_count - 1) * 2)
 	{
