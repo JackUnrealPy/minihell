@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-char	**ft_double_strdup(t_hell *hell, char **envp)
+char	**ft_double_strdup(t_hell *hell, char **envp, char **cmd)
 {
 	int		a;
 	int		b;
@@ -12,13 +12,13 @@ char	**ft_double_strdup(t_hell *hell, char **envp)
 	b = a;
 	my_env = malloc((a + 1) * sizeof(char *));
 	if (!my_env)
-		error_msg(hell, "Memory allocation failed", 1);
+		error_msg(hell, cmd, "Memory allocation failed", 1);
 	a = 0;
 	while (a < b)
 	{
 		my_env[a] = ft_strdup(envp[a]);
 		if (!my_env[a])
-			error_msg(hell, "Memory allocation failed", 1);
+			error_msg(hell, cmd, "Memory allocation failed", 1);
 		a++;
 	}
 	my_env[a] = NULL;

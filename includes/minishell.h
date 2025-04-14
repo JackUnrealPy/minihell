@@ -70,21 +70,21 @@ typedef struct	s_hell
 
 // builtins
 int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe);
-void	ft_echo(t_proc *head, int pipe);
+void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_redir *redirs, int pipe);
 void ft_unset(char **envp, char *var_to_delete);
 void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int pipe);
 
 // environment vars
-char **	ft_double_strdup(t_hell *hell, char **envp);
+char **	ft_double_strdup(t_hell *hell, char **envp, char **cmd);
 
 // exec
 int loop_cmds(t_hell *hell, char **cmd);
 
 // pipes
-void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs);
-void	create_cmd(t_hell *hell, t_proc *head);
+void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
+void	create_cmd(t_hell *hell, t_proc *head, char **cmd);
 void	children(t_proc *head, t_hell *hell, char **cmd, int i);
 void	ft_pipex(t_hell *hell, char **cmd);
 
@@ -96,18 +96,18 @@ void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i);
 int     hdoc_pipes(t_hell *hell, t_proc *head);
 
 // redirection
-void	input_redirection(t_hell *hell, t_proc *head, int i);
-void	output_redirection(t_hell *hell, t_proc *head, int i);
+void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i);
+void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i);
 
 // single command
-void	single_cmd(t_hell *hell, t_proc *head);
+void	single_cmd(t_hell *hell, t_proc *head, char **cmd);
 
 // helpers
 void	ft_freeme(char **arr);
-void	ft_close(t_hell *hell, int child);
-void	ft_wait(t_hell *hell);
+void	ft_close(t_hell *hell);
+void	ft_wait(t_hell *hell, char **cmd);
 void	initialise_struct( t_hell *hell, t_proc *head);
-void    error_msg(t_hell *hell, char *error, int i);
+void    error_msg(t_hell *hell, char **cmd, char *error, int exitcode);
 
 // Init
 void	local_init(t_hell *hell, char *cmd);

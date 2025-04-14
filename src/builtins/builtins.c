@@ -3,7 +3,7 @@
 int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe)
 {
 	if (head->cmd && (ft_strncmp(head->cmd[0], "echo", ft_strlen(head->cmd[0])) == 0 || ft_strncmp("/usr/bin/echo", head->cmd[0], ft_strlen(head->cmd[0])) == 0 || ft_strncmp("/bin/echo", head->cmd[0], ft_strlen(head->cmd[0])) == 0))
-		ft_echo(head, pipe);
+		ft_echo(hell, head, cmd, pipe);
 	else if (head->cmd && strcmp("pwd", head->cmd[0]) == 0)
 		ft_pwd(*(head->redirs), pipe);
 	// else if (head->cmd && strcmp("cd", head->cmd[0]) == 0)

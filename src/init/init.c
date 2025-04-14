@@ -26,7 +26,7 @@ int	init(t_hell *hell, char **envp)
 
 	hell->freeme = malloc(sizeof(t_free *));
     (*hell->freeme) = NULL;
-	hell->test = ft_double_strdup(hell, envp);
+	hell->test = ft_double_strdup(hell, envp, NULL);
     hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)hell->test); // not properly freed for cmd "echo hello | cat -e" -> any pipes involving builtins for some reason
 	node = malloc(sizeof(t_proc*)); 
 	if (!node)

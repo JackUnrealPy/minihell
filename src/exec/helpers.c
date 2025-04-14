@@ -1,14 +1,16 @@
 #include "../../includes/minishell.h"
 
-void	error_msg(t_hell *hell, char *error, int i)
+void	error_msg(t_hell *hell, char **cmd, char *error, int exitcode)
 {
-	(void)hell; // free hell
-	ft_putendl_fd(error, STDERR_FILENO);
-	if (i >= 0)
-		exit(i);
+	if (error)
+		ft_putendl_fd(error, STDERR_FILENO);
+	hell->lastexit = exitcode;
+	if (cmd)
+		ft_terminate(1, cmd);
+	jump_ship(hell, exitcode);
 }
 
-void	ft_close(t_hell *hell, int child)
+void	ft_close(t_hell *hell)
 {
 	int	i;
 
@@ -24,10 +26,9 @@ void	ft_close(t_hell *hell, int child)
 		close(hell->hdoc_fd[i]);
 		i++;
 	}
-	(void)child;
 }
 
-void	ft_wait(t_hell *hell)
+void	ft_wait(t_hell *hell, char **cmd)
 {
 	int		wstatus;
 	t_proc	*head_cpy;
@@ -36,10 +37,10 @@ void	ft_wait(t_hell *hell)
 	while (head_cpy)
 	{
 		if (waitpid(head_cpy->pid, &wstatus, 0) == -1)
-			exit(WEXITSTATUS(wstatus)); // and free
+			error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(wstatus));
 		if ((*head_cpy->redirs) && (*head_cpy->redirs)->type == 3
 			&& waitpid(head_cpy->hpid, &wstatus, 0) == 1)
-			exit(WEXITSTATUS(wstatus)); // and free
+			error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(wstatus));
 		if (head_cpy && head_cpy->next)
 			head_cpy = head_cpy->next;
 		else

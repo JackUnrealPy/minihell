@@ -19,7 +19,7 @@ void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int is_pipe)
 	int num;
 	if (head->cmd[0] && head->cmd[1] && head->cmd[2])
 	{
-		error_msg(hell, "exit: too many arguments", -1);
+		error_msg(hell, cmd, "exit: too many arguments", 1);
 		hell->lastexit = 1;
 		return ;
 	}
