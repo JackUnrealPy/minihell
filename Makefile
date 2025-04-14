@@ -26,7 +26,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@echo "$(GREEN)Linking...$(RESET)"
 	make -C includes
-	$(CC) $(OBJ) -o $(NAME) includes/libft.a
+	$(CC) $(OBJ) -o $(NAME) includes/libft.a -lreadline -lhistory
 	@echo "$(GREEN) MINISHELL compiled.$(NO_COLOR)"
 
 obj/%.o: src/%.c  $(HEADERS)
