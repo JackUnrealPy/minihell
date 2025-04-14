@@ -4,7 +4,7 @@ CC = cc -Wall -Wextra -Werror -g
 
 SRC = src/main.c \
 	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c src/exec/helpers.c src/exec/redirection.c\
-	src/parse/parse.c src/parse/parse_redir.c \
+	src/parse/parse.c src/parse/parse_redir.c src/parse/parse_expand.c src/parse/quotes.c \
 	src/init/init.c src/init/prompt.c \
 	src/exit/exit.c \
 	src/utils/string_utils.c src/utils/alloc_utils.c src/utils/process_utils.c src/utils/list_utils.c \
@@ -26,7 +26,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@echo "$(GREEN)Linking...$(RESET)"
 	make -C includes
-	$(CC) $(OBJ) -o $(NAME) includes/libft.a
+	$(CC) $(OBJ) -o $(NAME) includes/libft.a -lreadline -lhistory
 	@echo "$(GREEN) MINISHELL compiled.$(NO_COLOR)"
 
 obj/%.o: src/%.c  $(HEADERS)

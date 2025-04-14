@@ -1,47 +1,54 @@
 #include "../../includes/minishell.h"
 
-char    *ft_realloc(char *old, char *new)
+char	*ft_realloc(char *old, char *new)
 {
-    char *combine = ft_strjoin(old, new);
-    free(old);
-    free(new);
-    return (combine);
+	char	*combine;
+
+	combine = ft_strjoin(old, new);
+	free(old);
+	free(new);
+	return (combine);
 }
-void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
+
+// change so that pipes and single command both use same heredoc functions
+// maybe change to hidden file
+
+void	single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 {
-    // change so that pipes and single command both use same heredoc functions
-    // maybe change to hidden file
-    hell->hdoc_count[0] = 1;
-    char *buffer;
-    char *txt = NULL;
-    int flag = 0;
-    while (1)
-    {
-        write(STDIN_FILENO, "> ", 2);
-        buffer = get_next_line(0, &flag);
-        if (!buffer)
-            return ;
-        if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer)-1) == 0)
-        {
-            free(buffer);
-            break ;
-        }
-        txt = ft_realloc(txt, buffer);
-    }
-    output_redirection(hell, head, cmd, -1);
-    create_cmd(hell, head, cmd);
-    if (head->cmd_path && ft_strncmp(head->cmd_path, "/bin/cat", 8) == 0)
-    {
-        ft_putstr_fd(txt, 1);
-        free(txt);
-        return ;
-    }
-    free(txt);
-    if (head->cmd_path)
-    {
-        if (!determine_builtin(hell, (*hell->head), cmd, 0))
-            single_cmd(hell, (*hell->head), cmd);
-    }
+	char	*buffer;
+	char	*txt;
+	int		flag;
+
+	hell->hdoc_count[0] = 1;
+	txt = NULL;
+	flag = 0;
+	while (1)
+	{
+		write(STDIN_FILENO, "> ", 2);
+		buffer = get_next_line(0, &flag);
+		if (!buffer)
+			return ;
+		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer) - 1) == 0)
+		{
+			free(buffer);
+			break ;
+		}
+		txt = ft_realloc(txt, buffer);
+	}
+	output_redirection(hell, head, cmd, -1);
+	create_cmd(hell, head, cmd);
+	if (head->cmd_path && ft_strncmp(head->cmd_path, "/bin/cat", 8) == 0)
+	{
+		ft_putstr_fd(txt, 1);
+		free(txt);
+		return ;
+	}
+	free(txt);
+	if (head->cmd_path)
+	{
+		if (!determine_builtin(hell, (*hell->head), cmd, 0))
+			single_cmd(hell, (*hell->head), cmd);
+	}
 }
 
 int	heredoc_check(t_redir *redirs)
@@ -63,7 +70,7 @@ void	init_hdoc(t_hell *hell, t_proc *head, char **cmd)
 	head->hpid = fork();
 	if (head->hpid == 0)
 	{
-		heredoc(hell, head, (*head->redirs), hell->hdoc_count[1]);
+		heredoc(hell, head, (*head->redirs), cmd);
 		ft_terminate(1, cmd);
 		jump_ship(hell, 0);
 	}
@@ -85,21 +92,23 @@ int	hdoc_pipes(t_hell *hell, t_proc *head)
 	return (0);
 }
 
-void	heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i)
+void	heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 {
 	char	*buffer;
 	int		flag;
+	int		i;
 
+	i = hell->hdoc_count[1];
 	flag = 0;
 	if (dup2(hell->hdoc_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
-		return ; // free, error msg
+		error_msg(hell, cmd, "dup2 failed", 1);
 	while (1)
 	{
 		write(STDIN_FILENO, "> ", 2);
 		buffer = get_next_line(0, &flag);
 		if (!buffer)
 			return ;
-		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer)-1) == 0)
+		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer) - 1) == 0)
 		{
 			free(buffer);
 			ft_close(hell);

@@ -60,6 +60,7 @@ typedef struct	s_hell
 	int		hdoc_count[2];
 	int		*pipe_fd;
 	int		*hdoc_fd;
+	char	**localvars;
 	char	**envp;
 	t_proc	**head;
 	int		lastexit;
@@ -93,7 +94,7 @@ void	ft_pipex(t_hell *hell, char **cmd);
 void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
 int		heredoc_check(t_redir *redirs);
 void	init_hdoc(t_hell *hell, t_proc *head, char **cmd);
-void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i);
+void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
 int     hdoc_pipes(t_hell *hell, t_proc *head);
 
 // redirection
@@ -116,7 +117,14 @@ int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
 void	parse(t_hell *hell, char *cmd, t_proc *proc);
+void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos);
+int	get_squote(t_hell *hell, t_proc *proc, char *quote);
+int	get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos);
 int		get_redir(t_hell *hell, t_proc *proc, char *str);
+void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
+void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme);
+int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i);
+
 
 // Alloctracker
 void	*ft_malloc(t_hell *hell, t_free **head, void *obj);
@@ -139,9 +147,6 @@ void	addproc(t_proc **head, t_proc *next);
 void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
 int		ft_isspace(char c);
 int		ismeta(char *c);
-
-// list utils
-void print_list(t_proc *a);
 
 // dev		tooks for development
 void 	print_list(t_proc *a);

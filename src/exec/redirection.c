@@ -28,7 +28,8 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 		}
 		else if (i != -1 && tmp->type == 3)
 		{
-			if (dup2(hell->hdoc_fd[(hell->hdoc_count[1]*2)-2], STDIN_FILENO) == -1)
+			if (dup2(hell->hdoc_fd[(hell->hdoc_count[1] * 2) - 2],
+					STDIN_FILENO) == -1)
 				error_msg(hell, cmd, "dup2 failed", 1);
 			return ;
 		}
@@ -43,8 +44,8 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 
 void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 {
-	int output_fd;
-	t_redir *tmp;
+	int		output_fd;
+	t_redir	*tmp;
 
 	tmp = (*head->redirs);
 	while (tmp)
@@ -52,9 +53,11 @@ void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 		if (tmp->type == 1 || tmp->type == 2)
 		{
 			if (tmp->type == 1)
-				output_fd = open(tmp->pathordel, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+				output_fd = open(tmp->pathordel, O_CREAT | O_WRONLY | O_TRUNC,
+						0644);
 			else
-				output_fd = open(tmp->pathordel, O_CREAT | O_WRONLY | O_APPEND, 0644);
+				output_fd = open(tmp->pathordel, O_CREAT | O_WRONLY | O_APPEND,
+						0644);
 			if (output_fd < 0)
 			{
 				ft_putstr_fd(tmp->pathordel, 2);

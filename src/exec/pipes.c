@@ -12,7 +12,8 @@
 
 #include "../../includes/minishell.h"
 
-void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
+void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs,
+		char **cmd)
 {
 	t_proc	*current;
 	t_redir	*tmp;
@@ -39,8 +40,8 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	i = 0;
 	while (i < hell->cmd_count - 1)
 	{
-		if (pipe(&hell->pipe_fd[i++ * 2]) == -1)
-			(ft_terminate(1, cmd), jump_ship(hell, errno)); // free, error msg
+		if (pipe(&hell->pipe_fd[(i++) * 2]) == -1)
+			error_msg(hell, cmd, "pipe() failed", errno);
 	}
 	if (hell->hdoc_count[0] > 0)
 		hdoc_pipes(hell, (*hell->head));
@@ -62,7 +63,7 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 	if (!head->cmd_path)
 		error_msg(hell, cmd, "Memory allocation failed", 1);
 	if (access(head->cmd_path, R_OK | X_OK) == -1)
-		return ; // free, error msg -> exit or no?
+		error_msg(hell, cmd, "Cannot read/execute command executable", 1);
 }
 
 void	ft_freeme(char **arr)
@@ -112,10 +113,13 @@ void	children(t_proc *head, t_hell *hell, char **cmd, int i)
 
 void	ft_pipex(t_hell *hell, char **cmd)
 {
+	int		i;
+	t_proc	*head_cpy;
+
+	i = 0;
+	head_cpy = (*hell->head);
 	initialise_struct(hell, (*hell->head));
 	initialise_pipes(hell, (*hell->head), (*(*hell->head)->redirs), cmd);
-	int i = 0;
-	t_proc *head_cpy = (*hell->head);
 	while (i < hell->cmd_count)
 	{
 		children(head_cpy, hell, cmd, i);
