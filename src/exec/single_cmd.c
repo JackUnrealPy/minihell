@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/03/25 18:58:07 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/14 21:20:10 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,7 @@ void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 		ft_putstr_fd(head->cmd[0], 2);
 		error_msg(hell, cmd, ": command not found", 127);
 	}
-	waitpid(head->pid, &status, 0);
+	if (waitpid(head->pid, &status, 0) == -1)
+		error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(status));
+	*(hell->lastexit) = WEXITSTATUS(status);
 }

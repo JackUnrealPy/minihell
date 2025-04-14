@@ -21,6 +21,6 @@ void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe)
 	}
 	if (ft_strncmp(head->cmd[1], "-n", ft_strlen(head->cmd[1])) != 0)
 		ft_putchar_fd('\n', fd);
-	if (!pipe)
+	if (pipe)
 		close(fd);
 }

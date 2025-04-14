@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/03/25 18:56:13 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/14 20:54:20 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 					head->cmd[0]));
 	if (!head->cmd_path)
 		error_msg(hell, cmd, "Memory allocation failed", 1);
-	if (access(head->cmd_path, R_OK | X_OK) == -1)
-		error_msg(hell, cmd, "Cannot read/execute command executable", 1);
+	// if (access(head->cmd_path, R_OK | X_OK) == -1)
+	// 	error_msg(hell, cmd, "Cannot read/execute command executable", 1);
 }
 
 void	ft_freeme(char **arr)
@@ -107,7 +107,7 @@ void	children(t_proc *head, t_hell *hell, char **cmd, int i)
 			ft_putstr_fd(head->cmd[0], 2);
 			error_msg(hell, cmd, ": command not found", 127);
 		}
-		(ft_terminate(1, cmd), jump_ship(hell, errno));
+		(ft_terminate(1, cmd), jump_ship(hell, 1));
 	}
 }
 

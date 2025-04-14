@@ -13,7 +13,7 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 			if (access(tmp->pathordel, F_OK) == -1)
 			{
 				ft_putstr_fd(tmp->pathordel, 2);
-				error_msg(hell, cmd, ": no such file or directory", 1);
+				error_msg(hell, cmd, ": No such file or directory", 1);
 			}
 			input_fd = open(tmp->pathordel, O_RDONLY, 0644);
 			if (input_fd < 0)

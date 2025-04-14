@@ -123,11 +123,11 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 	{
 		if (cmd[i] == '$')
 			ft_expand(hell, proc, &cmd, i);
-		if (!ft_strncmp(cmd, "exit",4))
-		{
-			ft_terminate(1, &cmd);
-			jump_ship(hell, 0);
-		}
+		// if (!ft_strncmp(cmd, "exit",4))
+		// {
+		// 	ft_terminate(1, &cmd);
+		// 	jump_ship(hell, 0);
+		// }
 		if (ft_isspace(cmd[i]))
 			continue ;
 		else if (cmd[i] == '|')

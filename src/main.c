@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/03/28 17:28:29 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/14 23:11:50 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	main(int argc, char **argv, char **envp)
 	init(&hell, envp);
 	//init_env(&hell, envp);
 	int i = 0;
-	while (i < 1)
+	while (i < 2)
 	{
 		writeprompt();
 		cmd = get_next_line(0, &flag);
@@ -40,5 +40,5 @@ int	main(int argc, char **argv, char **envp)
 	}
 	throw_garbage(hell.freeme);
 	ft_terminate(1, &(hell.head));
-	return (0);
+	return (*hell.lastexit);
 }
