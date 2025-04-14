@@ -62,3 +62,28 @@ int	get_squote(t_hell *hell, t_proc *proc, char *quote)
 		add_to_cmdarr(hell, proc, str);
 	return (len);
 }
+
+int	get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos)
+{
+	char	*str;
+	int		len;
+	int		i;
+
+	len = 0;
+	len = get_quotelen(*cmd + pos);
+	if (!len)
+		sysntaxerr();
+	str = NULL;
+	i = 0;
+	while (++i < len)
+	{
+		if ((*cmd)[pos + i] == '$')
+		{
+			ft_expand(hell, proc, cmd, pos + i);
+			len = get_quotelen(*cmd + pos);
+		}
+	}
+	str = ft_malloc(hell, proc->freeme, ft_substr(*cmd + 1, pos, len - 1));
+	add_to_cmdarr(hell, proc, str);
+	return (len); 
+}

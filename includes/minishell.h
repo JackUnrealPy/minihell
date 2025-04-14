@@ -57,6 +57,7 @@ typedef struct	s_hell
 	int		cmd_count;
 	int		*pipe_fd;
 	char	**envp;
+	char	**localvars;
 	t_proc	**head;
 	int		lastexit;
 
@@ -96,12 +97,13 @@ int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
 void	parse(t_hell *hell, char *cmd, t_proc *proc);
-int	ft_expand(t_hell *hell, t_proc *proc, char *str);
+void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos);
 int	get_squote(t_hell *hell, t_proc *proc, char *quote);
+int	get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos);
 int		get_redir(t_hell *hell, t_proc *proc, char *str);
 void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
 void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme);
-int	get_cmdarr(t_hell *hell, char *cmds, t_proc *proc);
+int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i);
 
 
 // Alloctracker

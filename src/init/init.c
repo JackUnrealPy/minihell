@@ -27,12 +27,10 @@ int	init(t_hell *hell, char **envp)
 	hell->freeme = NULL;
 	hell->lastexit = 0;
 	hell->envp = envp;
+	hell->localvars = NULL;
 	node = malloc(sizeof(t_proc*)); 
 	if (!node)
-	{
-		ft_terminate(1, &(hell->freeme));
 		exit (1);
-	}
 	hell->head = node;
 	return (1);
 }

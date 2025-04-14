@@ -12,47 +12,50 @@
 
 # include "../../includes/minishell.h"
 
-int	ft_expand(t_hell *hell, t_proc *proc, char *str)
+char	*ft_getvar(char *str)
+{
+	return NULL;
+}
+
+// static int	expand_exit(t_hell *hell, t_proc *proc, char **str, int pos)
+// {
+
+// 	if ((*str)[pos + 1] == '?')
+// 		var = ft_malloc(hell, proc->freeme, ft_itoa(hell->lastexit));
+
+// }
+
+
+
+void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 {
 	int		i;
-	char	*token;
-	int		j;
-	int		k;
 	char	*s;
+	char	*res;
+	char	*var;
 
-	if (str[1] == '?')
-	{
-		s = ft_malloc(hell, proc->freeme, ft_itoa(hell->lastexit));
-		add_to_cmdarr(hell, proc, s);
-
-		return (ft_strlen(s));
-	}
 	i = 0;
-	while (str[++i])
+	// if (expand_exit(hell, proc, str, pos));
+	// 	return ;
+	while (*((*str) + pos + ++i))
 	{
-		if(ft_isspace(str[i]) || ismeta(str + i))
-			break;	
-	}
-	j = -1;
-	while (hell->envp[++j])
-	{
-		if (!ft_strncmp(str + 1, hell->envp[j], i - 1) && hell->envp[j][i - 1] == '=')
+		if(ft_isspace(*((*str) + pos + i)) || ismeta((*str) + pos + i))
 		{
-			k = -1;
-			while(hell->envp[j][i + ++k])
-			{
-				if (ft_isspace(hell->envp[j][i + k]))
-					continue ;
-				else if (hell->envp[j][i + k] == '$')
-					k += ft_expand(hell, proc, hell->envp[j] + i + k);
-				else if (hell->envp[j][i + k] == '\'')
-					k += get_squote(hell, proc, hell->envp[j] + i + k);
-				else
-					k += get_cmdarr(hell, hell->envp[j] + i + k, proc);
-			}
-			return (i - 1);
+			s = ft_malloc(hell, proc->freeme, ft_substr(*str, pos + 1, i - 1));
+			var = getenv(s);
+			if (!var)
+				var = ft_getvar(s);
+			break;	
 		}
-	}		
-	return (i);
-
+	}
+	if (i == 1 && *((*str) + pos) == '$')
+		var = "$";	
+	if (!var)
+		var = "";
+	res = ft_malloc(hell, proc->freeme, malloc(sizeof(char) * (ft_strlen(*str) - (i - 1) + ft_strlen(var) + 1)));
+	ft_memcpy(res, *str, pos);
+	ft_memcpy(res + pos, var, ft_strlen(var) + 1);
+	ft_memcpy(res + pos + ft_strlen(var), (*str + pos) + i , ft_strlen(*str) - (pos + i));
+	res[ft_strlen(*str) + ft_strlen(var) - i] = 0;
+	*str = res;
 }

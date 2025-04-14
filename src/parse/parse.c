@@ -81,16 +81,30 @@ void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme)
 	proc->cmd = res;
 }
 
-int	get_cmdarr(t_hell *hell, char *cmds, t_proc *proc)
+int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 {
 	int		len;
 	char	*cmd;
+	char	*cmds;
 
+	cmds = *ptr + i;
 	cmd = NULL;
 	len = 0;
-	while (cmds[len] && !ismeta(cmds + len + 1))
+	while (cmds[++len])
+	{
+		if (cmds[len] == '$')
+		{
+			if (!ft_isalpha(cmds[len + 1]) && cmds[len +1] != '?')
+				continue ;
+			ft_expand(hell, proc, ptr, len + i);
+			len == 0;
+			cmds = *ptr + i;
+		}
+	}	
+	len = 0;
+	while (cmds[len] && (!ismeta(cmds + len) || (cmds[len] == '$')))
 		len++;
-	cmd = ft_malloc(hell, proc->freeme, ft_substr(cmds, 0, len + 1));
+	cmd = ft_malloc(hell, proc->freeme, ft_substr(cmds, 0, len));
 	if (!(proc->cmd))
 		proc->cmd = (char **)ft_mallocarr(hell, proc->freeme ,(void **)ft_split(cmd, "\n\t\v\f\r "));
 	else
@@ -107,6 +121,8 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 	i = -1;
 	while (cmd[++i])
 	{
+		if (cmd[i] == '$')
+			ft_expand(hell, proc, &cmd, i);
 		if (!ft_strncmp(cmd, "exit",4))
 		{
 			ft_terminate(1, &cmd);
@@ -123,9 +139,9 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 			i += get_redir(hell, proc, cmd + i);
 		else if (cmd[i] == '\'')
 			i += get_squote(hell, proc, cmd + i);
-		else if (cmd[i] == '$')
-			i += ft_expand(hell, proc, cmd + i);
+		else if (cmd[i] == '\"')
+			i += get_dquote(hell, proc, &cmd, i);
 		else
-			i += get_cmdarr(hell, cmd + i, proc);
+			i += get_cmdarr(hell, proc, &cmd, i);
 	}
 }
