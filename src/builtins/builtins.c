@@ -20,3 +20,25 @@ int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe)
 		return(0);
 	return(1);
 }
+
+int	builtins_output(t_hell *hell, t_proc *head, char **cmd)
+{
+	int fd = 1;
+	t_redir *redirs_cpy = (*head->redirs);
+	while (redirs_cpy)
+	{
+		if (redirs_cpy->type == 1)
+			fd = open(redirs_cpy->pathordel, \
+			O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		else if (redirs_cpy->type == 2)
+			fd = open(redirs_cpy->pathordel, \
+			O_CREAT | O_WRONLY | O_APPEND, 0644);
+		if (fd < 0)
+		{
+			ft_putstr_fd(redirs_cpy->pathordel, 2);
+			error_msg(hell, cmd, ": permission denied", 1);
+		}
+		redirs_cpy = redirs_cpy->next;
+	}
+	return(fd);
+}

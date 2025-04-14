@@ -21,7 +21,7 @@ void	ft_close(t_hell *hell)
 		i++;
 	}
 	i = 0;
-	while (i < (hell->hdoc_count * 2))
+	while (i < (hell->hdoc_count[0] * 2))
 	{
 		close(hell->hdoc_fd[i]);
 		i++;
@@ -53,6 +53,7 @@ void	initialise_struct(t_hell *hell, t_proc *head)
 	t_proc *current;
 
 	hell->cmd_count = 0;
+	hell->hdoc_count[1] = 0;
 	current = head;
 	while (current)
 	{

@@ -11,7 +11,7 @@ void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 {
     // change so that pipes and single command both use same heredoc functions
     // maybe change to hidden file
-    hell->hdoc_count = 1;
+    hell->hdoc_count[0] = 1;
     char *buffer;
     char *txt = NULL;
     int flag = 0;
@@ -58,16 +58,17 @@ int	heredoc_check(t_redir *redirs)
 	return (0);
 }
 
-void	init_hdoc(t_hell *hell, t_proc *head, int i, char **cmd)
+void	init_hdoc(t_hell *hell, t_proc *head, char **cmd)
 {
 	head->hpid = fork();
 	if (head->hpid == 0)
 	{
-		heredoc(hell, head, (*head->redirs), i);
+		heredoc(hell, head, (*head->redirs), hell->hdoc_count[1]);
 		ft_terminate(1, cmd);
 		jump_ship(hell, 0);
 	}
 	waitpid(head->hpid, NULL, 0);
+	hell->hdoc_count[1]++;
 }
 
 int	hdoc_pipes(t_hell *hell, t_proc *head)
@@ -76,7 +77,7 @@ int	hdoc_pipes(t_hell *hell, t_proc *head)
 
 	(void)head;
 	i = 0;
-	while (i < hell->hdoc_count * 2)
+	while (i < hell->hdoc_count[0] * 2)
 	{
 		pipe(&hell->hdoc_fd[i]);
 		i += 2;

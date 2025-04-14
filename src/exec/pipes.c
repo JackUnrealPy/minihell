@@ -19,7 +19,7 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	int		i;
 
 	(void)redirs;
-	hell->hdoc_count = 0;
+	hell->hdoc_count[0] = 0;
 	current = head;
 	while (current)
 	{
@@ -27,7 +27,7 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 		while (tmp)
 		{
 			if (tmp && tmp->type == 3)
-				hell->hdoc_count++;
+				hell->hdoc_count[0]++;
 			tmp = tmp->next;
 		}
 		current = current->next;
@@ -35,14 +35,14 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	hell->pipe_fd = ft_malloc(hell, hell->freeme, malloc(sizeof(int)
 				* (hell->cmd_count - 1) * 2));
 	hell->hdoc_fd = (int *)ft_malloc(hell, hell->freeme, malloc(sizeof(int)
-				* hell->hdoc_count * 2));
+				* hell->hdoc_count[0] * 2));
 	i = 0;
 	while (i < hell->cmd_count - 1)
 	{
 		if (pipe(&hell->pipe_fd[i++ * 2]) == -1)
 			(ft_terminate(1, cmd), jump_ship(hell, errno)); // free, error msg
 	}
-	if (hell->hdoc_count > 0)
+	if (hell->hdoc_count[0] > 0)
 		hdoc_pipes(hell, (*hell->head));
 }
 
@@ -62,7 +62,7 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 	if (!head->cmd_path)
 		error_msg(hell, cmd, "Memory allocation failed", 1);
 	if (access(head->cmd_path, R_OK | X_OK) == -1)
-		return ; // free cmd_path, error msg
+		return ; // free, error msg -> exit or no?
 }
 
 void	ft_freeme(char **arr)
@@ -85,11 +85,10 @@ void	children(t_proc *head, t_hell *hell, char **cmd, int i)
 {
 	int	hdoc;
 
-	(void)cmd;
 	hdoc = heredoc_check((*head->redirs));
 	create_cmd(hell, head, cmd);
 	if (hdoc)
-		init_hdoc(hell, head, i, cmd);
+		init_hdoc(hell, head, cmd);
 	head->pid = fork();
 	if (head->pid == 0)
 	{

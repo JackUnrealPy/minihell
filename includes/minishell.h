@@ -57,7 +57,7 @@ typedef struct	s_hell
 	char	**test;
 	int 	argc;
 	int		cmd_count;
-	int		hdoc_count;
+	int		hdoc_count[2];
 	int		*pipe_fd;
 	int		*hdoc_fd;
 	char	**envp;
@@ -70,6 +70,7 @@ typedef struct	s_hell
 
 // builtins
 int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe);
+int	builtins_output(t_hell *hell, t_proc *head, char **cmd);
 void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_redir *redirs, int pipe);
@@ -91,7 +92,7 @@ void	ft_pipex(t_hell *hell, char **cmd);
 // heredoc
 void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
 int		heredoc_check(t_redir *redirs);
-void	init_hdoc(t_hell *hell, t_proc *head, int i, char **cmd);
+void	init_hdoc(t_hell *hell, t_proc *head, char **cmd);
 void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, int i);
 int     hdoc_pipes(t_hell *hell, t_proc *head);
 

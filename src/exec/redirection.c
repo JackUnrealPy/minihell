@@ -28,7 +28,7 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 		}
 		else if (i != -1 && tmp->type == 3)
 		{
-			if (dup2(hell->hdoc_fd[i*2 + 1], STDIN_FILENO) == -1)
+			if (dup2(hell->hdoc_fd[(hell->hdoc_count[1]*2)-2], STDIN_FILENO) == -1)
 				error_msg(hell, cmd, "dup2 failed", 1);
 			return ;
 		}
