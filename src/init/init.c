@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/04/14 21:28:40 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/15 19:40:09 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,9 @@ int	init(t_hell *hell, char **envp)
 
 	hell->freeme = malloc(sizeof(t_free *));
     (*hell->freeme) = NULL;
-	hell->lastexit = malloc(sizeof(int));
-	(*hell->lastexit) = 0;
+	hell->lastexit = 0;
 	hell->test = ft_double_strdup(hell, envp, NULL);
-    hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)hell->test); // not properly freed for cmd "echo hello | cat -e" -> any pipes involving builtins for some reason
+    hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)hell->test);
 	node = malloc(sizeof(t_proc*)); 
 	if (!node)
 	{

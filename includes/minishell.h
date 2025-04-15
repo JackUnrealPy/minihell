@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/04/14 20:58:25 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/15 19:36:23 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ typedef struct	s_hell
 	char	**localvars;
 	char	**envp;
 	t_proc	**head;
-	int		*lastexit;
+	int		lastexit;
 
 }	t_hell;
 
@@ -77,6 +77,7 @@ int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_redir *redirs, int pipe);
 void ft_unset(char **envp, char *var_to_delete);
 void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int pipe);
+void	ft_export(t_hell *hell, t_proc *head, char **cmd);
 
 // environment vars
 char **	ft_double_strdup(t_hell *hell, char **envp, char **cmd);

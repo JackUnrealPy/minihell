@@ -53,7 +53,7 @@ void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int is_pipe)
 	// 	error_msg(hell, cmd, "exit\nexit: too many arguments", 1);
 	// else
 	// 	num = 0;
-	(*hell->lastexit) = num;
+	hell->lastexit = num;
 	if (!is_pipe)
 	{
 		ft_putendl_fd("exit", 1);
@@ -85,7 +85,7 @@ void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int is_pipe)
 // 		error_msg(hell, cmd, "exit\nexit: too many arguments", 1);
 // 	else
 // 		num = 0;
-// 	(*hell->lastexit) = num;
+// 	hell->lastexit = num;
 // 	if (!is_pipe)
 // 	{
 // 		ft_putendl_fd("exit", 1);

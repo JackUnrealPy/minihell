@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/14 21:20:10 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/15 19:37:51 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,5 @@ void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 	}
 	if (waitpid(head->pid, &status, 0) == -1)
 		error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(status));
-	*(hell->lastexit) = WEXITSTATUS(status);
+	hell->lastexit = WEXITSTATUS(status);
 }

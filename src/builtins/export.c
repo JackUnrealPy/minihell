@@ -1,91 +1,99 @@
-/* #include "../../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-void	env_export(char **my_envp, int fd)
+char	**ft_realloc_envp(char **envp, int new_element, char *new);
+
+void	print_var(char *var_to_print)
 {
-	int	a;
-	int	b;
+	int	i;
 	int	start_quote;
 
-	a = 0;
-	while (my_envp[a])
+	i = 0;
+	ft_putstr_fd("declare -x ", 1);
+	start_quote = 1;
+	while (var_to_print[i])
 	{
-		b = 0;
-		ft_putstr_fd("declare -x ", fd);
-		start_quote = 1;
-		while (my_envp[a][b])
+		ft_putchar_fd(var_to_print[i], 1);
+		if (var_to_print[i] == '=' && start_quote)
 		{
-			ft_putchar_fd(my_envp[a][b], fd);
-			if (my_envp[a][b] == '=' && start_quote)
-			{
-				ft_putchar_fd('"', fd);
-				start_quote = 0;
-			}
-			if (my_envp[a][b + 1] == '\0')
-				ft_putchar_fd('"', fd);
-			b++;
+			ft_putchar_fd('"', 1);
+			start_quote = 0;
 		}
-		ft_putstr_fd("\n", fd);
+		if (var_to_print[i + 1] == '\0')
+			ft_putchar_fd('"', 1);
+		i++;
+	}
+	ft_putstr_fd("\n", 1);
+}
+
+void	print_export(char **envp)
+{
+	int	a;
+
+	a = 0;
+	while (envp[a])
+	{
+		print_var(envp[a]);
 		a++;
 	}
 }
-
-void	close_pipes(int pipe1, int pipe2, int exitnum)
+ 
+void	sort_export(char **envp)
 {
-	close(pipe1);
-	close(pipe2);
-	if (exitnum > 0)
-		exit(exitnum);
-}
-void	ft_export(char **my_envp)
-{
-	int		pipe_fd[2];
-	int		status;
-	pid_t	pid[2];
-	char	*args[] = {"sort", NULL};
-
-	if (pipe(pipe_fd) == -1)
+    int a = 0;
+	char *old_smallest;
+	old_smallest = NULL;
+	char *new_smallest;
+	while (1)
 	{
-		perror("pipe");
-		exit(1);
+		new_smallest = NULL;
+		a = 0;
+		while (envp[a])
+		{
+			if ((!new_smallest || (strcmp(new_smallest, envp[a]) > 0)) && \
+			(!old_smallest || strcmp(old_smallest, envp[a]) < 0) && \
+			((envp[a][0] >= 'A' && envp[a][0] <= 'Z') || (envp[a][0] >= 'a' && envp[a][0] <= 'z')))
+				new_smallest = envp[a];
+			a++;
+		}
+		if (!new_smallest)
+			break;
+		print_var(new_smallest);
+		old_smallest = new_smallest;
 	}
-	pid[0] = fork();
-	if (pid[0] == 0)
-	{
-		if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-			close_pipes(pipe_fd[0], pipe_fd[1], errno);
-		close_pipes(pipe_fd[0], pipe_fd[1], 0);
-		env_export(my_envp, STDOUT_FILENO);
-		exit(0);
-	}
-	pid[1] = fork();
-	if (pid[1] == 0)
-	{
-		if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-			close_pipes(pipe_fd[0], pipe_fd[1], errno);
-		close_pipes(pipe_fd[0], pipe_fd[1], 0);
-		execve("/bin/sort", args, my_envp);
-		exit(0);
-	}
-	close_pipes(pipe_fd[0], pipe_fd[1], 0);
-	waitpid(pid[0], &status, 0);
-	waitpid(pid[1], &status, 0);
 }
 
-char	**export_var(char **argv, char **my_envp, t_list *env_lst)
+int    add_envp_var(t_hell *hell, t_proc *head, char **cmd)
 {
-	//add_list_element(env_lst, argv[1]);
-	my_envp = ft_realloc_envp(my_envp, 1, argv[1]);
-	return(my_envp);
+	int i = 1;
+	int error = 0;
+    if (head->cmd && head->cmd[0] && !head->cmd[1])
+		return (0);
+    if (head->cmd[1][0] == 0 || (head->cmd[1][0] != '_' && !ft_isalpha(head->cmd[1][0])))
+		error = 1;
+	while (head->cmd[1][0] != 0 && head->cmd[1][i] && head->cmd[1][i] != '=')
+	{
+		if (!ft_isalnum(head->cmd[1][i]) && head->cmd[1][i] != '_')
+		{
+			error = 1;
+			break;
+		}
+		i++;
+	}
+	if (error)
+	{
+		ft_putstr_fd("export: `", 2);
+        ft_putstr_fd(head->cmd[1], 2);
+        error_msg(hell, cmd, "': not a valid identifier", 1);
+	}
+    hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)ft_realloc_envp(hell->envp, 1, head->cmd[1]));
+	return (1);
 }
 
-char	**export_init(int argc, char **argv, char **my_envp)
+void	ft_export(t_hell *hell, t_proc *head, char **cmd)
 {
-	//t_list *env_lst = create_env_list(envp);
-	if (argc > 2)
-		my_envp = export_var(argv + 1, my_envp, NULL);
-	ft_export(my_envp);
-	return(my_envp);
-	
-	//ft_lstclear(&env_lst, del);
+	output_redirection(hell, head, cmd, -1);
+    if (add_envp_var(hell, head, cmd))
+		return ;
+	if (head->cmd && head->cmd[0] && !head->cmd[1])
+    	sort_export(hell->envp);
 }
- */

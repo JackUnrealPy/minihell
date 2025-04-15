@@ -4,10 +4,10 @@ void	error_msg(t_hell *hell, char **cmd, char *error, int exitcode)
 {
 	if (error)
 		ft_putendl_fd(error, STDERR_FILENO);
-	(*hell->lastexit) = exitcode;
+	hell->lastexit = exitcode;
 	if (cmd)
 		ft_terminate(1, cmd);
-	jump_ship(hell, exitcode);
+	jump_ship(hell, exitcode); // dont use jump_ship -> exits, instead break out of executor loop
 }
 
 void	ft_close(t_hell *hell)
@@ -46,7 +46,7 @@ void	ft_wait(t_hell *hell, char **cmd)
 		else
 			break ;
 	}
-	*(hell->lastexit) = WEXITSTATUS(wstatus);
+	hell->lastexit = WEXITSTATUS(wstatus);
 }
 
 void	initialise_struct(t_hell *hell, t_proc *head)
