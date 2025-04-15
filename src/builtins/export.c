@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/15 21:57:31 by nrumpfhu          #+#    #+#             */
+/*   Updated: 2025/04/15 22:00:36 by nrumpfhu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 char	**ft_realloc_envp(char **envp, int new_element, char *new);
@@ -36,64 +48,69 @@ void	print_export(char **envp)
 		a++;
 	}
 }
- 
+
 void	sort_export(char **envp)
 {
-    int a = 0;
-	char *old_smallest;
+	int		a;
+	char	*old_smallest;
+	char	*new_smallest;
+
+	a = 0;
 	old_smallest = NULL;
-	char *new_smallest;
 	while (1)
 	{
 		new_smallest = NULL;
 		a = 0;
 		while (envp[a])
 		{
-			if ((!new_smallest || (strcmp(new_smallest, envp[a]) > 0)) && \
-			(!old_smallest || strcmp(old_smallest, envp[a]) < 0) && \
-			((envp[a][0] >= 'A' && envp[a][0] <= 'Z') || (envp[a][0] >= 'a' && envp[a][0] <= 'z')))
+			if ((!new_smallest || (strcmp(new_smallest, envp[a]) > 0)) \
+			&& (!old_smallest || strcmp(old_smallest, envp[a]) < 0) \
+			&& ((envp[a][0] >= 'A' && envp[a][0] <= 'Z') \
+			|| (envp[a][0] >= 'a' && envp[a][0] <= 'z')))
 				new_smallest = envp[a];
 			a++;
 		}
 		if (!new_smallest)
-			break;
+			break ;
 		print_var(new_smallest);
 		old_smallest = new_smallest;
 	}
 }
 
-int    add_envp_var(t_hell *hell, t_proc *head, char **cmd)
+int	add_envp_var(t_hell *hell, t_proc *head, char **cmd)
 {
-	int i = 1;
-	int error = 0;
-    if (head->cmd && head->cmd[0] && !head->cmd[1])
+	int	i;
+	int	error;
+
+	i = 1;
+	error = 0;
+	if (head->cmd && head->cmd[0] && !head->cmd[1])
 		return (0);
-    if (head->cmd[1][0] == 0 || (head->cmd[1][0] != '_' && !ft_isalpha(head->cmd[1][0])))
+	if (head->cmd[1][0] == 0 || (head->cmd[1][0] != '_' \
+	&& !ft_isalpha(head->cmd[1][0])))
 		error = 1;
 	while (head->cmd[1][0] != 0 && head->cmd[1][i] && head->cmd[1][i] != '=')
 	{
 		if (!ft_isalnum(head->cmd[1][i]) && head->cmd[1][i] != '_')
-		{
 			error = 1;
-			break;
-		}
 		i++;
 	}
 	if (error)
 	{
 		ft_putstr_fd("export: `", 2);
-        ft_putstr_fd(head->cmd[1], 2);
-        error_msg(hell, cmd, "': not a valid identifier", 1);
+		ft_putstr_fd(head->cmd[1], 2);
+		error_msg(hell, cmd, "': not a valid identifier", 1);
 	}
-    hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)ft_realloc_envp(hell->envp, 1, head->cmd[1]));
+	hell->envp = (char **)ft_mallocarr(hell, hell->freeme, \
+		(void **)ft_realloc_envp(hell->envp, 1, head->cmd[1]));
 	return (1);
 }
 
 void	ft_export(t_hell *hell, t_proc *head, char **cmd)
 {
 	output_redirection(hell, head, cmd, -1);
-    if (add_envp_var(hell, head, cmd))
+	if (add_envp_var(hell, head, cmd))
 		return ;
 	if (head->cmd && head->cmd[0] && !head->cmd[1])
-    	sort_export(hell->envp);
+		sort_export(hell->envp);
 }
