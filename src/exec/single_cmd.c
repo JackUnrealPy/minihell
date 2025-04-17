@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/16 23:35:51 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/17 22:28:52 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 		execve(head->cmd_path, head->cmd, hell->envp);
 		ft_putstr_fd(head->cmd[0], 2);
 		error_msg(hell, cmd, ": command not found", 127);
-		return ;
+		exit(127);
 	}
+	if (hell->exec_error)
+		return;
 	if (waitpid(head->pid, &status, 0) == -1)
 		error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(status));
 	hell->lastexit = WEXITSTATUS(status);
