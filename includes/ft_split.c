@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 12:03:58 by agara             #+#    #+#             */
-/*   Updated: 2025/03/04 21:59:38 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/17 22:06:26 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static char	*getword(char const *s, char *charset)
 		if (inset(charset, s[i]))
 			break ;
 	}
-	res = malloc(sizeof(char) * i + 1);
+	res = malloc(sizeof(char) * (i + 1));
 	if (!res)
 		return (NULL);
 	i = -1;
@@ -83,24 +83,28 @@ char	**ft_split(char const *s, char *charset)
 	int		i;
 	int		j;
 
-	if (!s)
+	if (!s || !s[0])
 		return (NULL);
 	if (!countwords(s, charset))
 		return (NULL);
 	res = malloc(sizeof(char *) * (countwords(s, charset) + 1));
 	if (!res)
 		return (NULL);
-	i = -1;
-	j = -1;
-	while (s[++i])
+	i = 0;
+	j = 0;
+	while (s[i])
 	{
 		if (!inset(charset, s[i]))
 		{
-			res[++j] = getword(s + i, charset);
-			i += ft_strlen(res[j]);
+			res[j++] = getword(s + i, charset);
+			while (s[i] && !inset(charset, s[i]))
+				i++; // i incrementation was wrong before
 		}
+		else
+			i++;
 	}
-	res[j + 1] = NULL;
+	res[j] = NULL; // here it was j + 1
+
 	return (res);
 }
 

@@ -119,7 +119,7 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 	int		i;
 	
 	i = -1;
-	while (cmd[++i])
+	while (cmd && cmd[++i])
 	{
 		if (cmd[i] == '$')
 			ft_expand(hell, proc, &cmd, i);
