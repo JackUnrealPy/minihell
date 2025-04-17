@@ -12,42 +12,9 @@
 
 #include "../includes/minishell.h"
 
-int	main(int argc, char **argv, char **envp)
-{
-	char	*cmd;
-	t_hell	hell;
-	int		flag;
-
-	(void)argc;
-	(void)argv;
-	flag = 0;
-	cmd = NULL;
-	init(&hell, envp);
-	int i = 0;
-	while (i < 4)
-	{
-		writeprompt();
-		cmd = get_next_line(0, &flag);
-		local_init(&hell, cmd);
-		parse(&hell, cmd, *(hell.head));
-		//print_list(*(hell.head));
-		loop_cmds(&hell, &cmd);
-		ft_terminate(1, &cmd);
-		close_proc(&hell);
-		i++;
-	}
-	throw_garbage(hell.freeme);
-	ft_terminate(1, &(hell.head));
-	return (hell.lastexit);
-}
-
-/* 
+#include "../includes/minishell.h"
 #include <readline/readline.h>
 #include <readline/history.h>
-
-// i think this is how readline works
-// adapt makefile and add flags -lreadline -lhistory
-// some memory issues from parsing
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -73,4 +40,34 @@ int	main(int argc, char **argv, char **envp)
 	throw_garbage(hell.freeme);
 	ft_terminate(1, &(hell.head));
 	return (0);
-} */
+}
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	char	*cmd;
+// 	t_hell	hell;
+// 	int		flag;
+
+// 	(void)argc;
+// 	(void)argv;
+// 	flag = 0;
+// 	cmd = NULL;
+// 	init(&hell, envp);
+// 	int i = 0;
+// 	while (i < 4)
+// 	{
+// 		writeprompt();
+// 		cmd = get_next_line(0, &flag);
+// 		local_init(&hell, cmd);
+// 		parse(&hell, cmd, *(hell.head));
+// 		//print_list(*(hell.head));
+// 		loop_cmds(&hell, &cmd);
+// 		ft_terminate(1, &cmd);
+// 		close_proc(&hell);
+// 		i++;
+// 	}
+// 	throw_garbage(hell.freeme);
+// 	ft_terminate(1, &(hell.head));
+// 	return (hell.lastexit);
+// }
+
