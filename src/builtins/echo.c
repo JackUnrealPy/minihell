@@ -9,6 +9,8 @@ void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe)
 	i = 1;
 	if (!pipe)
 		fd = builtins_output(hell, head, cmd);
+	if (!fd)
+		return ;
 	if (head->cmd[1] && ft_strncmp(head->cmd[1], "-n", \
 		ft_strlen(head->cmd[1])) == 0)
 		i = 2;

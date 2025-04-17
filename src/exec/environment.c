@@ -12,13 +12,20 @@ char	**ft_double_strdup(t_hell *hell, char **envp, char **cmd)
 	b = a;
 	my_env = malloc((a + 1) * sizeof(char *));
 	if (!my_env)
+	{
 		error_msg(hell, cmd, "Memory allocation failed", 1);
+		return (NULL);
+	}
 	a = 0;
 	while (a < b)
 	{
 		my_env[a] = ft_strdup(envp[a]);
 		if (!my_env[a])
+		{
 			error_msg(hell, cmd, "Memory allocation failed", 1);
+			ft_freeme(my_env);
+			return (NULL);
+		}
 		a++;
 	}
 	my_env[a] = NULL;

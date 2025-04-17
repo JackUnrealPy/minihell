@@ -26,11 +26,15 @@ void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int is_pipe)
 			num = ft_atoi(head->cmd[i]); // custom atoi: jump over any zero directly after +/-, compare with atol, count length (after zeros etc)
 			//printf("num: %i", num);
 			if (i > 1 && head->cmd[i])
-				error_msg(hell, cmd, "exit: too many arguments", 1); // bash prints another exit\n here, tester doesnt like it
+			{
+				error_msg(hell, cmd, "exit: too many arguments", 1);
+				return ;
+			}
 			if (!string_is_digit(head->cmd[i]) || ft_strncmp(head->cmd[i], "\0", ft_strlen(head->cmd[i])) == 0)
 			{
 				(ft_putstr_fd("exit: ", 2), ft_putstr_fd(head->cmd[1], 2), ft_putendl_fd(": numeric argument required", 2));
 				error_msg(hell, cmd, NULL, 2);
+				return ;
 			}
 			i++;
 		}
@@ -57,8 +61,11 @@ void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int is_pipe)
 	if (!is_pipe)
 	{
 		ft_putendl_fd("exit", 1);
-		ft_terminate(1, cmd);
+		if (cmd)
+			ft_terminate(1, cmd);
 		jump_ship(hell, num);
+		// ft_terminate(1, cmd);
+		// jump_ship(hell, num);
 	}
 }
 

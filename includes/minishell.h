@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/04/15 19:36:23 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/16 23:27:09 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct	s_hell
 	int 	argc;
 	int		cmd_count;
 	int		hdoc_count[2];
+	int		exec_error;
 	int		*pipe_fd;
 	int		*hdoc_fd;
 	char	**localvars;

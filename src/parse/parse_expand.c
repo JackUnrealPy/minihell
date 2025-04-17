@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_redir.c                                      :+:      :+:    :+:   */
+/*   parse_expand.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/03/28 17:53:44 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/17 04:15:38 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,14 @@ char	*ft_getvar(char *str)
 
 // static int	expand_exit(t_hell *hell, t_proc *proc, char **str, int pos)
 // {
-
+// 	(void)proc;
 // 	if ((*str)[pos + 1] == '?')
-// 		var = ft_malloc(hell, proc->freeme, ft_itoa(hell->lastexit));
+// 	{
+// 		printf("%i", hell->lastexit);
+// 		return (1);
+// 		//var = ft_malloc(hell, proc->freeme, ft_itoa(hell->lastexit));
+// 	}
+// 	return (0);
 
 // }
 
@@ -33,10 +38,10 @@ void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 	int		i;
 	char	*s;
 	char	*res;
-	char	*var;
+	char	*var = NULL;
 
 	i = 0;
-	// if (expand_exit(hell, proc, str, pos));
+	// if (expand_exit(hell, proc, str, pos))
 	// 	return ;
 	while (*((*str) + pos + ++i))
 	{

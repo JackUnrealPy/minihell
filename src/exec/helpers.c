@@ -5,9 +5,11 @@ void	error_msg(t_hell *hell, char **cmd, char *error, int exitcode)
 	if (error)
 		ft_putendl_fd(error, STDERR_FILENO);
 	hell->lastexit = exitcode;
-	if (cmd)
-		ft_terminate(1, cmd);
-	jump_ship(hell, exitcode); // dont use jump_ship -> exits, instead break out of executor loop
+	hell->exec_error = 1;
+	(void)cmd;
+	// if (cmd)
+	// 	ft_terminate(1, cmd);
+	// jump_ship(hell, exitcode);
 }
 
 void	ft_close(t_hell *hell)
@@ -30,17 +32,25 @@ void	ft_close(t_hell *hell)
 
 void	ft_wait(t_hell *hell, char **cmd)
 {
-	int		wstatus;
+	int		wstatus = 0;
 	t_proc	*head_cpy;
 
 	head_cpy = (*hell->head);
 	while (head_cpy)
 	{
 		if (waitpid(head_cpy->pid, &wstatus, 0) == -1)
+		{
 			error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(wstatus));
-		if ((*head_cpy->redirs) && (*head_cpy->redirs)->type == 3
-			&& waitpid(head_cpy->hpid, &wstatus, 0) == 1)
-			error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(wstatus));
+			//return ;
+		}
+		if ((*head_cpy->redirs) && (*head_cpy->redirs)->type == 3)
+		{
+			if (waitpid(head_cpy->hpid, &wstatus, 0) == -1)
+			{
+				error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(wstatus));
+				//return ;
+			}
+		}
 		if (head_cpy && head_cpy->next)
 			head_cpy = head_cpy->next;
 		else

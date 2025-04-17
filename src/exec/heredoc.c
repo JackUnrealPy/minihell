@@ -37,6 +37,11 @@ void	single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	}
 	output_redirection(hell, head, cmd, -1);
 	create_cmd(hell, head, cmd);
+	if (hell->exec_error)
+	{
+		free(txt);
+		return ;
+	}
 	if (head->cmd_path && ft_strncmp(head->cmd_path, "/bin/cat", 8) == 0)
 	{
 		ft_putstr_fd(txt, 1);
@@ -71,6 +76,8 @@ void	init_hdoc(t_hell *hell, t_proc *head, char **cmd)
 	if (head->hpid == 0)
 	{
 		heredoc(hell, head, (*head->redirs), cmd);
+		if (hell->exec_error)
+			return ;
 		ft_terminate(1, cmd);
 		jump_ship(hell, 0);
 	}
@@ -101,7 +108,10 @@ void	heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	i = hell->hdoc_count[1];
 	flag = 0;
 	if (dup2(hell->hdoc_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
+	{
 		error_msg(hell, cmd, "dup2 failed", 1);
+		return ;
+	}
 	while (1)
 	{
 		write(STDIN_FILENO, "> ", 2);

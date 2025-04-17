@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
+/*   Updated: 2025/04/17 17:54:30 by nrumpfhu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
@@ -20,9 +32,13 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 			{
 				ft_putstr_fd(tmp->pathordel, 2);
 				error_msg(hell, cmd, ": permission denied", 1);
+				return ;
 			}
 			if (dup2(input_fd, STDIN_FILENO) == -1)
+			{
 				error_msg(hell, cmd, "dup2 failed", 1);
+				return ;
+			}
 			close(input_fd);
 			return ;
 		}
@@ -62,9 +78,13 @@ void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 			{
 				ft_putstr_fd(tmp->pathordel, 2);
 				error_msg(hell, cmd, ": permission denied", 1);
+				return ;
 			}
 			if (dup2(output_fd, STDOUT_FILENO) == -1)
+			{
 				error_msg(hell, cmd, "dup2 failed", 1);
+				return ;
+			}
 			close(output_fd);
 			return ;
 		}

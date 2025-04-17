@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 21:57:31 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/15 22:00:36 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/17 01:20:46 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ int	add_envp_var(t_hell *hell, t_proc *head, char **cmd)
 		ft_putstr_fd("export: `", 2);
 		ft_putstr_fd(head->cmd[1], 2);
 		error_msg(hell, cmd, "': not a valid identifier", 1);
+		return (0);
 	}
 	hell->envp = (char **)ft_mallocarr(hell, hell->freeme, \
 		(void **)ft_realloc_envp(hell->envp, 1, head->cmd[1]));
@@ -109,7 +110,7 @@ int	add_envp_var(t_hell *hell, t_proc *head, char **cmd)
 void	ft_export(t_hell *hell, t_proc *head, char **cmd)
 {
 	output_redirection(hell, head, cmd, -1);
-	if (add_envp_var(hell, head, cmd))
+	if (add_envp_var(hell, head, cmd) || hell->exec_error)
 		return ;
 	if (head->cmd && head->cmd[0] && !head->cmd[1])
 		sort_export(hell->envp);

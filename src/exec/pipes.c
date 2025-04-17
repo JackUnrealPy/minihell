@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/14 20:54:20 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/17 03:58:25 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,11 @@ void	children(t_proc *head, t_hell *hell, char **cmd, int i)
 	hdoc = heredoc_check((*head->redirs));
 	create_cmd(hell, head, cmd);
 	if (hdoc)
+	{
 		init_hdoc(hell, head, cmd);
+		if (hell->exec_error)
+			return;
+	}
 	head->pid = fork();
 	if (head->pid == 0)
 	{
@@ -123,6 +127,8 @@ void	ft_pipex(t_hell *hell, char **cmd)
 	while (i < hell->cmd_count)
 	{
 		children(head_cpy, hell, cmd, i);
+		if (hell->exec_error)
+			return ;
 		i++;
 		if (i < hell->cmd_count)
 			head_cpy = head_cpy->next;
