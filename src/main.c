@@ -23,21 +23,22 @@ int	main(int argc, char **argv, char **envp)
 	flag = 0;
 	cmd = NULL;
 	init(&hell, envp);
-	int i = -1;
-	while (1)
+	int i = 0;
+	while (i < 4)
 	{
 		writeprompt();
 		cmd = get_next_line(0, &flag);
 		local_init(&hell, cmd);
 		parse(&hell, cmd, *(hell.head));
-		print_list(*(hell.head));
+		//print_list(*(hell.head));
+		loop_cmds(&hell, &cmd);
 		ft_terminate(1, &cmd);
 		close_proc(&hell);
-		
+		i++;
 	}
 	throw_garbage(hell.freeme);
 	ft_terminate(1, &(hell.head));
-	return (0);
+	return (hell.lastexit);
 }
 
 /* 

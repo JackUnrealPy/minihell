@@ -97,7 +97,7 @@ int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 			if (!ft_isalpha(cmds[len + 1]) && cmds[len +1] != '?')
 				continue ;
 			ft_expand(hell, proc, ptr, len + i);
-			len == 0;
+			len = 0;
 			cmds = *ptr + i;
 		}
 	}	
@@ -123,11 +123,11 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 	{
 		if (cmd[i] == '$')
 			ft_expand(hell, proc, &cmd, i);
-		if (!ft_strncmp(cmd, "exit",4))
-		{
-			ft_terminate(1, &cmd);
-			jump_ship(hell, 0);
-		}
+		// if (!ft_strncmp(cmd, "exit",4))
+		// {
+		// 	ft_terminate(1, &cmd);
+		// 	jump_ship(hell, 0);
+		// }
 		if (ft_isspace(cmd[i]))
 			continue ;
 		else if (cmd[i] == '|')

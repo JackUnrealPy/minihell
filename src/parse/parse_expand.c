@@ -14,6 +14,7 @@
 
 char	*ft_getvar(char *str)
 {
+	(void)str;
 	return NULL;
 }
 

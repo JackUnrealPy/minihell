@@ -40,6 +40,7 @@ void	**ft_mallocarr(t_hell *hell, t_free **head, void **obj)
 
 void	*ft_malloc(t_hell *hell, t_free **head, void *obj)
 {
+	(void)hell;
 	t_free	*new;
 
 	if (!obj)

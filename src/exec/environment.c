@@ -1,50 +1,63 @@
 #include "../../includes/minishell.h"
 
-void	ft_double_strdup(t_hell *hell, char **envp)
+char	**ft_double_strdup(t_hell *hell, char **envp, char **cmd)
 {
 	int		a;
 	int		b;
+	char	**my_env;
 
 	a = 0;
 	while (envp[a])
 		a++;
 	b = a;
-	hell->envp = ft_calloc(a + 1, sizeof(char *));
+	my_env = malloc((a + 1) * sizeof(char *));
+	if (!my_env)
+	{
+		error_msg(hell, cmd, "Memory allocation failed", 1);
+		return (NULL);
+	}
 	a = 0;
 	while (a < b)
 	{
-		hell->envp[a] = ft_strdup(envp[a]);
+		my_env[a] = ft_strdup(envp[a]);
+		if (!my_env[a])
+		{
+			error_msg(hell, cmd, "Memory allocation failed", 1);
+			ft_freeme(my_env);
+			return (NULL);
+		}
 		a++;
 	}
-	hell->envp[a] = NULL;
+	my_env[a] = NULL;
+	return (my_env);
 }
 
-// char	**ft_realloc_envp(char **envp, int new_element, char *new)
-// {
-// 	int		a;
-// 	int		b;
-// 	char	**cpy;
+char	**ft_realloc_envp(char **envp, int new_element, char *new)
+{
+	int		a;
+	int		b;
+	char	**cpy;
 
-// 	a = 0;
-// 	while (args[a])
-// 		a++;
-// 	b = a + new_element;
-// 	cpy = ft_calloc(a + new_element + 1, sizeof(char *));
-// 	if (!cpy)
-// 		return(NULL);
-// 	a = 0;
-// 	while (a < b)
-// 	{
-// 		if ((a == b - 1) && new_element)
-// 			cpy[a] = ft_strdup(new); // add protection
-// 		else
-// 			cpy[a] = ft_strdup(args[a]); // add protection
-// 		a++;
-// 	}
-// 	cpy[a] = NULL;
-// 	ft_freedata(args);
-// 	return (cpy);
-// }
+	a = 0;
+	while (envp[a])
+		a++;
+	b = a + new_element;
+	cpy = ft_calloc(a + new_element + 1, sizeof(char *));
+	if (!cpy)
+		return(NULL);
+	a = 0;
+	while (a < b)
+	{
+		if ((a == b - 1) && new_element)
+			cpy[a] = ft_strdup(new); // add protection
+		else
+			cpy[a] = ft_strdup(envp[a]); // add protection
+		a++;
+	}
+	cpy[a] = NULL;
+	//ft_freedata(envp);
+	return (cpy);
+}
 
 // // void add_list_element(t_list *a, void *content)
 // // {
@@ -66,25 +79,11 @@ void	ft_double_strdup(t_hell *hell, char **envp)
 // // 	return (env_lst);
 // // }
 
-void print_list(t_proc *a)
-{
-	t_redir	*reds;
-	int		i;
-
-	while (a)
-	{
-		if (a->cmd && *(a->cmd))
-		{
-			i = -1;
-			while (a->cmd[++i])
-				printf("cmd [%d]:{%s}\n", i, a->cmd[i]);
-		}
-		reds = *(a->redirs);
-		while (reds)
-		{
-			printf("reds [%d]:{%s}\n", reds->type, reds->pathordel);
-			reds = reds->next;
-		}	
-		a = a->next;
-	}
-}
+// // void print_list(t_list *a)
+// // {
+// // 	while (a->next)
+// // 	{
+// // 		printf("%s\n", (char *)a->content);
+// // 		a = a->next;
+// // 	}
+// // }
