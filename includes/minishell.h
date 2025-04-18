@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/04/16 23:27:09 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/18 21:43:22 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <errno.h>
 # include <string.h>
 
+extern int	g_sig_flag;
 // linked list with all the stuff to free
 typedef struct	s_free
 {

@@ -40,7 +40,7 @@ void	ft_wait(t_hell *hell, char **cmd)
 	{
 		if (waitpid(head_cpy->pid, &wstatus, 0) == -1)
 		{
-			error_msg(hell, cmd, "waitpid failed1", WEXITSTATUS(wstatus));
+			error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(wstatus));
 			//return ;
 		}
 		// if ((*head_cpy->redirs) && (*head_cpy->redirs)->type == 3)
