@@ -40,17 +40,17 @@ void	ft_wait(t_hell *hell, char **cmd)
 	{
 		if (waitpid(head_cpy->pid, &wstatus, 0) == -1)
 		{
-			error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(wstatus));
+			error_msg(hell, cmd, "waitpid failed1", WEXITSTATUS(wstatus));
 			//return ;
 		}
-		if ((*head_cpy->redirs) && (*head_cpy->redirs)->type == 3)
-		{
-			if (waitpid(head_cpy->hpid, &wstatus, 0) == -1)
-			{
-				error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(wstatus));
-				//return ;
-			}
-		}
+		// if ((*head_cpy->redirs) && (*head_cpy->redirs)->type == 3)
+		// {
+		// 	if (waitpid(head_cpy->hpid, &wstatus, 0) == -1)
+		// 	{
+		// 		error_msg(hell, cmd, "waitpid failed2", WEXITSTATUS(wstatus));
+		// 		return ;
+		// 	}
+		// }
 		if (head_cpy && head_cpy->next)
 			head_cpy = head_cpy->next;
 		else

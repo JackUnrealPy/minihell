@@ -72,6 +72,7 @@ int	heredoc_check(t_redir *redirs)
 
 void	init_hdoc(t_hell *hell, t_proc *head, char **cmd)
 {
+	int wstatus = 0;
 	head->hpid = fork();
 	if (head->hpid == 0)
 	{
@@ -81,7 +82,8 @@ void	init_hdoc(t_hell *hell, t_proc *head, char **cmd)
 		ft_terminate(1, cmd);
 		jump_ship(hell, 0);
 	}
-	waitpid(head->hpid, NULL, 0);
+	if (waitpid(head->hpid, NULL, 0) == -1)
+		error_msg(hell, cmd, "waitpid failedddd", WEXITSTATUS(wstatus));
 	hell->hdoc_count[1]++;
 }
 

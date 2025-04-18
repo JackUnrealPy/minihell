@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/17 22:28:52 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/18 17:51:10 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
 	int	status = 0;
-
+	if (!head->cmd)
+		return ;
 	hell->cmd_count = 1;
 	create_cmd(hell, head, cmd);
 	head->pid = fork();
@@ -28,6 +29,7 @@ void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 		error_msg(hell, cmd, ": command not found", 127);
 		exit(127);
 	}
+	//error_msg(hell, cmd, ": command not found", 127);
 	if (hell->exec_error)
 		return;
 	if (waitpid(head->pid, &status, 0) == -1)
