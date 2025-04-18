@@ -15,7 +15,8 @@
 void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
 	int	status = 0;
-
+	if (!head->cmd)
+		return ;
 	hell->cmd_count = 1;
 	create_cmd(hell, head, cmd);
 	head->pid = fork();
