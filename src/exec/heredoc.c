@@ -28,7 +28,7 @@ void	single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 		buffer = get_next_line(0, &flag);
 		if (!buffer)
 			return ;
-		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer) - 1) == 0)
+		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(redirs->pathordel)) == 0)
 		{
 			free(buffer);
 			break ;
@@ -44,8 +44,11 @@ void	single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	}
 	if (head->cmd_path && ft_strncmp(head->cmd_path, "/bin/cat", 8) == 0)
 	{
-		ft_putstr_fd(txt, 1);
-		free(txt);
+		if (txt)
+		{
+			ft_putstr_fd(txt, 1);
+			free(txt);
+		}
 		return ;
 	}
 	free(txt);

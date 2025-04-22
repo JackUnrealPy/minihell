@@ -93,6 +93,8 @@ int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 	len = 0;
 	while (cmds[++len])
 	{
+		if (cmds[len] == '<' || cmds[len] == '>' || cmds[len] == '|')
+			break;
 		if (cmds[len] == '\'')
 			len += get_quotelen(cmds + len); 
 		if (cmds[len] == '$')
