@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_redir.c                                      :+:      :+:    :+:   */
+/*   parse_expand.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/03/28 17:53:44 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/22 19:05:14 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ char	*ft_getvar(char *str)
 	return NULL;
 }
 
-// static int	expand_exit(t_hell *hell, t_proc *proc, char **str, int pos)
-// {
+static char	*expand_exit(t_hell *hell, t_proc *proc)
+{
+	char	*var;
 
-// 	if ((*str)[pos + 1] == '?')
-// 		var = ft_malloc(hell, proc->freeme, ft_itoa(hell->lastexit));
-
-// }
-
+		var = NULL;
+		var = ft_malloc(hell, proc->freeme, ft_itoa(hell->lastexit));
+	return	(var);
+}
 
 
 void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
@@ -36,17 +36,24 @@ void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 	char	*var;
 
 	i = 0;
-	// if (expand_exit(hell, proc, str, pos));
-	// 	return ;
-	while (*((*str) + pos + ++i))
+	var = NULL;
+	if ((*str)[pos + 1] == '?')
 	{
-		if(ft_isspace(*((*str) + pos + i)) || ismeta((*str) + pos + i))
+		var = expand_exit(hell, proc);
+		i = 2;
+	}
+	else
+	{
+		while (++i)
 		{
-			s = ft_malloc(hell, proc->freeme, ft_substr(*str, pos + 1, i - 1));
-			var = getenv(s);
-			if (!var)
-				var = ft_getvar(s);
-			break;	
+			if(!(*((*str) + pos + i)) || ft_isspace(*((*str) + pos + i)) || ismeta((*str) + pos + i))
+			{
+				s = ft_malloc(hell, proc->freeme, ft_substr(*str, pos + 1, i - 1));
+				var = getenv(s);
+				if (!var)
+					var = ft_getvar(s);
+				break;	
+			}
 		}
 	}
 	if (i == 1 && *((*str) + pos) == '$')
