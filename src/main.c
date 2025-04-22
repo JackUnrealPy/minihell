@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/03/28 17:28:29 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/22 21:08:07 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(int argc, char **argv, char **envp)
         add_history(cmd);
 		local_init(&hell, cmd);
 		parse(&hell, cmd, *(hell.head));
-		//print_list(*(hell.head));
+		// print_list(*(hell.head));
 		loop_cmds(&hell, &cmd);
 		ft_terminate(1, &cmd);
 		close_proc(&hell);

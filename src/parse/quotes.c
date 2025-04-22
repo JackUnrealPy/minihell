@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_redir.c                                      :+:      :+:    :+:   */
+/*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/03/28 17:53:44 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/22 21:03:02 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../includes/minishell.h"
 
-static int	get_quotelen(char *cmd)
+int	get_quotelen(char *cmd)
 {
 	int	i;
 	int	inquote;
@@ -84,6 +84,9 @@ int	get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 		}
 	}
 	str = ft_malloc(hell, proc->freeme, ft_substr(*cmd + 1, pos, len - 1));
-	add_to_cmdarr(hell, proc, str);
+	if (!proc->cmd)
+		proc->cmd = (char **)ft_mallocarr(hell, proc->freeme ,(void **)ft_split(*cmd, "\n\t\v\f\r\" "));
+	else
+		add_to_cmdarr(hell, proc, str);
 	return (len); 
 }
