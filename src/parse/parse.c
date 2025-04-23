@@ -81,6 +81,7 @@ void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme)
 	proc->cmd = res;
 }
 
+
 int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 {
 	int		len;
@@ -92,6 +93,10 @@ int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 	len = 0;
 	while (cmds[++len])
 	{
+		if (cmds[len] == '<' || cmds[len] == '>' || cmds[len] == '|')
+			break;
+		if (cmds[len] == '\'')
+			len += get_quotelen(cmds + len); 
 		if (cmds[len] == '$')
 		{
 			if (!ft_isalpha(cmds[len + 1]) && cmds[len +1] != '?')
@@ -119,7 +124,7 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 	int		i;
 	
 	i = -1;
-	while (cmd && cmd[++i])
+	while (cmd[++i])
 	{
 		if (cmd[i] == '$')
 			ft_expand(hell, proc, &cmd, i);
