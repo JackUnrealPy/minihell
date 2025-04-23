@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/04/22 21:03:02 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/23 18:56:40 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ int	get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 		{
 			ft_expand(hell, proc, cmd, pos + i);
 			len = get_quotelen(*cmd + pos);
+			if (!len)
+				sysntaxerr();
 		}
 	}
 	str = ft_malloc(hell, proc->freeme, ft_substr(*cmd + 1, pos, len - 1));

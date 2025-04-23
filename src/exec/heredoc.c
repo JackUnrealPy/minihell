@@ -35,6 +35,16 @@ void	single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 		}
 		txt = ft_realloc(txt, buffer);
 	}
+
+
+	// if (redirs->type == 4)
+	// int i = 0;
+	// while (txt[i] && txt[i] != '$')
+	// 	i++;
+	// ft_expand(hell, head, &txt, i);
+
+
+
 	output_redirection(hell, head, cmd, -1);
 	create_cmd(hell, head, cmd);
 	if (hell->exec_error)
@@ -47,11 +57,11 @@ void	single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 		if (txt)
 		{
 			ft_putstr_fd(txt, 1);
-			free(txt);
+			// free(txt);
 		}
 		return ;
 	}
-	free(txt);
+	// free(txt);
 	if (head->cmd_path)
 	{
 		if (!determine_builtin(hell, (*hell->head), cmd, 0))
