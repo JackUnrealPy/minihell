@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/04/22 21:03:23 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/23 20:37:00 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ typedef struct	s_hell
 	int		exec_error;
 	int		*pipe_fd;
 	int		*hdoc_fd;
-	char	**localvars;
 	char	**envp;
 	t_proc	**head;
 	int		lastexit;
