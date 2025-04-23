@@ -43,8 +43,6 @@ void	single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	// 	i++;
 	// ft_expand(hell, head, &txt, i);
 
-
-
 	output_redirection(hell, head, cmd, -1);
 	create_cmd(hell, head, cmd);
 	if (hell->exec_error)
