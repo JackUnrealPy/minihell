@@ -3,18 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/04/22 21:32:38 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/23 17:37:30 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-#include "../includes/minishell.h"
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <signal.h>
+
+int g_sig_flag=0;
+
+void handle_sig(int sig)
+{
+	g_sig_flag = sig;
+	printf("\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -25,13 +35,22 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	cmd = NULL;
 	init(&hell, envp);
+	signal(SIGINT, handle_sig);
+	signal(SIGQUIT, SIG_IGN);
     while (1)
     {
         cmd = readline("minishell> ");
-        add_history(cmd);
+		if (!cmd)
+			break;
+		if (g_sig_flag == SIGINT)
+		{
+			hell.lastexit = 130;
+			g_sig_flag = 0;
+		}
+		add_history(cmd);
 		local_init(&hell, cmd);
 		parse(&hell, cmd, *(hell.head));
-		print_list(*(hell.head));
+		//print_list(*(hell.head));
 		loop_cmds(&hell, &cmd);
 		ft_terminate(1, &cmd);
 		close_proc(&hell);
@@ -39,7 +58,7 @@ int	main(int argc, char **argv, char **envp)
     rl_clear_history();
 	throw_garbage(hell.freeme);
 	ft_terminate(1, &(hell.head));
-	return (0);
+	return (hell.lastexit);
 }
 
 // int	main(int argc, char **argv, char **envp)
@@ -53,8 +72,9 @@ int	main(int argc, char **argv, char **envp)
 // 	flag = 0;
 // 	cmd = NULL;
 // 	init(&hell, envp);
+// 	//init_env(&hell, envp);
 // 	int i = 0;
-// 	while (i < 4)
+// 	while (i < 2)
 // 	{
 // 		writeprompt();
 // 		cmd = get_next_line(0, &flag);
@@ -70,4 +90,3 @@ int	main(int argc, char **argv, char **envp)
 // 	ft_terminate(1, &(hell.head));
 // 	return (hell.lastexit);
 // }
-
