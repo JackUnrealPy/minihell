@@ -11,9 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
+
 
 int g_sig_flag=0;
 

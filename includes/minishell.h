@@ -21,6 +21,9 @@
 # include <linux/limits.h>
 # include <errno.h>
 # include <string.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <signal.h>
 
 // linked list with all the stuff to free
 typedef struct	s_free
