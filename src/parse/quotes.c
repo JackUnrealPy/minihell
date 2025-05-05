@@ -43,25 +43,31 @@ int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 	char	*res;
 	int		len;
 
+	res = NULL;
 	len = 1;
 	while (*(*cmd + len + pos) && *(*cmd + pos + len) != *(*cmd+pos))
 		len++;
 	len ++;
 	str = NULL;
 	if (*(*cmd+pos) == '\'')
+	{
 		str =  get_squote(hell, proc, *cmd + pos);
+		res = ft_malloc(hell, proc->freeme, malloc(sizeof(char) * ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
+		ft_memcpy(res, *cmd, pos);
+		ft_memcpy(res + pos, str, ft_strlen(str));
+		ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + len, ft_strlen(*cmd + pos + len));
+	}
 	else
+	{
 		str = get_dquote(hell, proc, cmd , pos);
-	printf("str: [%s]",str);
-	res = ft_malloc(hell, proc->freeme, malloc(sizeof(char) * ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
-	ft_memcpy(res, *cmd, pos);
-	ft_memcpy(res + pos, str, ft_strlen(str));
-	printf("res :[%s]\n", res);
-	ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + len, ft_strlen(*cmd + pos + len));
+		res = ft_malloc(hell, proc->freeme, malloc(sizeof(char) * ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
+		ft_memcpy(res, *cmd, pos);
+		ft_memcpy(res + pos, str, ft_strlen(str));
+		ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + ft_strlen(str) + 2, ft_strlen(*cmd + pos + ft_strlen(str) + 2));
+	}
 	res[(ft_strlen(*cmd) - len) + ft_strlen(str) ] = 0;
-	printf("res :[%s]\n", res);
 	*cmd = res;
-	return (ft_strlen(str));
+	return (ft_strlen(str) - 1);
 	
 }
 

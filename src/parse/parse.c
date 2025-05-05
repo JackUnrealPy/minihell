@@ -85,7 +85,6 @@ char **parse_export(t_hell *hell, t_proc *proc, char* cmd)
 {
 	int		i;
 	int		j;
-	int		len;
 	char	**res;
 
 	res = NULL;
@@ -100,14 +99,12 @@ char **parse_export(t_hell *hell, t_proc *proc, char* cmd)
 	j = i;
 	while (cmd[j])
 	{
-		len = 0;
-		if (cmd[j] == '\"')
-		{
-			len = get_quotelen(cmd + j);
-		}
+		if (cmd[j] == '\"' || cmd[j] == '\'')
+			j += handle_quote(hell, proc, &cmd, j);
+		else
+			j++;
 	}
-	(void)len;
-	printf("str:[%s]",cmd + i);
+	res[1] = ft_malloc(hell, proc->freeme, ft_strdup(cmd + i));
 	return (res);
 }
 
@@ -130,11 +127,9 @@ int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 		{
 			len += handle_quote(hell, proc, ptr ,i + len);
 			cmds = *ptr + i;
-			printf("cmdarr [%s]len[%d]\n", cmds, len);
 		}
 		else if (cmds[len] == '$')
 		{
-			printf("WHAAAT :[%s]\n", cmds + len);
 			if (!ft_isalpha(cmds[len + 1]) && cmds[len +1] != '?')
 				continue ;
 			ft_expand(hell, proc, ptr, len + i);
@@ -146,9 +141,9 @@ int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 	while (cmds[len] && (!ismeta(cmds + len) || (cmds[len] == '$')))
 		len++;
 	cmd = ft_malloc(hell, proc->freeme, ft_substr(cmds, 0, len));
-	// if (ft_strlen(cmd) >= 7 && !ft_strncmp(cmd, "export", 6) && ft_isspace(cmd[6]))
-	// 	processed_cmds = parse_export(hell, proc, cmd);
-	// else
+	if (ft_strlen(cmd) >= 7 && !ft_strncmp(cmd, "export", 6) && ft_isspace(cmd[6]))
+		processed_cmds = parse_export(hell, proc, cmd);
+	else
 		processed_cmds = (char **)ft_mallocarr(hell, proc->freeme ,(void **)ft_split(cmd, "\n\t\v\f\r "));
 	if (!(proc->cmd))
 		proc->cmd = processed_cmds;
@@ -178,7 +173,7 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 		else if (cmd[i] == '>' || cmd[i] == '<')
 			i += get_redir(hell, proc, cmd + i);
 		else if (cmd[i] == '\"'|| cmd[i] == '\'')
-			handle_quote(hell, proc, &cmd , i--);
+			handle_quote(hell, proc, &cmd , i);
 		else
 			i += get_cmdarr(hell, proc, &cmd, i);
 	}
