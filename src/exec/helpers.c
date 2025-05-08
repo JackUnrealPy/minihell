@@ -19,8 +19,6 @@ void	ft_close(t_hell *hell)
 		close(hell->pipe_fd[i]);
 		i++;
 	}
-	// if (hell->hdoc_count > 0)
-	// 	close(hell->hdoc_fd);
 }
 
 void	ft_wait(t_hell *hell, char **cmd)
@@ -36,12 +34,17 @@ void	ft_wait(t_hell *hell, char **cmd)
 			error_msg(hell, cmd, "waitpid failed 1", WEXITSTATUS(wstatus));
 			return ;
 		}
-		if (head_cpy && head_cpy->next)
-			head_cpy = head_cpy->next;
-		else
-			break ;
+		head_cpy = head_cpy->next;
 	}
 	hell->lastexit = WEXITSTATUS(wstatus);
+	head_cpy = (*hell->head);
+	while (head_cpy)
+	{
+		if (head_cpy->hdoc_present && head_cpy->hdoc_tmpfile)
+			unlink(head_cpy->hdoc_tmpfile);
+		head_cpy = head_cpy->next;
+	} 
+
 }
 
 void	initialise_struct(t_hell *hell, t_proc *head)
@@ -49,7 +52,6 @@ void	initialise_struct(t_hell *hell, t_proc *head)
 	t_proc *current;
 
 	hell->cmd_count = 0;
-	// hell->hdoc_count = heredoc_check((*head->redirs));
 	current = head;
 	while (current)
 	{

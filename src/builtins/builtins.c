@@ -18,6 +18,8 @@ int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe)
 		ft_exit(hell, head, cmd, pipe);
 	else
 		return(0);
+	if (!hell->exec_error)
+		hell->lastexit = 0;
 	return (1);
 
 }
@@ -42,5 +44,6 @@ int	builtins_output(t_hell *hell, t_proc *head, char **cmd)
 		}
 		redirs_cpy = redirs_cpy->next;
 	}
+	hell->lastexit = 0;
 	return(fd);
 }

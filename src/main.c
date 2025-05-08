@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/05/08 14:43:34 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/08 19:08:15 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void handle_sig(int sig)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
+
+
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -51,6 +53,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(cmd);
 		local_init(&hell, cmd);
 		parse(&hell, cmd, *(hell.head));
+		//printf("cmd[0]: %s\n cmd[1]: %s\n", (*hell.head)->cmd[0], (*hell.head)->cmd[1]);
 		// print_list(*(hell.head));
 		loop_cmds(&hell, &cmd);
 		ft_terminate(1, &cmd);

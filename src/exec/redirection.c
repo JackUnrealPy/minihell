@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/08 14:49:00 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/08 18:55:33 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,13 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 	{
 		if (tmp->type == 3)
 		{
-			close(hell->hdoc_fd);
-			hell->hdoc_fd = open("temp_hdoc", O_RDONLY);
-			//ft_putstr_fd(head->cmd[0], hell->hdoc_fd);
-			if (dup2(hell->hdoc_fd, STDIN_FILENO) == -1)
+			head->hdoc_fd = open(head->hdoc_tmpfile, O_RDONLY); // check return
+			if (dup2(head->hdoc_fd, STDIN_FILENO) == -1)
 			{
 				error_msg(hell, cmd, "dup2 failed 5", 1);
 				return ;
 			}
-			close(hell->hdoc_fd);
+			close(head->hdoc_fd);
 			return ;
 		}
 		else if (tmp && tmp->type == 0)
@@ -39,6 +37,7 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 			{
 				ft_putstr_fd(tmp->pathordel, 2);
 				error_msg(hell, cmd, ": No such file or directory", 1);
+				exit(1);
 			}
 			input_fd = open(tmp->pathordel, O_RDONLY, 0644);
 			if (input_fd < 0)

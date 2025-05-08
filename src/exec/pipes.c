@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/08 15:00:20 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/08 17:57:32 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	ft_pipex(t_hell *hell, char **cmd)
 	initialise_struct(hell, (*hell->head));
 	while (head_cpy)
 	{
-		heredoc(hell, (*head_cpy->redirs));
+		head_cpy->hdoc_present = heredoc(hell, head_cpy, (*head_cpy->redirs));
 		if (hell->exec_error || hell->lastexit == 130)
 			return ;
 		head_cpy = head_cpy->next;

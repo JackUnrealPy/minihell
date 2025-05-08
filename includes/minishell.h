@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/08 15:00:02 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/08 17:55:44 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,9 @@ typedef	struct	s_proc
 	char			**cmd;
 	char			*cmd_path;
 	pid_t			pid;
+	int				hdoc_present;
+	char			*hdoc_tmpfile;
+	int				hdoc_fd;
 	struct s_proc	*next;
 	struct s_proc	*prev;
 }	t_proc;
@@ -60,8 +63,6 @@ typedef struct	s_hell
 	char	**test;
 	int 	argc;
 	int		cmd_count;
-	int		hdoc_count;
-	int		hdoc_fd;
 	int		exec_error;
 	int		*pipe_fd;
 	char	**localvars;
@@ -100,7 +101,7 @@ void	ft_pipex(t_hell *hell, char **cmd);
 void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
 int		heredoc_check(t_redir *redirs);
 void	init_hdoc(t_hell *hell, t_proc *head, char **cmd);
-void    heredoc(t_hell *hell, t_redir *redirs);
+int    heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
 int     hdoc_pipes(t_hell *hell, t_proc *head);
 
 // redirection
