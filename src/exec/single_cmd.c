@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/18 17:51:10 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/08 15:10:17 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
+	heredoc(hell, (*head->redirs));
+	if (determine_builtin(hell, (*hell->head), cmd, 0))
+		return ;
 	int	status = 0;
 	if (!head->cmd)
 		return ;
@@ -29,7 +32,6 @@ void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 		error_msg(hell, cmd, ": command not found", 127);
 		exit(127);
 	}
-	//error_msg(hell, cmd, ": command not found", 127);
 	if (hell->exec_error)
 		return;
 	if (waitpid(head->pid, &status, 0) == -1)

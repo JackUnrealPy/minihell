@@ -1,11 +1,15 @@
 #include "../../includes/minishell.h"
 
-void	ft_cd(char **argv)
+void	ft_cd(t_hell *hell, t_proc *head, char **cmd)
 {
-	(void)argv;
-	//char *path = ft_strjoin(argv[])
-	if (chdir("/workspaces/minihell/src") != 0)
-		exit(errno);
+	if (chdir(head->cmd[1]) != 0)
+    {
+        ft_putstr_fd("cd: ", 2);
+        ft_putstr_fd(head->cmd[1], 2);
+		error_msg(hell, cmd, ": No such file or directory", 1);
+    }
+    (void)cmd;
+    (void)hell;
 }
 
 // change working directory

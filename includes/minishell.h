@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/04/22 21:03:23 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/08 15:00:02 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <sys/ioctl.h>
 
 // linked list with all the stuff to free
 typedef struct	s_free
@@ -47,7 +48,6 @@ typedef	struct	s_proc
 	char			**cmd;
 	char			*cmd_path;
 	pid_t			pid;
-	pid_t			hpid;
 	struct s_proc	*next;
 	struct s_proc	*prev;
 }	t_proc;
@@ -60,10 +60,10 @@ typedef struct	s_hell
 	char	**test;
 	int 	argc;
 	int		cmd_count;
-	int		hdoc_count[2];
+	int		hdoc_count;
+	int		hdoc_fd;
 	int		exec_error;
 	int		*pipe_fd;
-	int		*hdoc_fd;
 	char	**localvars;
 	char	**envp;
 	t_proc	**head;
@@ -82,6 +82,7 @@ int	ft_pwd(t_redir *redirs, int pipe);
 void ft_unset(char **envp, char *var_to_delete);
 void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int pipe);
 void	ft_export(t_hell *hell, t_proc *head, char **cmd);
+void	ft_cd(t_hell *hell, t_proc *head, char **cmd);
 
 // environment vars
 char **	ft_double_strdup(t_hell *hell, char **envp, char **cmd);
@@ -99,7 +100,7 @@ void	ft_pipex(t_hell *hell, char **cmd);
 void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
 int		heredoc_check(t_redir *redirs);
 void	init_hdoc(t_hell *hell, t_proc *head, char **cmd);
-void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
+void    heredoc(t_hell *hell, t_redir *redirs);
 int     hdoc_pipes(t_hell *hell, t_proc *head);
 
 // redirection

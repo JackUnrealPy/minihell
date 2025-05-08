@@ -8,7 +8,7 @@ SRC = src/main.c \
 	src/init/init.c src/init/prompt.c \
 	src/exit/exit.c \
 	src/utils/string_utils.c src/utils/alloc_utils.c src/utils/process_utils.c src/utils/list_utils.c \
-	src/builtins/builtins.c src/builtins/echo.c src/builtins/env.c src/builtins/pwd.c src/builtins/export.c src/builtins/unset.c src/builtins/exit.c
+	src/builtins/builtins.c src/builtins/echo.c src/builtins/env.c src/builtins/pwd.c src/builtins/export.c src/builtins/unset.c src/builtins/exit.c src/builtins/cd.c
 
 OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
 

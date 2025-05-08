@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/04/18 21:55:37 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/08 14:43:34 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,10 @@ int	main(int argc, char **argv, char **envp)
     {
         cmd = readline("minishell> ");
 		if (!cmd)
+		{
+			printf("exit\n");
 			break;
+		}
 		if (g_sig_flag == SIGINT)
 		{
 			hell.lastexit = 130;
@@ -48,7 +51,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(cmd);
 		local_init(&hell, cmd);
 		parse(&hell, cmd, *(hell.head));
-		//print_list(*(hell.head));
+		// print_list(*(hell.head));
 		loop_cmds(&hell, &cmd);
 		ft_terminate(1, &cmd);
 		close_proc(&hell);
@@ -58,33 +61,3 @@ int	main(int argc, char **argv, char **envp)
 	ft_terminate(1, &(hell.head));
 	return (hell.lastexit);
 }
-
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	char	*cmd;
-// 	t_hell	hell;
-// 	int		flag;
-
-// 	(void)argc;
-// 	(void)argv;
-// 	flag = 0;
-// 	cmd = NULL;
-// 	init(&hell, envp);
-// 	//init_env(&hell, envp);
-// 	int i = 0;
-// 	while (i < 2)
-// 	{
-// 		writeprompt();
-// 		cmd = get_next_line(0, &flag);
-// 		local_init(&hell, cmd);
-// 		parse(&hell, cmd, *(hell.head));
-// 		//print_list(*(hell.head));
-// 		loop_cmds(&hell, &cmd);
-// 		ft_terminate(1, &cmd);
-// 		close_proc(&hell);
-// 		i++;
-// 	}
-// 	throw_garbage(hell.freeme);
-// 	ft_terminate(1, &(hell.head));
-// 	return (hell.lastexit);
-// }
