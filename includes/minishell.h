@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/08 17:55:44 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/09 16:46:19 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,9 @@ void	writeprompt(void);
 
 void	parse(t_hell *hell, char *cmd, t_proc *proc);
 void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos);
-int	get_squote(t_hell *hell, t_proc *proc, char *quote);
-int	get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos);
+int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos);
+char	*get_squote(t_hell *hell, t_proc *proc, char *quote);
+char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos);
 int	get_quotelen(char *cmd);
 int		get_redir(t_hell *hell, t_proc *proc, char *str);
 void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);

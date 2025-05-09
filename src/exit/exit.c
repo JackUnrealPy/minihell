@@ -19,8 +19,9 @@ void	jump_ship(t_hell *hell, short int exitcode)
 	exit(exitcode);
 }
 
-void	sysntaxerr()
+void	sysntaxerr(t_hell *hell)
 {
 	perror("syntax error");
+	hell->lastexit = 2;
 	exit(2);
 }

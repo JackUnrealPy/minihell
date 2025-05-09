@@ -18,13 +18,15 @@
 
 void	ft_cd(t_hell *hell, t_proc *head, char **cmd)
 {
-    update_env(hell, hell->envp, "zz", "hello1");
-    return ;
+    // update_env(hell, hell->envp, "zz", "hello1");
+    // return ;
     if (!head->cmd[1])
         chdir(getenv("HOME")); // go home -> figure out how
     else if (head->cmd[1][0] == '-')
     {
         chdir(getenv("OLDPWD"));
+        // pwd = oldpwd;
+        // oldpwd = pwd;
     }
 	else if (chdir(head->cmd[1]) != 0)
     {

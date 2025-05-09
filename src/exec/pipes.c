@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/08 17:57:32 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/09 19:00:13 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,26 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	}
 }
 
+char	*ft_getenv(char *key, char **envp)
+{
+	char *value = NULL;
+	int i = 0;
+	int a = 0;
+    int len = strlen(key);
+	while (envp[i])
+	{
+		if (strncmp(envp[i], key, len) == 0 && envp[i][len] == '=')
+		{
+            a = 1;
+            while (envp[i] && envp[i][a+len] && envp[i][a+len] != '\n')
+                a++;
+            value = ft_substr(envp[i], len + 1, a - 1);
+		}
+        i++;
+	}
+	return(value);
+}
+
 void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
 	if (!head->cmd)
@@ -34,7 +54,9 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 		head->cmd_path = NULL;
 		return ;
 	}
-	if (ft_strncmp(head->cmd[0], "/bin/", 5) == 0 || ft_strncmp(head->cmd[0],
+	else if (ft_strchr(head->cmd[0], '/'))
+		head->cmd_path = ft_strdup(head->cmd[0]);
+	else if (ft_strncmp(head->cmd[0], "/bin/", 5) == 0 || ft_strncmp(head->cmd[0],
 			"/usr/bin/", 9) == 0 || ft_strncmp(head->cmd[0], "../", 3) == 0)
 		head->cmd_path = ft_malloc(hell, head->freeme, ft_strdup(head->cmd[0]));
 	else
