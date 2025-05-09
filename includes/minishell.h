@@ -64,6 +64,7 @@ typedef struct	s_hell
 	char	**envp;
 	t_proc	**head;
 	int		lastexit;
+	int		syntaxerr;
 
 }	t_hell;
 
@@ -139,12 +140,14 @@ void	throw_garbage(t_free **head);
 // clears all memory and exits
 void	jump_ship(t_hell *hell, short int exitcode);
 
-void	sysntaxerr();
 //	Utils
 // 		Proc utils
 void	close_proc(t_hell *hell);
 t_proc	*create_proc(t_hell *hell);
 void	addproc(t_proc **head, t_proc *next);
+
+// 		Exit utils
+void	sysntaxerr(t_hell *hell, char token);
 
 //		String utils
 void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);

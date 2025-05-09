@@ -31,27 +31,27 @@ void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme)
 }
 
 
-// int	pipecommandcheck(t_proc **head)
-// {
-// 	t_proc	*node;
+int	pipecommandcheck(t_proc **head)
+{
+	t_proc	*node;
 
-// 	if (!*head)
-// 		return (-1);
-// 	node = *head;
-// 	while (node->next)
-// 		node = node->next;
-// 	if (node->input)
-// 		return 1;
-// 	return 0;
-// }
+	if (!*head)
+		return (-1);
+	node = *head;
+	while (node->next)
+		node = node->next;
+	if (node->cmd)
+		return 1;
+	return 0;
+}
 
 void	handlepipe(t_hell *hell, char *cmd, int i, t_proc *proc)
 {
 	t_proc	*next;
 	
 	next = NULL;
-	// if (!pipecommandcheck(hell->head))
-	// 	sysntaxerr();
+	if (!pipecommandcheck(hell->head))
+		return (sysntaxerr(hell, *(cmd + i)));
 	if (cmd[i + 1])
 		next = create_proc(hell);
 	addproc(hell->head ,next);
@@ -161,6 +161,8 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 	i = -1;
 	while (cmd[++i])
 	{
+		if (hell->syntaxerr)
+			return ;
 		if (cmd[i] == '$')
 			ft_expand(hell, proc, &cmd, i);
 		if (ft_isspace(cmd[i]))

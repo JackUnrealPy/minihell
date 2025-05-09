@@ -36,6 +36,7 @@ int	init(t_hell *hell, char **envp)
 	t_proc	**node;
 
 	hell->lastexit = 0;
+	hell->syntaxerr = 0;
 	hell->exec_error = 0;
 	hell->freeme = malloc(sizeof(t_free *));
     (*hell->freeme) = NULL;

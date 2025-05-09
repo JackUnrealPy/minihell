@@ -47,8 +47,10 @@ static int	fill_redir(t_hell *hell, t_proc *proc, char *str, t_redir *new)
 		new->pathordel[i] = str[j + i];
 		i++;
 	}
-	if (qflag[0] % 2 || qflag[1] % 2)
-		sysntaxerr();
+	if (qflag[0] % 2)
+		return (sysntaxerr(hell, '\''), 0);
+	else if (qflag[1] % 2)
+		return (sysntaxerr(hell, '\"'), 0);
 	if (new->type == 3 && !qflag[0] && !qflag[1])
 		new->type = 4;
 	return (i + j);
@@ -75,6 +77,8 @@ static t_redir	*create_redir(t_hell *hell, t_proc *proc, char *str, int *res)
 	else if (str[0] == '>')
 		new->type = 1;
 	*res += fill_redir(hell, proc, (str + (*res)), new);
+	if (ismeta(str + *res - 1))
+		sysntaxerr(hell, str[*res - 1]);
 	return (new);
 }
 

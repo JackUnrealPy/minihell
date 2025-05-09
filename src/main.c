@@ -50,8 +50,13 @@ int	main(int argc, char **argv, char **envp)
 		add_history(cmd);
 		local_init(&hell, cmd);
 		parse(&hell, cmd, *(hell.head));
-		print_list(*(hell.head));
-		loop_cmds(&hell, &cmd);
+		if (!hell.syntaxerr)
+		{
+			print_list(*(hell.head));
+			loop_cmds(&hell, &cmd);
+		}
+		else
+			hell.syntaxerr = 0;
 		ft_terminate(1, &cmd);
 		close_proc(&hell);
     }
