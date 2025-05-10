@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/17 22:28:52 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/10 13:16:08 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,25 @@
 
 void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
+	head->hdoc_present = heredoc(hell, head, (*head->redirs));
+	if (determine_builtin(hell, (*hell->head), cmd, 0))
+		return ;
 	int	status = 0;
 	if (!head->cmd)
+	{
+		hell->lastexit = 0;
 		return ;
+	}
 	hell->cmd_count = 1;
-	create_cmd(hell, head, cmd);
+	
 	head->pid = fork();
 	if (head->pid == 0)
 	{
 		input_redirection(hell, head, cmd, -1);
 		output_redirection(hell, head, cmd, -1);
+		create_cmd(hell, head, cmd);
+		if (hell->exec_error)
+			exit(127);
 		execve(head->cmd_path, head->cmd, hell->envp);
 		ft_putstr_fd(head->cmd[0], 2);
 		error_msg(hell, cmd, ": command not found", 127);
@@ -34,4 +43,6 @@ void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 	if (waitpid(head->pid, &status, 0) == -1)
 		error_msg(hell, cmd, "waitpid failed", WEXITSTATUS(status));
 	hell->lastexit = WEXITSTATUS(status);
+	if (head->hdoc_present)
+		unlink(head->hdoc_tmpfile);
 }

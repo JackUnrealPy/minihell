@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/17 17:54:30 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/08 18:55:33 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,24 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 	tmp = (*head->redirs);
 	while (tmp)
 	{
-		if (tmp && tmp->type == 0)
+		if (tmp->type == 3)
+		{
+			head->hdoc_fd = open(head->hdoc_tmpfile, O_RDONLY); // check return
+			if (dup2(head->hdoc_fd, STDIN_FILENO) == -1)
+			{
+				error_msg(hell, cmd, "dup2 failed 5", 1);
+				return ;
+			}
+			close(head->hdoc_fd);
+			return ;
+		}
+		else if (tmp && tmp->type == 0)
 		{
 			if (access(tmp->pathordel, F_OK) == -1)
 			{
 				ft_putstr_fd(tmp->pathordel, 2);
 				error_msg(hell, cmd, ": No such file or directory", 1);
+				exit(1);
 			}
 			input_fd = open(tmp->pathordel, O_RDONLY, 0644);
 			if (input_fd < 0)
@@ -36,25 +48,22 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 			}
 			if (dup2(input_fd, STDIN_FILENO) == -1)
 			{
-				error_msg(hell, cmd, "dup2 failed", 1);
+				error_msg(hell, cmd, "dup2 failed 4", 1);
 				return ;
 			}
 			close(input_fd);
-			return ;
+			//return ;
 		}
-		else if (i != -1 && tmp->type == 3)
-		{
-			if (dup2(hell->hdoc_fd[(hell->hdoc_count[1] * 2) - 2],
-					STDIN_FILENO) == -1)
-				error_msg(hell, cmd, "dup2 failed", 1);
-			return ;
-		}
+
 		tmp = tmp->next;
 	}
 	if (i > 0 && hell->pipe_fd)
 	{
 		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
-			error_msg(hell, cmd, "dup2 failed", 1);
+		{
+			printf("i: %i\n", i);
+			error_msg(hell, cmd, "dup2 failed 3", 1);
+		}
 	}
 }
 
@@ -82,7 +91,7 @@ void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 			}
 			if (dup2(output_fd, STDOUT_FILENO) == -1)
 			{
-				error_msg(hell, cmd, "dup2 failed", 1);
+				error_msg(hell, cmd, "dup2 failed 2", 1);
 				return ;
 			}
 			close(output_fd);
@@ -93,6 +102,7 @@ void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 	if (i != -1 && i != hell->cmd_count - 1)
 	{
 		if (dup2(hell->pipe_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
-			error_msg(hell, cmd, "dup2 failed", 1);
+			error_msg(hell, cmd, "dup2 failed 8", 1);
 	}
+
 }

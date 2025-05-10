@@ -113,7 +113,7 @@ char	*get_next_line(int fd, int *flag)
 {
 	static char	*buf = NULL;
 	char		*line;
-
+	
 	line = NULL;
 	if (*flag == -1)
 		return (ft_terminate(1, &buf), NULL);

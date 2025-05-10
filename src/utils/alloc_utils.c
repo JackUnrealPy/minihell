@@ -25,6 +25,7 @@ static void	add_garbage(t_free **head, t_free *node)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = node;
+	//tmp->next = NULL;
 }
 
 void	**ft_mallocarr(t_hell *hell, t_free **head, void **obj)

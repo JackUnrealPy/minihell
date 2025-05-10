@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/04/17 01:31:58 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/08 13:39:58 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	local_init(t_hell *hell, char *cmd)
 	(void)cmd;
 	proc = create_proc(hell);
 	*(hell->head) = proc;
+	hell->exec_error = 0;
 }
 
 void	env_init(t_hell *hell, char **envp)
