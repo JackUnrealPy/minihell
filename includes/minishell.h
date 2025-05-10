@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/10 12:45:53 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/10 14:23:05 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ typedef struct	s_hell
 	char	**envp;
 	t_proc	**head;
 	int		lastexit;
-
+	int		syntaxerr;
 }	t_hell;
 
 // EXECUTION
@@ -146,7 +146,6 @@ void	throw_garbage(t_free **head);
 // clears all memory and exits
 void	jump_ship(t_hell *hell, short int exitcode);
 
-void	sysntaxerr();
 //	Utils
 // 		Proc utils
 void	close_proc(t_hell *hell);
@@ -157,6 +156,9 @@ void	addproc(t_proc **head, t_proc *next);
 void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
 int		ft_isspace(char c);
 int		ismeta(char *c);
+
+// 		Exit utils
+void	sysntaxerr(t_hell *hell, char token);
 
 // dev		tooks for development
 void 	print_list(t_proc *a);

@@ -6,16 +6,26 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/04/22 19:05:14 by agara            ###   ########.fr       */
+/*   Updated: 2025/04/23 21:50:38 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../includes/minishell.h"
 
-char	*ft_getvar(char *str)
+char	*ft_getvar(t_hell *hell, t_proc *proc, char *str)
 {
-	(void)str;
-	return NULL;
+	char	*res;
+	int		i;
+
+	res = NULL;	
+	i = -1;
+	while(hell->envp[++i])
+	{
+		if (!ft_strncmp(hell->envp[i], str, ft_strlen(str)) && hell->envp[i][ft_strlen(str)] == '=')
+			res = ft_malloc(hell, proc->freeme, ft_substr(hell->envp[i], ft_strlen(str) + 1, ft_strlen(hell->envp[i]) - ft_strlen(str)));
+	}
+
+	return (res);
 }
 
 static char	*expand_exit(t_hell *hell, t_proc *proc)
@@ -51,7 +61,7 @@ void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 				s = ft_malloc(hell, proc->freeme, ft_substr(*str, pos + 1, i - 1));
 				var = getenv(s);
 				if (!var)
-					var = ft_getvar(s);
+					var = ft_getvar(hell, proc, s);
 				break;	
 			}
 		}

@@ -19,9 +19,13 @@ void	jump_ship(t_hell *hell, short int exitcode)
 	exit(exitcode);
 }
 
-void	sysntaxerr(t_hell *hell)
+void	sysntaxerr(t_hell *hell, char token)
 {
-	perror("syntax error");
+	if (hell->syntaxerr)
+		return ;
+	ft_putstr_fd("syntax error near unexpected token `", 2);
+	ft_putchar_fd(token, 2);
+	ft_putstr_fd("\'\n", 2);
+	hell->syntaxerr = 1;
 	hell->lastexit = 2;
-	exit(2);
 }

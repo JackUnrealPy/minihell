@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/05/10 12:42:54 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:03:08 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,12 @@ int	main(int argc, char **argv, char **envp)
 		parse(&hell, cmd, *(hell.head));
 		// printf("cmd[0]: %s\n cmd[1]: %s\n", (*hell.head)->cmd[0], (*hell.head)->cmd[1]);
 		// print_list(*(hell.head));
-		loop_cmds(&hell, &cmd);
+		if (!hell.syntaxerr)
+		{
+			loop_cmds(&hell, &cmd);
+		}
+		else
+			hell.syntaxerr = 0;
 		ft_terminate(1, &cmd);
 		close_proc(&hell);
     }

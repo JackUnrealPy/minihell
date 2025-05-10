@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/10 13:18:30 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/10 14:59:11 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 			i++;
 		}	
 	}
-	if (!head->cmd_path)
-		error_msg(hell, cmd, "Memory allocation failed", 1);
+	// if (!head->cmd_path)
+	// 	error_msg(hell, cmd, "Memory allocation failed", 1);
 	// if (access(head->cmd_path, R_OK | X_OK) == -1)
 	// 	error_msg(hell, cmd, "Cannot read/execute command executable", 1);
 }
