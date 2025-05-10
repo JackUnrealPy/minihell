@@ -66,8 +66,7 @@ void	generate_tmpfile(t_hell *hell, t_proc *head)
 	}
 	close(fd);
 	rando_txt[9] = 0;
-	(void)rando_txt;
-	head->hdoc_tmpfile = "TMP"; //ft_malloc(hell, hell->freeme, ft_strjoin("/tmp/.", rando_txt));
+	head->hdoc_tmpfile = ft_malloc(hell, hell->freeme, ft_strjoin("/tmp/.", rando_txt));
 }
 
 int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)

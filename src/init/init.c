@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/05/08 13:39:58 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:03:03 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	init(t_hell *hell, char **envp)
 	t_proc	**node;
 
 	hell->lastexit = 0;
+	hell->syntaxerr = 0;
 	hell->exec_error = 0;
 	hell->freeme = malloc(sizeof(t_free *));
     (*hell->freeme) = NULL;

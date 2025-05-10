@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/05/09 16:57:54 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/04/23 18:56:40 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	*get_squote(t_hell *hell, t_proc *proc, char *quote)
 	len = 0;
 	len = get_quotelen(quote);
 	if (!len)
-		sysntaxerr();
+		sysntaxerr(hell, quote[0]);
 	str = NULL;
 	str = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) ,len + 1));
 	i = -1;
@@ -98,7 +98,7 @@ char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 	len = 0;
 	len = get_quotelen(*cmd + pos);
 	if (!len)
-		sysntaxerr();
+		sysntaxerr(hell, *(*cmd + pos));
 	str = NULL;
 	i = 0;
 	while (++i < len)
@@ -108,7 +108,7 @@ char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 			ft_expand(hell, proc, cmd, pos + i);
 			len = get_quotelen(*cmd + pos);
 			if (!len)
-				sysntaxerr();
+				sysntaxerr(hell, *(*cmd + pos));
 		}
 	}
 	str = ft_malloc(hell, proc->freeme, ft_substr(*cmd + 1, pos, len - 1));
