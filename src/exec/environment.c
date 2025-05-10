@@ -1,5 +1,25 @@
 #include "../../includes/minishell.h"
 
+char	*ft_getenv(char *key, char **envp)
+{
+	char *value = NULL;
+	int i = 0;
+	int a = 0;
+    int len = strlen(key);
+	while (envp[i])
+	{
+		if (strncmp(envp[i], key, len) == 0 && envp[i][len] == '=')
+		{
+            a = 1;
+            while (envp[i] && envp[i][a+len] && envp[i][a+len] != '\n')
+                a++;
+            value = ft_substr(envp[i], len + 1, a - 1);
+		}
+        i++;
+	}
+	return(value);
+}
+
 char	**ft_double_strdup(t_hell *hell, char **envp, char **cmd)
 {
 	int		a;

@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/09 19:00:13 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/10 13:18:30 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,28 +27,15 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	}
 }
 
-char	*ft_getenv(char *key, char **envp)
-{
-	char *value = NULL;
-	int i = 0;
-	int a = 0;
-    int len = strlen(key);
-	while (envp[i])
-	{
-		if (strncmp(envp[i], key, len) == 0 && envp[i][len] == '=')
-		{
-            a = 1;
-            while (envp[i] && envp[i][a+len] && envp[i][a+len] != '\n')
-                a++;
-            value = ft_substr(envp[i], len + 1, a - 1);
-		}
-        i++;
-	}
-	return(value);
-}
+
 
 void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
+	char *path_env;
+	char **path;
+	char *test_path;
+	char *path_cmd;
+	int i = 0;
 	if (!head->cmd)
 	{
 		head->cmd_path = NULL;
@@ -56,12 +43,30 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 	}
 	else if (ft_strchr(head->cmd[0], '/'))
 		head->cmd_path = ft_strdup(head->cmd[0]);
-	else if (ft_strncmp(head->cmd[0], "/bin/", 5) == 0 || ft_strncmp(head->cmd[0],
-			"/usr/bin/", 9) == 0 || ft_strncmp(head->cmd[0], "../", 3) == 0)
-		head->cmd_path = ft_malloc(hell, head->freeme, ft_strdup(head->cmd[0]));
 	else
-		head->cmd_path = ft_malloc(hell, head->freeme, ft_strjoin("/bin/",
-					head->cmd[0]));
+	{
+		path_env = ft_getenv("PATH", hell->envp);
+		if (!path_env)
+		{
+			ft_putstr_fd(head->cmd[0], 2);
+			error_msg(hell, cmd, ": No such file or directory", 127);
+			return;
+		}
+		path = ft_split(path_env, ":");
+		if (!path)
+			error_msg(hell, cmd, "Memory allocation failed", 1);
+		path_cmd = ft_strjoin("/", head->cmd[0]); // protect
+		while (path[i])
+		{
+			test_path = ft_strjoin(path[i], path_cmd);
+			if (access(test_path, R_OK | X_OK) == 0)
+			{
+				head->cmd_path = ft_malloc(hell, head->freeme, test_path);
+				return ;
+			}
+			i++;
+		}	
+	}
 	if (!head->cmd_path)
 		error_msg(hell, cmd, "Memory allocation failed", 1);
 	// if (access(head->cmd_path, R_OK | X_OK) == -1)
@@ -87,13 +92,14 @@ void	ft_freeme(char **arr)
 void	children(t_proc *head, t_hell *hell, char **cmd, int i)
 {
 	create_cmd(hell, head, cmd);
-
 	head->pid = fork();
 	if (head->pid == 0)
 	{
 		input_redirection(hell, head, cmd, i);
 		output_redirection(hell, head, cmd, i);
 		ft_close(hell);
+		if (hell->exec_error)
+			exit (127);
 		if (!head->cmd || !head->cmd[0])
 			exit(0);
 		if (head->cmd && head->cmd[0] && determine_builtin(hell, head, cmd, 1))

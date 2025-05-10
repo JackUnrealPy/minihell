@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/09 16:46:19 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/10 12:45:53 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void	ft_cd(t_hell *hell, t_proc *head, char **cmd);
 
 // environment vars
 char **	ft_double_strdup(t_hell *hell, char **envp, char **cmd);
+char	*ft_getenv(char *key, char **envp);
 
 // exec
 int loop_cmds(t_hell *hell, char **cmd);
