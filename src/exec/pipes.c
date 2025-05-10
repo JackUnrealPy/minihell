@@ -67,8 +67,8 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 			i++;
 		}	
 	}
-	if (!head->cmd_path)
-		error_msg(hell, cmd, "Memory allocation failed", 1);
+	// if (!head->cmd_path)
+	// 	error_msg(hell, cmd, "Memory allocation failed", 1);
 	// if (access(head->cmd_path, R_OK | X_OK) == -1)
 	// 	error_msg(hell, cmd, "Cannot read/execute command executable", 1);
 }
