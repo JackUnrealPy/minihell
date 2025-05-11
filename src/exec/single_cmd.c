@@ -18,12 +18,12 @@ void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 	if (determine_builtin(hell, (*hell->head), cmd, 0))
 		return ;
 	int	status = 0;
-	if (!head->cmd)
-	{
-		hell->lastexit = 0;
-		return ;
-	}
-	hell->cmd_count = 1;
+	// if (!head->cmd)
+	// {
+	// 	hell->lastexit = 0;
+	// 	return ;
+	// }
+	// hell->cmd_count = 1;
 	
 	head->pid = fork();
 	if (head->pid == 0)

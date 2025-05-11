@@ -36,13 +36,19 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 	char *test_path;
 	char *path_cmd;
 	int i = 0;
+	head->cmd_path = NULL;
 	if (!head->cmd)
 	{
 		head->cmd_path = NULL;
 		return ;
 	}
 	else if (ft_strchr(head->cmd[0], '/'))
-		head->cmd_path = ft_strdup(head->cmd[0]);
+		{
+			head->cmd_path = ft_strdup(head->cmd[0]);
+			if (access(head->cmd_path, F_OK) == -1)
+				(ft_putstr_fd(head->cmd[0], 2), error_msg(hell, cmd, ": No such file or directory", 1));
+			return ;
+		}
 	else
 	{
 		path_env = ft_getenv("PATH", hell->envp);
@@ -69,8 +75,7 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 	}
 	// if (!head->cmd_path)
 	// 	error_msg(hell, cmd, "Memory allocation failed", 1);
-	// if (access(head->cmd_path, R_OK | X_OK) == -1)
-	// 	error_msg(hell, cmd, "Cannot read/execute command executable", 1);
+
 }
 
 void	ft_freeme(char **arr)
@@ -137,6 +142,7 @@ void	ft_pipex(t_hell *hell, char **cmd)
 	head_cpy = (*hell->head);
 	while (i < hell->cmd_count)
 	{
+		hell->exec_error = 0;
 		children(head_cpy, hell, cmd, i);
 		if (hell->exec_error)
 			return ;
