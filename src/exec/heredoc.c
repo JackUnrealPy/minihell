@@ -1,4 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/08 16:14:59 by nrumpfhu          #+#    #+#             */
+/*   Updated: 2025/05/08 17:57:10 by nrumpfhu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
+
+extern int	g_sig_flag;
 
 char	*ft_realloc(char *old, char *new)
 {
@@ -10,60 +24,16 @@ char	*ft_realloc(char *old, char *new)
 	return (combine);
 }
 
-// change so that pipes and single command both use same heredoc functions
-// maybe change to hidden file
-
-void	single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
+void	heredoc_sig(int sig)
 {
-	char	*buffer;
-	char	*txt;
-	int		flag;
-
-	hell->hdoc_count[0] = 1;
-	txt = NULL;
-	flag = 0;
-	while (1)
+	if (sig == SIGINT)
 	{
-		write(STDIN_FILENO, "> ", 2);
-		buffer = get_next_line(0, &flag);
-		if (!buffer)
-			return ;
-		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(redirs->pathordel)) == 0)
-		{
-			free(buffer);
-			break ;
-		}
-		txt = ft_realloc(txt, buffer);
-	}
-
-
-	// if (redirs->type == 4)
-	// int i = 0;
-	// while (txt[i] && txt[i] != '$')
-	// 	i++;
-	// ft_expand(hell, head, &txt, i);
-
-	output_redirection(hell, head, cmd, -1);
-	create_cmd(hell, head, cmd);
-	if (hell->exec_error)
-	{
-		free(txt);
-		return ;
-	}
-	if (head->cmd_path && ft_strncmp(head->cmd_path, "/bin/cat", 8) == 0)
-	{
-		if (txt)
-		{
-			ft_putstr_fd(txt, 1);
-			// free(txt);
-		}
-		return ;
-	}
-	// free(txt);
-	if (head->cmd_path)
-	{
-		if (!determine_builtin(hell, (*hell->head), cmd, 0))
-			single_cmd(hell, (*hell->head), cmd);
+		g_sig_flag = SIGINT;
+		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+		// printf("\n");
+		// rl_on_new_line();
+		// rl_replace_line("", 0);
+		// rl_redisplay();
 	}
 }
 
@@ -81,62 +51,62 @@ int	heredoc_check(t_redir *redirs)
 	return (0);
 }
 
-void	init_hdoc(t_hell *hell, t_proc *head, char **cmd)
+void	generate_tmpfile(t_hell *hell, t_proc *head)
 {
-	head->hpid = fork();
-	if (head->hpid == 0)
+	(void)hell;
+	char rando_txt[10];
+	char rando_char;
+	int i = 0;
+	int fd = open("/dev/urandom", O_RDONLY);
+	while (i < 9)
 	{
-		heredoc(hell, head, (*head->redirs), cmd);
-		if (hell->exec_error)
-			return ;
-		ft_terminate(1, cmd);
-		jump_ship(hell, 0);
+		read(fd, &rando_char, 1);
+		if (ft_isalnum(rando_char))
+			rando_txt[i++] = rando_char;
 	}
-	waitpid(head->hpid, NULL, 0);
-	hell->hdoc_count[1]++;
+	close(fd);
+	rando_txt[9] = 0;
+	head->hdoc_tmpfile = ft_malloc(hell, hell->freeme, ft_strjoin("/tmp/.", rando_txt));
 }
 
-int	hdoc_pipes(t_hell *hell, t_proc *head)
+int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 {
-	int	i;
-
-	(void)head;
-	i = 0;
-	while (i < hell->hdoc_count[0] * 2)
-	{
-		pipe(&hell->hdoc_fd[i]);
-		i += 2;
-	}
-	return (0);
-}
-
-void	heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
-{
+	(void)hell;
 	char	*buffer;
-	int		flag;
-	int		i;
 
-	i = hell->hdoc_count[1];
-	flag = 0;
-	if (dup2(hell->hdoc_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
-	{
-		error_msg(hell, cmd, "dup2 failed", 1);
-		return ;
-	}
+	buffer = NULL;
+	if (heredoc_check(redirs) == 0)
+		return (0);
+	g_sig_flag = 0;
+	generate_tmpfile(hell, head);
+	head->hdoc_fd = open(head->hdoc_tmpfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	signal(SIGINT, heredoc_sig);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
-		write(STDIN_FILENO, "> ", 2);
-		buffer = get_next_line(0, &flag);
-		if (!buffer)
-			return ;
-		if (ft_strncmp(buffer, redirs->pathordel, ft_strlen(buffer) - 1) == 0)
+		buffer = readline("> ");
+		if (g_sig_flag == SIGINT)
 		{
-			free(buffer);
-			ft_close(hell);
+			g_sig_flag = 0;
+			hell->lastexit = 130;
 			break ;
 		}
-		ft_putstr_fd(buffer, hell->hdoc_fd[(i * 2) + 1]);
+		if (!buffer)
+		{
+			ft_putstr_fd("Warning: here-document delimited by end-of-file (wanted `change me')\n", 2);
+			break ;
+		}
+		if (ft_strlen(buffer) == ft_strlen(redirs->pathordel)
+			&& ft_strncmp(buffer, redirs->pathordel,
+				ft_strlen(redirs->pathordel)) == 0)
+		{
+			free(buffer);
+			break ;
+		}
+		if (!g_sig_flag)
+			ft_putendl_fd(buffer, head->hdoc_fd);
 		free(buffer);
-		(void)head;
 	}
+	close(head->hdoc_fd);
+	return (1);
 }

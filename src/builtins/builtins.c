@@ -6,8 +6,8 @@ int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe)
 		ft_echo(hell, head, cmd, pipe);
 	else if (head->cmd && strcmp("pwd", head->cmd[0]) == 0)
 		ft_pwd(*(head->redirs), pipe);
-	// else if (head->cmd && strcmp("cd", head->cmd[0]) == 0)
-	// 	ft_cd(hell);
+	else if (head->cmd && strcmp("cd", head->cmd[0]) == 0)
+		ft_cd(hell, head, cmd);
 	else if (head->cmd && strcmp("env", head->cmd[0]) == 0)
 		ft_env((*head->redirs), hell->envp, pipe);
 	else if (head->cmd && strcmp("export", head->cmd[0]) == 0)
@@ -18,6 +18,8 @@ int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe)
 		ft_exit(hell, head, cmd, pipe);
 	else
 		return(0);
+	if (!hell->exec_error)
+		hell->lastexit = 0;
 	return (1);
 
 }
@@ -42,5 +44,6 @@ int	builtins_output(t_hell *hell, t_proc *head, char **cmd)
 		}
 		redirs_cpy = redirs_cpy->next;
 	}
+	hell->lastexit = 0;
 	return(fd);
 }

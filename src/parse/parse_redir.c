@@ -16,44 +16,48 @@ static int	fill_redir(t_hell *hell, t_proc *proc, char *str, t_redir *new)
 {
 	int		i;
 	int		j;
-	int		qflag[2];
+	int		n;
+	int		qflag;
 	
 	i = 0;
 	j = 0;
-	while (str[j] && ft_isspace(str[j]))
+	while (*str && ft_isspace(*str))
+	{
+		str++;
 		j++;
-	while (str[j + i] && !ft_isspace(str[j + i]))
-		i++;
+	}
+	if (*str == '<' || *str == '>')
+		sysntaxerr(hell, *str);
+	qflag = 0;
+	while (str[i] && !ft_isspace(str[i]))
+	{
+		if (str[i] == '\'' || str[i] == '\"')
+		{
+			if (i == 0)
+				qflag = 1;
+			i += handle_quote(hell, proc, &str, i) + 1;
+		}
+		else if (str[i] == '$')
+			i += ft_expand(hell, proc, &str, i);
+		else if (str[i] == '|')
+		{
+			sysntaxerr(hell, *(str + i));
+			break;
+		}
+		else
+			i++;
+	}
 	new->pathordel = ft_malloc(hell, proc->freeme, ft_calloc(i + 1, sizeof(char)));
 	new->next = NULL;
-	i = 0;
-	qflag[0] = 0;
-	qflag[1] = 0;
-	while (str[j + i] && !ft_isspace(str[j + i]))
+	n = 0;
+	while (n <= i)
 	{
-		if (str[j + i] == '\'' && (qflag[1] % 2 == 0))
-		{
-			qflag[0]++;
-			j++;
-			continue ;
-		}
-
-		if (str[j + i] == '\"' && (qflag[0] % 2 == 0))
-		{
-			qflag[1]++;
-			j++;
-			continue ;
-		}
-		new->pathordel[i] = str[j + i];
-		i++;
+		new->pathordel[n] = str[n];
+		n++;
 	}
-	if (qflag[0] % 2)
-		return (sysntaxerr(hell, '\''), 0);
-	else if (qflag[1] % 2)
-		return (sysntaxerr(hell, '\"'), 0);
-	if (new->type == 3 && !qflag[0] && !qflag[1])
+	if (new->type == 3 && !qflag)
 		new->type = 4;
-	return (i + j);
+	return (j + i + 3);
 }
 
 static t_redir	*create_redir(t_hell *hell, t_proc *proc, char *str, int *res)
@@ -77,8 +81,6 @@ static t_redir	*create_redir(t_hell *hell, t_proc *proc, char *str, int *res)
 	else if (str[0] == '>')
 		new->type = 1;
 	*res += fill_redir(hell, proc, (str + (*res)), new);
-	if (ismeta(str + *res - 1))
-		sysntaxerr(hell, str[*res - 1]);
 	return (new);
 }
 

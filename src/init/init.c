@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/04/17 01:31:58 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:03:03 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	local_init(t_hell *hell, char *cmd)
 	(void)cmd;
 	proc = create_proc(hell);
 	*(hell->head) = proc;
+	hell->exec_error = 0;
 }
 
 void	env_init(t_hell *hell, char **envp)

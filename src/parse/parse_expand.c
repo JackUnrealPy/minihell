@@ -38,7 +38,7 @@ static char	*expand_exit(t_hell *hell, t_proc *proc)
 }
 
 
-void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
+int	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 {
 	int		i;
 	char	*s;
@@ -76,4 +76,5 @@ void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 	ft_memcpy(res + pos + ft_strlen(var), (*str + pos) + i , ft_strlen(*str) - (pos + i));
 	res[ft_strlen(*str) + ft_strlen(var) - i] = 0;
 	*str = res;
+	return (ft_strlen(var));
 }

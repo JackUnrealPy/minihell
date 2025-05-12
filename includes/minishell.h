@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/04/23 20:37:00 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/10 14:23:05 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@
 # include <linux/limits.h>
 # include <errno.h>
 # include <string.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <signal.h>
+# include <sys/ioctl.h>
 
 // linked list with all the stuff to free
 typedef struct	s_free
@@ -44,7 +48,9 @@ typedef	struct	s_proc
 	char			**cmd;
 	char			*cmd_path;
 	pid_t			pid;
-	pid_t			hpid;
+	int				hdoc_present;
+	char			*hdoc_tmpfile;
+	int				hdoc_fd;
 	struct s_proc	*next;
 	struct s_proc	*prev;
 }	t_proc;
@@ -57,15 +63,13 @@ typedef struct	s_hell
 	char	**test;
 	int 	argc;
 	int		cmd_count;
-	int		hdoc_count[2];
 	int		exec_error;
 	int		*pipe_fd;
-	int		*hdoc_fd;
+	char	**localvars;
 	char	**envp;
 	t_proc	**head;
 	int		lastexit;
 	int		syntaxerr;
-
 }	t_hell;
 
 // EXECUTION
@@ -79,9 +83,11 @@ int	ft_pwd(t_redir *redirs, int pipe);
 void ft_unset(char **envp, char *var_to_delete);
 void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int pipe);
 void	ft_export(t_hell *hell, t_proc *head, char **cmd);
+void	ft_cd(t_hell *hell, t_proc *head, char **cmd);
 
 // environment vars
 char **	ft_double_strdup(t_hell *hell, char **envp, char **cmd);
+char	*ft_getenv(char *key, char **envp);
 
 // exec
 int loop_cmds(t_hell *hell, char **cmd);
@@ -96,7 +102,7 @@ void	ft_pipex(t_hell *hell, char **cmd);
 void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
 int		heredoc_check(t_redir *redirs);
 void	init_hdoc(t_hell *hell, t_proc *head, char **cmd);
-void    heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
+int    heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
 int     hdoc_pipes(t_hell *hell, t_proc *head);
 
 // redirection
@@ -119,7 +125,7 @@ int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
 void	parse(t_hell *hell, char *cmd, t_proc *proc);
-void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos);
+int		ft_expand(t_hell *hell, t_proc *proc, char **str, int pos);
 int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos);
 char	*get_squote(t_hell *hell, t_proc *proc, char *quote);
 char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos);
@@ -153,6 +159,9 @@ void	sysntaxerr(t_hell *hell, char token);
 void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
 int		ft_isspace(char c);
 int		ismeta(char *c);
+
+// 		Exit utils
+void	sysntaxerr(t_hell *hell, char token);
 
 // dev		tooks for development
 void 	print_list(t_proc *a);

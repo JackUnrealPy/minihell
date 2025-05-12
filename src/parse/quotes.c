@@ -52,7 +52,7 @@ int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 	if (*(*cmd+pos) == '\'')
 	{
 		str =  get_squote(hell, proc, *cmd + pos);
-		res = ft_malloc(hell, proc->freeme, malloc(sizeof(char) * ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
+		res = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) , ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
 		ft_memcpy(res, *cmd, pos);
 		ft_memcpy(res + pos, str, ft_strlen(str));
 		ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + len, ft_strlen(*cmd + pos + len));
@@ -60,7 +60,7 @@ int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 	else
 	{
 		str = get_dquote(hell, proc, cmd , pos);
-		res = ft_malloc(hell, proc->freeme, malloc(sizeof(char) * ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
+		res = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) , ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
 		ft_memcpy(res, *cmd, pos);
 		ft_memcpy(res + pos, str, ft_strlen(str));
 		ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + ft_strlen(str) + 2, ft_strlen(*cmd + pos + ft_strlen(str) + 2));
