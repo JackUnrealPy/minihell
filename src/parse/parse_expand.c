@@ -59,7 +59,7 @@ void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 			if(!(*((*str) + pos + i)) || ft_isspace(*((*str) + pos + i)) || ismeta((*str) + pos + i))
 			{
 				s = ft_malloc(hell, proc->freeme, ft_substr(*str, pos + 1, i - 1));
-				var = getenv(s);
+				var = ft_getenv(s, hell->envp);
 				if (!var)
 					var = ft_getvar(hell, proc, s);
 				break;	

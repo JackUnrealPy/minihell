@@ -91,7 +91,9 @@ int	add_envp_var(t_hell *hell, t_proc *head, char **cmd)
 		error = 1;
 	while (head->cmd[1][0] != 0 && head->cmd[1][i] && head->cmd[1][i] != '=')
 	{
-		if (!ft_isalnum(head->cmd[1][i]) && head->cmd[1][i] != '_')
+		if (head->cmd[1][i] == '+' &&  head->cmd[1][i+1] && head->cmd[1][i+1] == '=')
+			;
+		else if (!ft_isalnum(head->cmd[1][i]) && head->cmd[1][i] != '_')
 			error = 1;
 		i++;
 	}
