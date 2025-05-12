@@ -152,16 +152,13 @@ void	close_proc(t_hell *hell);
 t_proc	*create_proc(t_hell *hell);
 void	addproc(t_proc **head, t_proc *next);
 
-// 		Exit utils
-void	sysntaxerr(t_hell *hell, char token);
-
 //		String utils
 void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
 int		ft_isspace(char c);
 int		ismeta(char *c);
 
 // 		Exit utils
-void	sysntaxerr(t_hell *hell, char token);
+void	sysntaxerr(t_hell *hell, char* token, int len);
 
 // dev		tooks for development
 void 	print_list(t_proc *a);

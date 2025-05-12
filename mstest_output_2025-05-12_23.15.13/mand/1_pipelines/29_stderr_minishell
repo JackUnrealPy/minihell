@@ -1,0 +1,15 @@
+cat: invalid option -- 'l'
+Try 'cat --help' for more information.
+cat: ls: No such file or directory
+cat: invalid option -- 'l'
+Try 'cat --help' for more information.
+fe: command not found
+wf: command not found
+fwe: command not found
+f: command not found
+stop: command not found
+dw: command not found
+stop1: command not found
+dwasd: command not found
+stop2: command not found
+cat: Makefile: No such file or directory

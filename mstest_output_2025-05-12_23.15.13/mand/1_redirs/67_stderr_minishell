@@ -1,0 +1,4 @@
+/dev/null : permission denied
+/dev/null ðb¬Y: permission denied
+cat: tmp_redir_out: No such file or directory
+rm: cannot remove 'tmp_redir_out': No such file or directory

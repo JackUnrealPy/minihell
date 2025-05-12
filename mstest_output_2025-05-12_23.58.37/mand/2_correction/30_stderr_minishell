@@ -1,0 +1,2 @@
+/bin/cat: 42: No such file or directory
+expr: syntax error: unexpected argument ‘1’
