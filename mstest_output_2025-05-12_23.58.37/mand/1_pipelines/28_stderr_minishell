@@ -1,6 +1,0 @@
-Warning: here-document delimited by end-of-file (wanted `change me')
-cat: lscat: invalid option -- 'l'
-: No such file or directory
-Try 'cat --help' for more information.
-cat: invalid option -- 'l'
-Try 'cat --help' for more information.
