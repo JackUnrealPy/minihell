@@ -39,7 +39,6 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 	head->cmd_path = NULL;
 	if (!head->cmd)
 	{
-		head->cmd_path = NULL;
 		return ;
 	}
 	else if (ft_strchr(head->cmd[0], '/'))
@@ -52,7 +51,7 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 	else
 	{
 		path_env = ft_getenv("PATH", hell->envp);
-		if (!path_env)
+		if (!path_env || !path_env[0])
 		{
 			ft_putstr_fd(head->cmd[0], 2);
 			error_msg(hell, cmd, ": No such file or directory", 127);
@@ -62,7 +61,7 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 		if (!path)
 			error_msg(hell, cmd, "Memory allocation failed", 1);
 		path_cmd = ft_strjoin("/", head->cmd[0]); // protect
-		while (path[i])
+		while (path && path[i])
 		{
 			test_path = ft_strjoin(path[i], path_cmd);
 			if (access(test_path, R_OK | X_OK) == 0)
@@ -72,6 +71,12 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 			}
 			i++;
 		}	
+	}
+	if (access(head->cmd[0], X_OK) != 0)
+	{
+		ft_putstr_fd(head->cmd[0], 2);
+		error_msg(hell, cmd, ": command not found", 127);
+		return;
 	}
 	// if (!head->cmd_path)
 	// 	error_msg(hell, cmd, "Memory allocation failed", 1);
@@ -96,13 +101,13 @@ void	ft_freeme(char **arr)
 
 void	children(t_proc *head, t_hell *hell, char **cmd, int i)
 {
-	create_cmd(hell, head, cmd);
 	head->pid = fork();
 	if (head->pid == 0)
 	{
 		input_redirection(hell, head, cmd, i);
 		output_redirection(hell, head, cmd, i);
 		ft_close(hell);
+		create_cmd(hell, head, cmd);
 		if (hell->exec_error)
 			exit (127);
 		if (!head->cmd || !head->cmd[0])

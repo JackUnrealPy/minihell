@@ -80,7 +80,7 @@ int	builtins_output(t_hell *hell, t_proc *head, char **cmd);
 void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_redir *redirs, int pipe);
-void ft_unset(char **envp, char *var_to_delete);
+void ft_unset(t_hell *hell, char **envp, char *var_to_delete);
 void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int pipe);
 void	ft_export(t_hell *hell, t_proc *head, char **cmd);
 void	ft_cd(t_hell *hell, t_proc *head, char **cmd);

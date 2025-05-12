@@ -33,7 +33,12 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 		}
 		else if (tmp && tmp->type == 0)
 		{
-			// directory check
+			if (tmp->pathordel[0] == '$' && tmp->pathordel[1])
+			{
+				ft_putstr_fd(tmp->pathordel, 2);
+				error_msg(hell, cmd, ": ambiguous redirect", 1);
+				exit(1);
+			}
 			if (ft_strrchr(tmp->pathordel, '/'))
 			{
 				int len = ft_strrchr(tmp->pathordel, '/') - tmp->pathordel;
@@ -47,12 +52,12 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 					exit(1);
 				}
 			}
-			// if (access(tmp->pathordel, F_OK) == -1)
-			// {
-			// 	ft_putstr_fd(tmp->pathordel, 2);
-			// 	error_msg(hell, cmd, ": No such file or directory", 1);
-			// 	exit(1);
-			// }
+			if (access(tmp->pathordel, F_OK) == -1)
+			{
+				ft_putstr_fd(tmp->pathordel, 2);
+				error_msg(hell, cmd, ": No such file or directory", 1);
+				exit(1);
+			}
 			input_fd = open(tmp->pathordel, O_RDONLY, 0644);
 			if (input_fd < 0)
 			{
@@ -75,7 +80,7 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 	{
 		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
 		{
-			printf("i: %i\n", i);
+			// printf("i: %i\n", i);
 			error_msg(hell, cmd, "dup2 failed 3", 1);
 		}
 	}
@@ -91,6 +96,12 @@ void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 	{
 		if (tmp->type == 1 || tmp->type == 2)
 		{
+			if (tmp->pathordel[0] == '$' && tmp->pathordel[1])
+			{
+				ft_putstr_fd(tmp->pathordel, 2);
+				error_msg(hell, cmd, ": ambiguous redirect", 1);
+				exit(1);
+			}
 			if (ft_strrchr(tmp->pathordel, '/'))
 			{
 				int len = ft_strrchr(tmp->pathordel, '/') - tmp->pathordel;

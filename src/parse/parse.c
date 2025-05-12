@@ -119,7 +119,7 @@ int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 	cmds = *ptr + i;
 	cmd = NULL;
 	len = 0;
-	while (cmds[++len])
+	while (cmds[0] && cmds[++len])
 	{
 		if (cmds[len] == '<' || cmds[len] == '>' || cmds[len] == '|')
 			break;

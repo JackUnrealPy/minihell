@@ -54,11 +54,8 @@ int	main(int argc, char **argv, char **envp)
 		// printf("cmd[0]: %s\n cmd[1]: %s\n", (*hell.head)->cmd[0], (*hell.head)->cmd[1]);
 		// print_list(*(hell.head));
 		if (!hell.syntaxerr)
-		{
 			loop_cmds(&hell, &cmd);
-		}
-		else
-			hell.syntaxerr = 0;
+		hell.syntaxerr = 0;
 		ft_terminate(1, &cmd);
 		close_proc(&hell);
     }

@@ -13,13 +13,14 @@ int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe)
 	else if (head->cmd && strcmp("export", head->cmd[0]) == 0)
 		ft_export(hell, head, cmd);
 	else if (head->cmd && ft_strncmp("unset", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
-		ft_unset(hell->envp, head->cmd[1]);
+		ft_unset(hell, hell->envp, head->cmd[1]);
 	else if (head->cmd && ft_strncmp("exit", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
 		ft_exit(hell, head, cmd, pipe);
 	else
 		return(0);
 	if (!hell->exec_error)
 		hell->lastexit = 0;
+	// hell->exec_error = 0;
 	return (1);
 
 }
