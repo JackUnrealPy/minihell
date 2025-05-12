@@ -88,6 +88,7 @@ void	ft_cd(t_hell *hell, t_proc *head, char **cmd);
 // environment vars
 char **	ft_double_strdup(t_hell *hell, char **envp, char **cmd);
 char	*ft_getenv(char *key, char **envp);
+char	**ft_realloc_envp(char **envp, int new_element, char *new);
 
 // exec
 int loop_cmds(t_hell *hell, char **cmd);

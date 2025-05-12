@@ -66,16 +66,31 @@ char	**ft_realloc_envp(char **envp, int new_element, char *new)
 	if (!cpy)
 		return(NULL);
 	a = 0;
-	while (a < b)
+	int ik=0;
+	while (new[ik] && new[ik] != '=')
 	{
-		if ((a == b - 1) && new_element)
-			cpy[a] = ft_strdup(new); // add protection
+		ik++;
+	}
+	char key[ik+1];
+	ft_strlcpy(key, new, ik+1);
+	int len = ft_strlen(key);
+	// printf("key: [%s]\n", key);
+	// printf("diff: {%d}\n", ft_strncmp("zz=h\n", key, ft_strlen(key)));
+	int found = 0;
+	while (envp[a] && a < b)
+	{
+		if (ft_strncmp(envp[a], key, ft_strlen(key)) == 0 && envp[a][len] == '=' && new[len] == '=')
+		{
+			cpy[a] = ft_strdup(new);
+			found = 1;
+		}
 		else
-			cpy[a] = ft_strdup(envp[a]); // add protection
+			cpy[a] = ft_strdup(envp[a]);
 		a++;
 	}
-	cpy[a] = NULL;
-	//ft_freedata(envp);
+	if (!found)
+		cpy[a] = ft_strdup(new);
+	cpy[a+1] = NULL;
 	return (cpy);
 }
 
