@@ -54,7 +54,10 @@ void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 		exit(127);
 	}
 	if (head->cmd && head->cmd[0] && ft_strncmp(head->cmd[0], "exit", 4) == 0)
-		exit(hell->lastexit); //ft_exit(hell, head, cmd, -1);
+	{
+		ft_exit(hell, head, cmd, -1);
+		exit(hell->lastexit);
+	}
 	if (hell->exec_error)
 		return;
 	if (waitpid(head->pid, &status, 0) == -1)
