@@ -79,7 +79,6 @@ int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 		return (0);
 	g_sig_flag = 0;
 	int i = 0;
-	int check = 0;
 	generate_tmpfile(hell, head);
 	head->hdoc_fd = open(head->hdoc_tmpfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	signal(SIGINT, heredoc_sig);
@@ -96,7 +95,6 @@ int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 				{
 					tmp = buffer;
 					buffer = ft_strchr(buffer, '$');
-					check = 1;
 					ft_expand(hell, head, &buffer, 0);
 					break;
 				}
