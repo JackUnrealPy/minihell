@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/13 14:42:21 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/13 19:31:48 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	}
 }
 
-int is_builtin(t_proc *head);
+
 
 void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
-	char *path_env;
-	char **path;
-	char *test_path;
-	char *path_cmd;
+	char *path_env = NULL;
+	char **path = NULL;
+	char *test_path = NULL;
+	char *path_cmd = NULL;
 	int i = 0;
 	head->cmd_path = NULL;
 	if (!head->cmd)
@@ -59,7 +59,10 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 		}
 		path = ft_split(path_env, ":");
 		if (!path)
+		{
+			free(path_env);
 			error_msg(hell, cmd, "Memory allocation failed", 1);
+		}
 		path_cmd = ft_strjoin("/", head->cmd[0]); // protect
 		while (path && path[i])
 		{
@@ -72,8 +75,16 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 			i++;
 		}	
 	}
-	if (!is_builtin(head) && access(head->cmd[0], X_OK) != 0)
+	if (access(head->cmd[0], X_OK) != 0)
 	{
+		if (path_cmd)
+			free(path_cmd);
+		if (path_env)
+			free(path_env);
+		if (test_path)
+			free(test_path);
+		if (path)
+			ft_freeme(path);
 		ft_putstr_fd(head->cmd[0], 2);
 		error_msg(hell, cmd, ": command not found", 127);
 		return;

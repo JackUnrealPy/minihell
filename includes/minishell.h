@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/10 14:23:05 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/13 16:42:39 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int		init(t_hell *hell, char **envp);
 void	writeprompt(void);
 
 void	parse(t_hell *hell, char *cmd, t_proc *proc);
-void	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos);
+int		ft_expand(t_hell *hell, t_proc *proc, char **str, int pos);
 int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos);
 char	*get_squote(t_hell *hell, t_proc *proc, char *quote);
 char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos);
@@ -159,7 +159,7 @@ int		ft_isspace(char c);
 int		ismeta(char *c);
 
 // 		Exit utils
-void	sysntaxerr(t_hell *hell, char token);
+void	sysntaxerr(t_hell *hell, char* token, int len);
 
 // dev		tooks for development
 void 	print_list(t_proc *a);

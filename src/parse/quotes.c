@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/04/23 18:56:40 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/13 16:40:04 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 	if (*(*cmd+pos) == '\'')
 	{
 		str =  get_squote(hell, proc, *cmd + pos);
-		res = ft_malloc(hell, proc->freeme, malloc(sizeof(char) * ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
+		res = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) , ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
 		ft_memcpy(res, *cmd, pos);
 		ft_memcpy(res + pos, str, ft_strlen(str));
 		ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + len, ft_strlen(*cmd + pos + len));
@@ -60,7 +60,7 @@ int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 	else
 	{
 		str = get_dquote(hell, proc, cmd , pos);
-		res = ft_malloc(hell, proc->freeme, malloc(sizeof(char) * ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
+		res = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) , ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
 		ft_memcpy(res, *cmd, pos);
 		ft_memcpy(res + pos, str, ft_strlen(str));
 		ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + ft_strlen(str) + 2, ft_strlen(*cmd + pos + ft_strlen(str) + 2));
@@ -80,7 +80,7 @@ char	*get_squote(t_hell *hell, t_proc *proc, char *quote)
 	len = 0;
 	len = get_quotelen(quote);
 	if (!len)
-		sysntaxerr(hell, quote[0]);
+		sysntaxerr(hell, quote, 1);
 	str = NULL;
 	str = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) ,len + 1));
 	i = -1;
@@ -98,7 +98,7 @@ char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 	len = 0;
 	len = get_quotelen(*cmd + pos);
 	if (!len)
-		sysntaxerr(hell, *(*cmd + pos));
+		sysntaxerr(hell, *cmd + pos, 1);
 	str = NULL;
 	i = 0;
 	while (++i < len)
@@ -108,7 +108,7 @@ char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 			ft_expand(hell, proc, cmd, pos + i);
 			len = get_quotelen(*cmd + pos);
 			if (!len)
-				sysntaxerr(hell, *(*cmd + pos));
+				sysntaxerr(hell, *cmd + pos, 1);
 		}
 	}
 	str = ft_malloc(hell, proc->freeme, ft_substr(*cmd + 1, pos, len - 1));

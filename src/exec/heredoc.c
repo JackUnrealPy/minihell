@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:14:59 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/08 17:57:10 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/13 19:01:36 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,13 @@ int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 {
 	(void)hell;
 	char	*buffer;
-
+	char *tmp = NULL;
 	buffer = NULL;
 	if (heredoc_check(redirs) == 0)
 		return (0);
 	g_sig_flag = 0;
+	int i = 0;
+	int check = 0;
 	generate_tmpfile(hell, head);
 	head->hdoc_fd = open(head->hdoc_tmpfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	signal(SIGINT, heredoc_sig);
@@ -85,6 +87,22 @@ int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 	while (1)
 	{
 		buffer = readline("> ");
+		if (buffer && redirs->type == 4)
+		{
+			i = 0;
+			while (buffer[i])
+			{
+				if (buffer[i] == '$')
+				{
+					tmp = buffer;
+					buffer = ft_strchr(buffer, '$');
+					check = 1;
+					ft_expand(hell, head, &buffer, 0);
+					break;
+				}
+				i++;
+			}
+		}
 		if (g_sig_flag == SIGINT)
 		{
 			g_sig_flag = 0;
@@ -105,7 +123,13 @@ int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 		}
 		if (!g_sig_flag)
 			ft_putendl_fd(buffer, head->hdoc_fd);
-		free(buffer);
+		if (tmp)
+		{
+			free(tmp);
+			tmp = NULL;
+		}
+		else
+			free(buffer);
 	}
 	close(head->hdoc_fd);
 	return (1);

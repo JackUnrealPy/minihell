@@ -6,16 +6,11 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/10 13:16:08 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/13 18:22:40 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-// void	redir_check(t_hell *hell, t_proc *head, t_redir *redirs)
-// {
-// 	!redir_check(hell, head, (*head->redirs));
-// }
 
 void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
@@ -24,17 +19,13 @@ void	single_cmd(t_hell *hell, t_proc *head, char **cmd)
 	{
 		return ;
 	}
-	// if (determine_builtin(hell, (*hell->head), cmd, 0))
-	// {
-	// 	printf("done");
-	// 	return;
-	// }
 	int	status = 0;
 	head->pid = fork();
 	if (head->pid == 0)
 	{
 		input_redirection(hell, head, cmd, -1);
 		output_redirection(hell, head, cmd, -1);
+		//ft_close(hell);
 		if (determine_builtin(hell, (*hell->head), cmd, 0))
 		{
 			if (hell->exec_error)
