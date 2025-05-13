@@ -86,7 +86,7 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 		if (path)
 			ft_freeme(path);
 		ft_putstr_fd(head->cmd[0], 2);
-		error_msg(hell, cmd, ": command not found1", 127);
+		error_msg(hell, cmd, ": command not found", 127);
 		return;
 	}
 	// if (!head->cmd_path)
