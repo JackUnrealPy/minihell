@@ -66,16 +66,32 @@ char	**ft_realloc_envp(char **envp, int new_element, char *new)
 	if (!cpy)
 		return(NULL);
 	a = 0;
-	while (a < b)
+	int i=0;
+	while (new[i] && new[i] != '=')
+		i++;
+	char key[i+1];
+	ft_strlcpy(key, new, i+1);
+	int len = ft_strlen(key);
+	int found = 0;
+	while (envp[a] && a < b)
 	{
-		if ((a == b - 1) && new_element)
-			cpy[a] = ft_strdup(new); // add protection
+		if (ft_strncmp(envp[a], key, i-1) == 0 && envp[a][len-1] == '=' && new[len] == '=' && new[len-1] == '+')
+		{
+			cpy[a] = ft_strjoin(envp[a], new+i+1);
+			found = 1;
+		}
+		else if (!found && ft_strncmp(envp[a], key, ft_strlen(key)) == 0 && envp[a][len] == '=' && new[len] == '=')
+		{
+			cpy[a] = ft_strdup(new);
+			found = 1;
+		}
 		else
-			cpy[a] = ft_strdup(envp[a]); // add protection
+			cpy[a] = ft_strdup(envp[a]);
 		a++;
 	}
-	cpy[a] = NULL;
-	//ft_freedata(envp);
+	if (!found)
+		cpy[a] = ft_strdup(new);
+	cpy[a+1] = NULL;
 	return (cpy);
 }
 

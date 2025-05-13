@@ -44,7 +44,7 @@ int	heredoc_check(t_redir *redirs)
 	tmp = redirs;
 	while (tmp)
 	{
-		if (tmp->type == 3)
+		if (tmp->type == 3 || tmp->type == 4)
 			return (1);
 		tmp = tmp->next;
 	}
