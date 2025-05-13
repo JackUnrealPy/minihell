@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/05/13 19:21:05 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/13 16:39:53 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ static int	fill_redir(t_hell *hell, t_proc *proc, char *str, t_redir *new)
 			i += handle_quote(hell, proc, &str, i) + 1;
 			j += 2;
 		}
+		else if (str[i] == '$')
+			i += ft_expand(hell, proc, &str, i);
 		else if (str[i] == '|')
 		{
 			sysntaxerr(hell, str + i, 1);

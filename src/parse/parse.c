@@ -128,25 +128,31 @@ int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 	len = -1;
 	while (cmds[++len])
 	{
+		if (cmds[len] == '<' || cmds[len] == '>' || cmds[len] == '|')
+			break;
+		if (cmds[len] == '$')
+		{
+			if (!ft_isalpha(cmds[len + 1]) && cmds[len +1] != '?')
+				continue ;
+			ft_expand(hell, proc, ptr, len + i);
+			cmds = *ptr + i;
+			if (inspace)
+			{
+				inspace = 0;
+				lasttoken = len;
+			}
+		}
 		if (ft_isspace(cmds[len]) && !inspace)
 		{
 			add_to_cmdarr(hell, proc, ft_malloc(hell, proc->freeme, ft_substr(cmds, lasttoken, len - lasttoken)));
 			inspace = 1;
+			lasttoken = 99999999;
 		}
 		if (!ft_isspace(cmds[len]) && inspace)
 		{
 			inspace = 0;
 			lasttoken = len;
 		}	
-		if (cmds[len] == '$')
-		{
-			if (!ft_isalpha(cmds[len + 1]) && cmds[len +1] != '?')
-				continue ;
-			len += ft_expand(hell, proc, ptr, len + i) - 1;
-			cmds = *ptr + i;
-		}
-		else if (cmds[len] == '<' || cmds[len] == '>' || cmds[len] == '|')
-			break;
 		if (cmds[len] == '\'' || cmds[len] == '\"')
 		{
 			len += handle_quote(hell, proc, ptr ,i + len);
