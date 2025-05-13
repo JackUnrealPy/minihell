@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/05/13 16:39:44 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/13 21:31:29 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,10 @@ int	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 			if(!(*((*str) + pos + i)) || ft_isspace(*((*str) + pos + i)) || ismeta((*str) + pos + i))
 			{
 				s = ft_malloc(hell, proc->freeme, ft_substr(*str, pos + 1, i - 1));
-				var = getenv(s);
+				
+				var = ft_getvar(hell, proc, s);
 				if (!var)
-					var = ft_getvar(hell, proc, s);
+					var = getenv(s);
 				break;	
 			}
 		}
