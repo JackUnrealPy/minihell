@@ -24,25 +24,26 @@ void	unset_errors(t_hell *hell, char *var_to_delete)
 	error = 0;
 	if ((var_to_delete[0] != '_' && !ft_isalpha(var_to_delete[0])))
 		error = 1;
-	while (var_to_delete[i])
+	while (var_to_delete[i] && var_to_delete[i] != '=')
 	{
-		if (!ft_isalnum(var_to_delete[i]) && var_to_delete[i] != '_')
+		if (!ft_isalnum(var_to_delete[i]) && var_to_delete[i] != '_' && var_to_delete[i] != '=')
 			error = 1;
 		i++;
 	}
-	if (error)
-	{
-		ft_putstr_fd("unset: `", 2);
-		ft_putstr_fd(var_to_delete, 2);
-		error_msg(hell, NULL, "': not a valid identifier", 1);
-	}
+	// if (error)
+	// {
+	// 	ft_putstr_fd("unset: `", 2);
+	// 	ft_putstr_fd(var_to_delete, 2);
+	// 	error_msg(hell, NULL, "': not a valid identifier", 1);
+	// }
+	(void)hell;
 }
 
 void ft_unset(t_hell *hell, char **envp, char *var_to_delete)
 {
 	if (!var_to_delete)
 		return ;
-	unset_errors(hell, var_to_delete);
+	//unset_errors(hell, var_to_delete);
 	if (hell->exec_error)
 		return ;
 	int i = 0;

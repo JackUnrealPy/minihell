@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/10 14:59:11 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/13 14:42:21 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 	}
 }
 
-
+int is_builtin(t_proc *head);
 
 void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
@@ -72,7 +72,7 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 			i++;
 		}	
 	}
-	if (access(head->cmd[0], X_OK) != 0)
+	if (!is_builtin(head) && access(head->cmd[0], X_OK) != 0)
 	{
 		ft_putstr_fd(head->cmd[0], 2);
 		error_msg(hell, cmd, ": command not found", 127);
