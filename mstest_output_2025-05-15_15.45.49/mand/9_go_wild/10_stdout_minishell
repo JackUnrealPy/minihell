@@ -1,0 +1,3 @@
+arg1
+echo $2 > tmp_test_sh
+arg1

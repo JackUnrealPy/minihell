@@ -1,0 +1,2 @@
+$USER: ambiguous redirect
+cat: '$USER': No such file or directory

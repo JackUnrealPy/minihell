@@ -1,19 +1,40 @@
 #include "../../includes/minishell.h"
 
+int		newline_check(char **cmd)
+{
+	int	i;
+
+	i = 1;
+	int n;
+	if (cmd[1] && ft_strncmp(cmd[1], "-n", 2) == 0)
+	{
+		i = 1;
+		n = 1;
+		while (cmd[i] && ft_strncmp(cmd[i], "-n", 2) == 0)
+		{
+			n = 1;
+			while (cmd[i][n] && cmd[i][n] == 'n')
+				n++;
+			if (cmd[i][n])
+				return (-1);
+			i++;
+		}
+	}
+	else
+		return (0);
+	return (i);
+}
 void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe)
 {
 	int	fd;
-	int	i;
-
 	fd = 1;
-	i = 1;
-	if (!pipe)
-		fd = builtins_output(hell, head, cmd);
-	if (!fd)
-		return ;
-	if (head->cmd[1] && ft_strncmp(head->cmd[1], "-n", \
-		ft_strlen(head->cmd[1])) == 0)
-		i = 2;
+	int i;
+	int newline = newline_check(head->cmd);
+	i = newline;
+	if (newline < 0)
+		i *= -1;
+	else if (newline == 0)
+		i = 1;
 	while (head->cmd[i])
 	{
 		ft_putstr_fd(head->cmd[i], fd);
@@ -21,8 +42,10 @@ void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe)
 			ft_putchar_fd(' ', fd);
 		i++;
 	}
-	if (!head->cmd[1] || (head->cmd[1] && ft_strncmp(head->cmd[1], "-n", 2) != 0))
+	if (newline <= 0)
 		ft_putchar_fd('\n', fd);
 	if (pipe)
 		close(fd);
+	(void)hell;
+	(void)cmd;
 }

@@ -1,0 +1,2 @@
+syntax error near unexpected token `|'
+cat: tmp_out: No such file or directory

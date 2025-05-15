@@ -20,7 +20,7 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 	tmp = (*head->redirs);
 	while (tmp)
 	{
-		if (tmp->type == 3)
+		if (tmp->type == 3 || tmp->type == 4)
 		{
 			head->hdoc_fd = open(head->hdoc_tmpfile, O_RDONLY); // check return
 			if (dup2(head->hdoc_fd, STDIN_FILENO) == -1)
@@ -33,6 +33,25 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 		}
 		else if (tmp && tmp->type == 0)
 		{
+			if (tmp->pathordel[0] == '$' && tmp->pathordel[1])
+			{
+				ft_putstr_fd(tmp->pathordel, 2);
+				error_msg(hell, cmd, ": ambiguous redirect", 1);
+				exit(1);
+			}
+			if (ft_strrchr(tmp->pathordel, '/'))
+			{
+				int len = ft_strrchr(tmp->pathordel, '/') - tmp->pathordel;
+				char dir[len+1];
+				strncpy(dir, tmp->pathordel, len); // update libft
+				dir[len] = 0;
+				if (access(dir, F_OK) == -1)
+				{
+					ft_putstr_fd(tmp->pathordel, 2);
+					error_msg(hell, cmd, ": No such file or directory", 1);
+					exit(1);
+				}
+			}
 			if (access(tmp->pathordel, F_OK) == -1)
 			{
 				ft_putstr_fd(tmp->pathordel, 2);
@@ -61,7 +80,7 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 	{
 		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
 		{
-			printf("i: %i\n", i);
+			// printf("i: %i\n", i);
 			error_msg(hell, cmd, "dup2 failed 3", 1);
 		}
 	}
@@ -77,6 +96,31 @@ void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 	{
 		if (tmp->type == 1 || tmp->type == 2)
 		{
+			if (tmp->pathordel[0] == '$' && tmp->pathordel[1])
+			{
+				ft_putstr_fd(tmp->pathordel, 2);
+				error_msg(hell, cmd, ": ambiguous redirect", 1);
+				exit(1);
+			}
+			if (ft_strrchr(tmp->pathordel, '/'))
+			{
+				int len = ft_strrchr(tmp->pathordel, '/') - tmp->pathordel;
+				char dir[len+1];
+				strncpy(dir, tmp->pathordel, len); // update libft
+				dir[len] = 0;
+				if (access(dir, F_OK) == -1)
+				{
+					ft_putstr_fd(tmp->pathordel, 2);
+					error_msg(hell, cmd, ": No such file or directory", 1);
+					exit(1);
+				}
+			}
+			// if (access(tmp->pathordel, F_OK) == -1)
+			// {
+			// 	ft_putstr_fd(tmp->pathordel, 2);
+			// 	error_msg(hell, cmd, ": No such file or directory", 1);
+			// 	exit(1);
+			// }
 			if (tmp->type == 1)
 				output_fd = open(tmp->pathordel, O_CREAT | O_WRONLY | O_TRUNC,
 						0644);
@@ -95,7 +139,7 @@ void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 				return ;
 			}
 			close(output_fd);
-			return ;
+			//return ;
 		}
 		tmp = tmp->next;
 	}

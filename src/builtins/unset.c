@@ -1,27 +1,12 @@
 #include "../../includes/minishell.h"
 
-// void ft_unset(char **envp, char *var_to_delete)
-// {
-// 	t_list *env_lst = create_env_list(envp);
-// 	while (env_lst)
-// 	{
-// 		if (ft_strncmp((char *)env_lst, var_to_delete, ft_strlen(var_to_delete)))
-// 		{
-// 			ft_lstdelone(env_lst, del);
-// 			return ;
-// 		}
-// 		env_lst = env_lst->next;
-// 	}
-// 	print_list(env_lst);
-// }
 
-void	print_export(char **envp);
-void	sort_export(char **envp);
-
-
-void ft_unset(char **envp, char *var_to_delete)
+void ft_unset(t_hell *hell, char **envp, char *var_to_delete)
 {
 	if (!var_to_delete)
+		return ;
+	//unset_errors(hell, var_to_delete);
+	if (hell->exec_error)
 		return ;
 	int i = 0;
 	int strcount = 0;

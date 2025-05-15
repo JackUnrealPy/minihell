@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/04/23 18:56:40 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/13 21:43:33 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos)
 	else
 	{
 		str = get_dquote(hell, proc, cmd , pos);
-		res = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) , ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
+		
+		res = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) , ((ft_strlen(*cmd) - len) + ft_strlen(str) + 3)) );
 		ft_memcpy(res, *cmd, pos);
 		ft_memcpy(res + pos, str, ft_strlen(str));
 		ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + ft_strlen(str) + 2, ft_strlen(*cmd + pos + ft_strlen(str) + 2));

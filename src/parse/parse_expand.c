@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/04/23 21:50:38 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/13 21:53:26 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ int	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 			if(!(*((*str) + pos + i)) || ft_isspace(*((*str) + pos + i)) || ismeta((*str) + pos + i))
 			{
 				s = ft_malloc(hell, proc->freeme, ft_substr(*str, pos + 1, i - 1));
-				var = getenv(s);
+				var = ft_getvar(hell, proc, s);
 				if (!var)
-					var = ft_getvar(hell, proc, s);
+					var = getenv(s);
 				break;	
 			}
 		}
@@ -70,11 +70,11 @@ int	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 		var = "$";	
 	if (!var)
 		var = "";
-	res = ft_malloc(hell, proc->freeme, malloc(sizeof(char) * (ft_strlen(*str) - (i - 1) + ft_strlen(var) + 1)));
+	res = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char), (ft_strlen(*str) - (i - 1) + ft_strlen(var) + 1)));
 	ft_memcpy(res, *str, pos);
 	ft_memcpy(res + pos, var, ft_strlen(var) + 1);
 	ft_memcpy(res + pos + ft_strlen(var), (*str + pos) + i , ft_strlen(*str) - (pos + i));
-	res[ft_strlen(*str) + ft_strlen(var) - i] = 0;
 	*str = res;
+	proc->var = ft_strlen(var);
 	return (ft_strlen(var));
 }

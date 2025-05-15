@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/10 14:23:05 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/13 16:42:39 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef	struct	s_proc
 	int				hdoc_fd;
 	struct s_proc	*next;
 	struct s_proc	*prev;
+	int				var;
 }	t_proc;
 
 // struct to have everything ,we should have only one instance of this
@@ -80,7 +81,7 @@ int	builtins_output(t_hell *hell, t_proc *head, char **cmd);
 void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_redir *redirs, int pipe);
-void ft_unset(char **envp, char *var_to_delete);
+void ft_unset(t_hell *hell, char **envp, char *var_to_delete);
 void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int pipe);
 void	ft_export(t_hell *hell, t_proc *head, char **cmd);
 void	ft_cd(t_hell *hell, t_proc *head, char **cmd);
@@ -88,6 +89,7 @@ void	ft_cd(t_hell *hell, t_proc *head, char **cmd);
 // environment vars
 char **	ft_double_strdup(t_hell *hell, char **envp, char **cmd);
 char	*ft_getenv(char *key, char **envp);
+char	**ft_realloc_envp(char **envp, int new_element, char *new);
 
 // exec
 int loop_cmds(t_hell *hell, char **cmd);

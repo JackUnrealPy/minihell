@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/10 14:59:11 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/13 19:31:48 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,22 +31,27 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd)
 
 void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 {
-	char *path_env;
-	char **path;
-	char *test_path;
-	char *path_cmd;
+	char *path_env = NULL;
+	char **path = NULL;
+	char *test_path = NULL;
+	char *path_cmd = NULL;
 	int i = 0;
+	head->cmd_path = NULL;
 	if (!head->cmd)
 	{
-		head->cmd_path = NULL;
 		return ;
 	}
 	else if (ft_strchr(head->cmd[0], '/'))
-		head->cmd_path = ft_strdup(head->cmd[0]);
+		{
+			head->cmd_path = ft_strdup(head->cmd[0]);
+			if (access(head->cmd_path, F_OK) == -1)
+				(ft_putstr_fd(head->cmd[0], 2), error_msg(hell, cmd, ": No such file or directory", 1));
+			return ;
+		}
 	else
 	{
 		path_env = ft_getenv("PATH", hell->envp);
-		if (!path_env)
+		if (!path_env || !path_env[0])
 		{
 			ft_putstr_fd(head->cmd[0], 2);
 			error_msg(hell, cmd, ": No such file or directory", 127);
@@ -54,9 +59,12 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 		}
 		path = ft_split(path_env, ":");
 		if (!path)
+		{
+			free(path_env);
 			error_msg(hell, cmd, "Memory allocation failed", 1);
+		}
 		path_cmd = ft_strjoin("/", head->cmd[0]); // protect
-		while (path[i])
+		while (path && path[i])
 		{
 			test_path = ft_strjoin(path[i], path_cmd);
 			if (access(test_path, R_OK | X_OK) == 0)
@@ -67,10 +75,23 @@ void	create_cmd(t_hell *hell, t_proc *head, char **cmd)
 			i++;
 		}	
 	}
+	if (access(head->cmd[0], X_OK) != 0)
+	{
+		if (path_cmd)
+			free(path_cmd);
+		if (path_env)
+			free(path_env);
+		if (test_path)
+			free(test_path);
+		if (path)
+			ft_freeme(path);
+		ft_putstr_fd(head->cmd[0], 2);
+		error_msg(hell, cmd, ": command not found", 127);
+		return;
+	}
 	// if (!head->cmd_path)
 	// 	error_msg(hell, cmd, "Memory allocation failed", 1);
-	// if (access(head->cmd_path, R_OK | X_OK) == -1)
-	// 	error_msg(hell, cmd, "Cannot read/execute command executable", 1);
+
 }
 
 void	ft_freeme(char **arr)
@@ -91,13 +112,13 @@ void	ft_freeme(char **arr)
 
 void	children(t_proc *head, t_hell *hell, char **cmd, int i)
 {
-	create_cmd(hell, head, cmd);
 	head->pid = fork();
 	if (head->pid == 0)
 	{
 		input_redirection(hell, head, cmd, i);
 		output_redirection(hell, head, cmd, i);
 		ft_close(hell);
+		create_cmd(hell, head, cmd);
 		if (hell->exec_error)
 			exit (127);
 		if (!head->cmd || !head->cmd[0])
@@ -137,6 +158,7 @@ void	ft_pipex(t_hell *hell, char **cmd)
 	head_cpy = (*hell->head);
 	while (i < hell->cmd_count)
 	{
+		hell->exec_error = 0;
 		children(head_cpy, hell, cmd, i);
 		if (hell->exec_error)
 			return ;
