@@ -1,8 +1,0 @@
-SESSION_MANAGER=local/jack-unreal-Latitude-5431:@/tmp/.ICE-unix/3371,unix/jack-unreal-Latitude-5431:/tmp/.ICE-unix/3371
-LOGNAME=jack-unreal
-LD_PRELOAD=/home/jack-unreal/42_minishell_tester/utils/libintercept/libintercept.so
-HOME=/home/jack-unreal
-USERNAME=jack-unreal
-USER=jack-unreal
-PATH=/bin:/usr/bin:/usr/sbin:/home/jack-unreal/.local/funcheck/host:/home/jack-unreal/.local/bin:/home/jack-unreal/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/jack-unreal/.local/bin:/home/jack-unreal/bin:/home/jack-unreal/.local/bin:/home/jack-unreal/bin
-OLDPWD=/home/jack-unreal/Desktop/minihell
