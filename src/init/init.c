@@ -21,16 +21,6 @@ void	local_init(t_hell *hell, char *cmd)
 	hell->exec_error = 0;
 }
 
-void	env_init(t_hell *hell, char **envp)
-{
-	hell->test = ft_double_strdup(hell, envp, NULL);
-	if (hell->exec_error)
-	{
-		free(hell->freeme);
-		exit(1);
-	}
-    hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)hell->test);
-}
 
 int	init(t_hell *hell, char **envp)
 {
@@ -41,7 +31,7 @@ int	init(t_hell *hell, char **envp)
 	hell->exec_error = 0;
 	hell->freeme = malloc(sizeof(t_free *));
     (*hell->freeme) = NULL;
-	env_init(hell, envp);
+	hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)ft_double_strdup(hell, envp));
 	node = malloc(sizeof(t_proc*)); 
 	if (!node)
 	{

@@ -1,11 +1,11 @@
 #include "../../includes/minishell.h"
 
-int		newline_check(char **cmd)
+int	newline_check(char **cmd)
 {
 	int	i;
+	int	n;
 
 	i = 1;
-	int n;
 	if (cmd[1] && ft_strncmp(cmd[1], "-n", 2) == 0)
 	{
 		i = 1;
@@ -24,12 +24,14 @@ int		newline_check(char **cmd)
 		return (0);
 	return (i);
 }
-void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe)
+void	ft_echo(t_hell *hell, t_proc *head, int pipe)
 {
 	int	fd;
+	int	i;
+	int	newline;
+
 	fd = 1;
-	int i;
-	int newline = newline_check(head->cmd);
+	newline = newline_check(head->cmd);
 	i = newline;
 	if (newline < 0)
 		i *= -1;
@@ -47,5 +49,4 @@ void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe)
 	if (pipe)
 		close(fd);
 	(void)hell;
-	(void)cmd;
 }

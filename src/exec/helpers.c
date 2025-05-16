@@ -1,12 +1,15 @@
 #include "../../includes/minishell.h"
 
-void	error_msg(t_hell *hell, char **cmd, char *error, int exitcode)
+void	error_msg(t_hell *hell, char *var, char *error, int exitcode)
 {
 	if (error)
+	{
+		if (var)
+			ft_putstr_fd(var, STDERR_FILENO);
 		ft_putendl_fd(error, STDERR_FILENO);
+	}
 	hell->lastexit = exitcode;
 	hell->exec_error = 1;
-	(void)cmd;
 }
 
 void	ft_close(t_hell *hell)
@@ -21,17 +24,18 @@ void	ft_close(t_hell *hell)
 	}
 }
 
-void	ft_wait(t_hell *hell, char **cmd)
+void	ft_wait(t_hell *hell)
 {
-	int		wstatus = 0;
+	int		wstatus;
 	t_proc	*head_cpy;
 
+	wstatus = 0;
 	head_cpy = (*hell->head);
 	while (head_cpy)
 	{
 		if (head_cpy->pid != 0 && waitpid(head_cpy->pid, &wstatus, 0) == -1)
 		{
-			error_msg(hell, cmd, "waitpid failed 1", WEXITSTATUS(wstatus));
+			error_msg(hell, NULL, "waitpid failed", WEXITSTATUS(wstatus));
 			return ;
 		}
 		head_cpy = head_cpy->next;
@@ -43,8 +47,7 @@ void	ft_wait(t_hell *hell, char **cmd)
 		if (head_cpy->hdoc_present && head_cpy->hdoc_tmpfile)
 			unlink(head_cpy->hdoc_tmpfile);
 		head_cpy = head_cpy->next;
-	} 
-
+	}
 }
 
 void	initialise_struct(t_hell *hell, t_proc *head)

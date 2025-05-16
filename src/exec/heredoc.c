@@ -53,11 +53,14 @@ int	heredoc_check(t_redir *redirs)
 
 void	generate_tmpfile(t_hell *hell, t_proc *head)
 {
+	char	rando_txt[10];
+	char	rando_char;
+	int		i;
+	int		fd;
+
 	(void)hell;
-	char rando_txt[10];
-	char rando_char;
-	int i = 0;
-	int fd = open("/dev/urandom", O_RDONLY);
+	i = 0;
+	fd = open("/dev/urandom", O_RDONLY);
 	while (i < 9)
 	{
 		read(fd, &rando_char, 1);
@@ -66,19 +69,23 @@ void	generate_tmpfile(t_hell *hell, t_proc *head)
 	}
 	close(fd);
 	rando_txt[9] = 0;
-	head->hdoc_tmpfile = ft_malloc(hell, hell->freeme, ft_strjoin("/tmp/.", rando_txt));
+	head->hdoc_tmpfile = ft_malloc(hell, hell->freeme, ft_strjoin("/tmp/.",
+				rando_txt));
 }
 
 int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 {
-	(void)hell;
 	char	*buffer;
-	char *tmp = NULL;
+	char	*tmp;
+	int		i;
+
+	(void)hell;
+	tmp = NULL;
 	buffer = NULL;
 	if (heredoc_check(redirs) == 0)
 		return (0);
 	g_sig_flag = 0;
-	int i = 0;
+	i = 0;
 	generate_tmpfile(hell, head);
 	head->hdoc_fd = open(head->hdoc_tmpfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	signal(SIGINT, heredoc_sig);
@@ -96,7 +103,7 @@ int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 					tmp = buffer;
 					buffer = ft_strchr(buffer, '$');
 					ft_expand(hell, head, &buffer, 0);
-					break;
+					break ;
 				}
 				i++;
 			}
@@ -109,7 +116,8 @@ int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 		}
 		if (!buffer)
 		{
-			ft_putstr_fd("Warning: here-document delimited by end-of-file (wanted `change me')\n", 2);
+			ft_putstr_fd("Warning: here-document delimited by end-of-file (wanted `change me')\n",
+				2);
 			break ;
 		}
 		if (ft_strlen(buffer) == ft_strlen(redirs->pathordel)

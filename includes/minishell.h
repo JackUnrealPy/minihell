@@ -60,7 +60,6 @@ typedef struct	s_hell
 {
 	t_free	**freeme;
 	char	**argv;
-	char	**test;
 	int 	argc;
 	int		cmd_count;
 	int		exec_error;
@@ -75,50 +74,51 @@ typedef struct	s_hell
 // EXECUTION
 
 // builtins
-int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe);
-int	builtins_output(t_hell *hell, t_proc *head, char **cmd);
-void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe);
+int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
+int	builtins_output(t_hell *hell, t_proc *head);
+void	ft_echo(t_hell *hell, t_proc *head, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_redir *redirs, int pipe);
 void ft_unset(t_hell *hell, char **envp, char *var_to_delete);
-void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int pipe);
-void	ft_export(t_hell *hell, t_proc *head, char **cmd);
-void	ft_cd(t_hell *hell, t_proc *head, char **cmd);
+void	ft_exit(t_hell *hell, t_proc *head, int pipe);
+void	free_exit(t_hell *hell, int error);
+void	ft_export(t_hell *hell, t_proc *head);
+void	ft_cd(t_hell *hell, t_proc *head);
 
 // environment vars
-char **	ft_double_strdup(t_hell *hell, char **envp, char **cmd);
+char **	ft_double_strdup(t_hell *hell, char **envp);
 char	*ft_getenv(char *key, char **envp);
 char	**ft_realloc_envp(char **envp, int new_element, char *new);
 
 // exec
-int loop_cmds(t_hell *hell, char **cmd);
+int loop_cmds(t_hell *hell);
 
 // pipes
-void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
-void	create_cmd(t_hell *hell, t_proc *head, char **cmd);
-void	children(t_proc *head, t_hell *hell, char **cmd, int i);
-void	ft_pipex(t_hell *hell, char **cmd);
+void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs);
+void	create_cmd(t_hell *hell, t_proc *head);
+void	children(t_proc *head, t_hell *hell, int i);
+void	ft_pipex(t_hell *hell);
 
 // heredoc
-void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
+void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
 int		heredoc_check(t_redir *redirs);
-void	init_hdoc(t_hell *hell, t_proc *head, char **cmd);
+void	init_hdoc(t_hell *hell, t_proc *head);
 int    heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
 int     hdoc_pipes(t_hell *hell, t_proc *head);
 
 // redirection
-void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i);
-void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i);
+void	input_redirection(t_hell *hell, t_proc *head, int i);
+void	output_redirection(t_hell *hell, t_proc *head, int i);
 
 // single command
-void	single_cmd(t_hell *hell, t_proc *head, char **cmd);
+void	single_cmd(t_hell *hell, t_proc *head);
 
 // helpers
 void	ft_freeme(char **arr);
 void	ft_close(t_hell *hell);
-void	ft_wait(t_hell *hell, char **cmd);
+void	ft_wait(t_hell *hell);
 void	initialise_struct( t_hell *hell, t_proc *head);
-void    error_msg(t_hell *hell, char **cmd, char *error, int exitcode);
+void    error_msg(t_hell *hell, char* var, char *error, int exitcode);
 
 // Init
 void	local_init(t_hell *hell, char *cmd);

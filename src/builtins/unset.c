@@ -1,11 +1,10 @@
 #include "../../includes/minishell.h"
 
-
-void ft_unset(t_hell *hell, char **envp, char *var_to_delete)
+void	ft_unset(t_hell *hell, char **envp, char *var_to_delete)
 {
 	if (!var_to_delete)
 		return ;
-	//unset_errors(hell, var_to_delete);
+	// unset_errors(hell, var_to_delete);
 	if (hell->exec_error)
 		return ;
 	int i = 0;
@@ -16,17 +15,16 @@ void ft_unset(t_hell *hell, char **envp, char *var_to_delete)
 	{
 		if (ft_strncmp(envp[i], var_to_delete, ft_strlen(var_to_delete)) == 0)
 		{
-			//free(envp[i]);
+			// free(envp[i]);
 			while (envp[i])
 			{
-				envp[i] = envp[i+1];
+				envp[i] = envp[i + 1];
 				i++;
 			}
 			envp[i] = NULL;
-			break;
+			break ;
 		}
 		i++;
 	}
-	//sort_export(envp);
-
+	// sort_export(envp);
 }

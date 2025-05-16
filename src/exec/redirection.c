@@ -12,10 +12,11 @@
 
 #include "../../includes/minishell.h"
 
-void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
+void	input_redirection(t_hell *hell, t_proc *head, int i)
 {
 	int		input_fd;
 	t_redir	*tmp;
+	int		len;
 
 	tmp = (*head->redirs);
 	while (tmp)
@@ -24,10 +25,7 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 		{
 			head->hdoc_fd = open(head->hdoc_tmpfile, O_RDONLY); // check return
 			if (dup2(head->hdoc_fd, STDIN_FILENO) == -1)
-			{
-				error_msg(hell, cmd, "dup2 failed 5", 1);
-				return ;
-			}
+				return (error_msg(hell, NULL, "dup2 failed", 1));
 			close(head->hdoc_fd);
 			return ;
 		}
@@ -35,61 +33,50 @@ void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 		{
 			if (tmp->pathordel[0] == '$' && tmp->pathordel[1])
 			{
-				ft_putstr_fd(tmp->pathordel, 2);
-				error_msg(hell, cmd, ": ambiguous redirect", 1);
+				error_msg(hell, tmp->pathordel, ": ambiguous redirect", 1);
 				exit(1);
 			}
 			if (ft_strrchr(tmp->pathordel, '/'))
 			{
-				int len = ft_strrchr(tmp->pathordel, '/') - tmp->pathordel;
-				char dir[len+1];
+				len = ft_strrchr(tmp->pathordel, '/') - tmp->pathordel;
+				char dir[len + 1];
 				strncpy(dir, tmp->pathordel, len); // update libft
 				dir[len] = 0;
 				if (access(dir, F_OK) == -1)
 				{
-					ft_putstr_fd(tmp->pathordel, 2);
-					error_msg(hell, cmd, ": No such file or directory", 1);
+					error_msg(hell, tmp->pathordel,
+						": No such file or directory", 1);
 					exit(1);
 				}
 			}
 			if (access(tmp->pathordel, F_OK) == -1)
 			{
-				ft_putstr_fd(tmp->pathordel, 2);
-				error_msg(hell, cmd, ": No such file or directory", 1);
+				error_msg(hell, tmp->pathordel, ": No such file or directory",
+					1);
 				exit(1);
 			}
 			input_fd = open(tmp->pathordel, O_RDONLY, 0644);
 			if (input_fd < 0)
 			{
-				ft_putstr_fd(tmp->pathordel, 2);
-				error_msg(hell, cmd, ": permission denied", 1);
+				error_msg(hell, tmp->pathordel, ": permission denied", 1);
 				return ;
 			}
 			if (dup2(input_fd, STDIN_FILENO) == -1)
-			{
-				error_msg(hell, cmd, "dup2 failed 4", 1);
-				return ;
-			}
+				return (error_msg(hell, NULL, "dup2 failed", 1));
 			close(input_fd);
-			//return ;
 		}
-
 		tmp = tmp->next;
 	}
-	if (i > 0 && hell->pipe_fd)
-	{
-		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
-		{
-			// printf("i: %i\n", i);
-			error_msg(hell, cmd, "dup2 failed 3", 1);
-		}
-	}
+	if (i > 0 && hell->pipe_fd && dup2(hell->pipe_fd[(i - 1) * 2],
+			STDIN_FILENO) == -1)
+		error_msg(hell, NULL, "dup2 failed", 1);
 }
 
-void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
+void	output_redirection(t_hell *hell, t_proc *head, int i)
 {
 	int		output_fd;
 	t_redir	*tmp;
+	int		len;
 
 	tmp = (*head->redirs);
 	while (tmp)
@@ -98,29 +85,22 @@ void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 		{
 			if (tmp->pathordel[0] == '$' && tmp->pathordel[1])
 			{
-				ft_putstr_fd(tmp->pathordel, 2);
-				error_msg(hell, cmd, ": ambiguous redirect", 1);
+				error_msg(hell, tmp->pathordel, ": ambiguous redirect", 1);
 				exit(1);
 			}
 			if (ft_strrchr(tmp->pathordel, '/'))
 			{
-				int len = ft_strrchr(tmp->pathordel, '/') - tmp->pathordel;
-				char dir[len+1];
+				len = ft_strrchr(tmp->pathordel, '/') - tmp->pathordel;
+				char dir[len + 1];
 				strncpy(dir, tmp->pathordel, len); // update libft
 				dir[len] = 0;
 				if (access(dir, F_OK) == -1)
 				{
-					ft_putstr_fd(tmp->pathordel, 2);
-					error_msg(hell, cmd, ": No such file or directory", 1);
+					error_msg(hell, tmp->pathordel,
+						": No such file or directory", 1);
 					exit(1);
 				}
 			}
-			// if (access(tmp->pathordel, F_OK) == -1)
-			// {
-			// 	ft_putstr_fd(tmp->pathordel, 2);
-			// 	error_msg(hell, cmd, ": No such file or directory", 1);
-			// 	exit(1);
-			// }
 			if (tmp->type == 1)
 				output_fd = open(tmp->pathordel, O_CREAT | O_WRONLY | O_TRUNC,
 						0644);
@@ -128,25 +108,17 @@ void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i)
 				output_fd = open(tmp->pathordel, O_CREAT | O_WRONLY | O_APPEND,
 						0644);
 			if (output_fd < 0)
-			{
-				ft_putstr_fd(tmp->pathordel, 2);
-				error_msg(hell, cmd, ": permission denied", 1);
-				return ;
-			}
+				return (error_msg(hell, tmp->pathordel, ": permission denied",
+						1));
 			if (dup2(output_fd, STDOUT_FILENO) == -1)
-			{
-				error_msg(hell, cmd, "dup2 failed 2", 1);
-				return ;
-			}
+				return (error_msg(hell, NULL, "dup2 failed", 1));
 			close(output_fd);
-			//return ;
 		}
 		tmp = tmp->next;
 	}
 	if (i != -1 && i != hell->cmd_count - 1)
 	{
 		if (dup2(hell->pipe_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
-			error_msg(hell, cmd, "dup2 failed 8", 1);
+			error_msg(hell, NULL, "dup2 failed", 1);
 	}
-
 }
