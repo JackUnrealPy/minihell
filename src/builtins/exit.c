@@ -93,11 +93,13 @@ long	ft_atol(const char *str)
 
 void	free_exit(t_hell *hell, int error)
 {
-	close_proc(hell);
-	rl_clear_history();
-	throw_garbage(hell->freeme);
-	free(hell->head);
-	exit(error);
+	// close_proc(hell);
+	// rl_clear_history();
+	// throw_garbage(hell->freeme);
+	// if (hell->head)
+	// 	free(hell->head);
+	// exit(error);
+	jump_ship(hell, error);
 }
 
 void	ft_exit(t_hell *hell, t_proc *head, int is_pipe)
@@ -145,6 +147,6 @@ void	ft_exit(t_hell *hell, t_proc *head, int is_pipe)
 	if (!is_pipe)
 	{
 		ft_putendl_fd("exit", 1);
-		free_exit(hell, 0);
+		free_exit(hell, hell->lastexit);
 	}
 }

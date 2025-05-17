@@ -51,8 +51,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(cmd);
 		local_init(&hell, cmd);
 		parse(&hell, cmd, *(hell.head));
-		// printf("cmd[0]: %s\n cmd[1]: %s\n", (*hell.head)->cmd[0], (*hell.head)->cmd[1]);
-		// print_list(*(hell.head));
+		print_list(*(hell.head));
 		if (!hell.syntaxerr)
 			loop_cmds(&hell);
 		hell.syntaxerr = 0;
