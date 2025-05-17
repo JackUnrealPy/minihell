@@ -21,7 +21,7 @@ int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 	else if (ft_strncmp(head->cmd[0], "echo", ft_strlen(head->cmd[0])) == 0)
 		ft_echo(hell, head, pipe);
 	else if (strcmp("pwd", head->cmd[0]) == 0)
-		ft_pwd(*(head->redirs), pipe);
+		ft_pwd(hell, *(head->redirs), pipe);
 	else if (strcmp("cd", head->cmd[0]) == 0)
 		ft_cd(hell, head);
 	else if (strcmp("env", head->cmd[0]) == 0)

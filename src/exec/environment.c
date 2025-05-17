@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-char	*ft_getenv(char *key, char **envp)
+char	*ft_getenv(char *key, char **envp, int print_key)
 {
 	char	*value;
 	int		i;
@@ -18,7 +18,10 @@ char	*ft_getenv(char *key, char **envp)
 			a = 1;
 			while (envp[i] && envp[i][a + len] && envp[i][a + len] != '\n')
 				a++;
-			value = ft_substr(envp[i], len + 1, a - 1);
+			if (envp[i] && !print_key)
+				value = ft_substr(envp[i], len + 1, a - 1);
+			else if (envp[i] && print_key)
+				value = ft_strdup(envp[i]);
 		}
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/13 18:22:40 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/17 18:46:30 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,11 @@ void	single_cmd(t_hell *hell, t_proc *head)
 		if (!head->cmd)
 			free_exit(hell, 0);
 		create_cmd(hell, head);
-		// if (hell->exec_error)
-		// 	exit(0); //free_exit(hell, 127);
+		
+		if (hell->exec_error)
+			free_exit(hell, 127);
+		
+		
 		execve(head->cmd_path, head->cmd, hell->envp);
 		error_msg(hell, head->cmd[0], ": command not found", 127);
 		jump_ship(hell, 127); //exit_child(hell, 127); //free_exit(hell, 127);

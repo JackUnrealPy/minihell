@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   alloc_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:50:23 by agara             #+#    #+#             */
-/*   Updated: 2025/03/25 21:19:50 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/17 18:53:37 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	*ft_malloc(t_hell *hell, t_free **head, void *obj)
 	t_free	*new;
 
 	if (!obj)
-		exit(1);
+		return (NULL);//exit(1);
 	new = malloc(sizeof(t_free));
 	if (!new)
 	{

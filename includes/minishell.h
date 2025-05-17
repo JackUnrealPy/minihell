@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/13 16:42:39 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/17 22:54:11 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef	struct	s_proc
 	int				hdoc_fd;
 	struct s_proc	*next;
 	struct s_proc	*prev;
+	int				var;
 }	t_proc;
 
 // struct to have everything ,we should have only one instance of this
@@ -60,6 +61,7 @@ typedef struct	s_hell
 {
 	t_free	**freeme;
 	char	**argv;
+	char	**test;
 	int 	argc;
 	int		cmd_count;
 	int		exec_error;
@@ -78,7 +80,7 @@ int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
 int	builtins_output(t_hell *hell, t_proc *head);
 void	ft_echo(t_hell *hell, t_proc *head, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
-int	ft_pwd(t_redir *redirs, int pipe);
+int	ft_pwd(t_hell *hell, t_redir *redirs, int pipe);
 void ft_unset(t_hell *hell, char **envp, char *var_to_delete);
 void	ft_exit(t_hell *hell, t_proc *head, int pipe);
 void	free_exit(t_hell *hell, int error);
@@ -87,7 +89,7 @@ void	ft_cd(t_hell *hell, t_proc *head);
 
 // environment vars
 char **	ft_double_strdup(t_hell *hell, char **envp);
-char	*ft_getenv(char *key, char **envp);
+char	*ft_getenv(char *key, char **envp, int print_key);
 char	**ft_realloc_envp(char **envp, int new_element, char *new);
 
 // exec

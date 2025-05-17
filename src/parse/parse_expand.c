@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_expand.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/05/13 21:53:26 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/17 22:51:53 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,5 +75,6 @@ int	ft_expand(t_hell *hell, t_proc *proc, char **str, int pos)
 	ft_memcpy(res + pos, var, ft_strlen(var) + 1);
 	ft_memcpy(res + pos + ft_strlen(var), (*str + pos) + i , ft_strlen(*str) - (pos + i));
 	*str = res;
+	proc->var = ft_strlen(var);
 	return (ft_strlen(var));
 }

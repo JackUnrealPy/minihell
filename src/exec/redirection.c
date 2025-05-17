@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/08 18:55:33 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/17 17:07:24 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,14 @@ void	input_redirection(t_hell *hell, t_proc *head, int i)
 				{
 					error_msg(hell, tmp->pathordel,
 						": No such file or directory", 1);
-					exit(1);
+					free_exit(hell, 1);
 				}
 			}
 			if (access(tmp->pathordel, F_OK) == -1)
 			{
 				error_msg(hell, tmp->pathordel, ": No such file or directory",
 					1);
-				exit(1);
+				free_exit(hell, 1);
 			}
 			input_fd = open(tmp->pathordel, O_RDONLY, 0644);
 			if (input_fd < 0)
@@ -98,7 +98,7 @@ void	output_redirection(t_hell *hell, t_proc *head, int i)
 				{
 					error_msg(hell, tmp->pathordel,
 						": No such file or directory", 1);
-					exit(1);
+					free_exit(hell, 1);
 				}
 			}
 			if (tmp->type == 1)

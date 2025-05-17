@@ -88,33 +88,6 @@ void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme)
 	proc->cmd = res;
 }
 
-char **parse_export(t_hell *hell, t_proc *proc, char* cmd)
-{
-	int		i;
-	int		j;
-	char	**res;
-
-	res = NULL;
-	res = ft_malloc(hell, proc->freeme, malloc(sizeof(char *) * 3));
-	res[0] = ft_malloc(hell, proc->freeme, ft_strdup("export"));
-	i = 5;
-	while (cmd[++i])
-	{
-		if (!ft_isspace(cmd[i]))	
-			break;
-	}
-	j = i;
-	while (cmd[j])
-	{
-		if (cmd[j] == '\"' || cmd[j] == '\'')
-			j += handle_quote(hell, proc, &cmd, j);
-		else
-			j++;
-	}
-	res[1] = ft_malloc(hell, proc->freeme, ft_strdup(cmd + i));
-	return (res);
-}
-
 int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 {
 	int		len;
@@ -128,13 +101,12 @@ int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 	len = -1;
 	while (cmds[++len])
 	{
-		if (cmds[len] == '<' || cmds[len] == '>' || cmds[len] == '|')
+		if ((cmds[len] == '<' || cmds[len] == '>' || cmds[len] == '|') && proc->var <= 0)
 			break;
 		if (cmds[len] == '$')
 		{
-			if (!ft_isalpha(cmds[len + 1]) && cmds[len +1] != '?')
-				continue ;
-			ft_expand(hell, proc, ptr, len + i);
+			if (!ft_expand(hell, proc, ptr, len + i))
+				len--;
 			cmds = *ptr + i;
 			if (inspace)
 			{
@@ -161,9 +133,48 @@ int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
 	}
 	if ((!cmds[len] || !inspace) && (len - lasttoken) > 0)
 		add_to_cmdarr(hell, proc, ft_malloc(hell, proc->freeme, ft_substr(cmds, lasttoken, len - lasttoken)));
-	// if (ft_strlen(cmd) >= 7 && !ft_strncmp(cmd, "export", 6) && ft_isspace(cmd[6]))
-	// 	processed_cmds = parse_export(hell, proc, cmd);
 	return (len - 1);
+}
+
+void    parse_export(t_hell *hell, t_proc *proc)
+{
+        int             i;
+        int             j;
+        int             k;
+        int             inspace;
+        char    *processed_cmd;
+
+        processed_cmd = NULL;
+        i = 0;
+        while (proc->cmd[i])
+        {
+                inspace = 0;
+                processed_cmd = ft_calloc(sizeof(char) , ft_strlen(proc->cmd[i]) + 1);
+                if (!processed_cmd)
+                        jump_ship(hell, 1);
+                j = 0;
+                k = 0;
+                while (proc->cmd[i][j])
+                {
+                        if (ft_isspace(proc->cmd[i][j]))
+                        {
+                                if (!inspace)
+                                        processed_cmd[k++] = ' ';
+                                inspace = 1;
+                        }
+                        else
+                        {
+                                inspace = 0;
+                                processed_cmd[k++] = proc->cmd[i][j];
+                        }
+                        j++;
+                }
+                if (ft_strlen(processed_cmd) != ft_strlen(proc->cmd[i]))
+                        proc->cmd[i] = ft_malloc(hell, proc->freeme ,processed_cmd);
+                else
+                        ft_terminate(1, &processed_cmd);
+                i++;
+        }
 }
 
 
@@ -175,20 +186,23 @@ void	parse(t_hell *hell, char *cmd, t_proc *proc)
 	i = -1;
 	while (cmd[++i])
 	{
+		proc->var--;
 		if (hell->syntaxerr)
 			return ;
 		if (cmd[i] == '$')
 			ft_expand(hell, proc, &cmd, i);
 		if (ft_isspace(cmd[i]))
 			continue ;
-		else if (cmd[i] == '|')
+		else if ((cmd[i] == '|') && proc->var <= 0)
 		{
 			handlepipe(hell, cmd, i, proc);
 			break ;
 		}
-		else if (cmd[i] == '>' || cmd[i] == '<')
+		else if ((cmd[i] == '>' || cmd[i] == '<') && proc->var <= 0)
 			i += get_redir(hell, proc, cmd + i);
 		else
 			i += get_cmdarr(hell, proc, &cmd, i);
 	}
+	if (proc->cmd && proc->cmd[0] && ft_strlen(proc->cmd[0]) > 6 && !ft_strncmp(proc->cmd[0], "export", 7)) 
+		parse_export(hell, proc); 
 }

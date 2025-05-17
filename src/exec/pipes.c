@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/13 19:31:48 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/17 20:21:06 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,18 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs)
 
 void	test_cmds(t_hell *hell, t_proc *head)
 {
-	char	*path_env;
+	char	*path_env = NULL;
 	char	**path;
 	char	*test_path;
 	char	*path_cmd;
 	int		i;
-
 	i = 0;
-	path_env = ft_malloc(hell, head->freeme, ft_getenv("PATH", hell->envp));
-	if (!path_env[0])
+	// path_env = ft_getenv("PATH", hell->envp);
+	// if ()
+	// printf("Test: [%s]", ft_getenv("PATH", hell->envp));
+	path_env = ft_malloc(hell, head->freeme, ft_getenv("PATH", hell->envp, 0));
+	
+	if (!path_env || !path_env[0])
 	{
 		error_msg(hell, head->cmd[0], ": No such file or directory", 127);
 		return ;
@@ -71,11 +74,12 @@ void	create_cmd(t_hell *hell, t_proc *head)
 		return ;
 	else if (ft_strchr(head->cmd[0], '/'))
 	{
-		head->cmd_path = ft_strdup(head->cmd[0]);
+		head->cmd_path = ft_malloc(hell, head->freeme, ft_strdup(head->cmd[0]));
 		if (access(head->cmd_path, F_OK) == -1)
-			error_msg(hell, head->cmd[0], ": No such file or directory", 1);
+			error_msg(hell, head->cmd[0], ": No such file or directory 33", 1);
 		return ;
 	}
+	
 	else
 		test_cmds(hell, head);
 	// if (!head->cmd_path || access(head->cmd_path, X_OK) != 0)
@@ -113,7 +117,7 @@ void	children(t_proc *head, t_hell *hell, int i)
 			free_exit(hell, 0);
 		create_cmd(hell, head);
 		if (hell->exec_error)
-			exit(127); //free_exit(hell, 127);
+			free_exit(hell, 127); //free_exit(hell, 127);
 		if (!head->cmd || !head->cmd[0])
 			free_exit(hell, 0);
 		if (execve(head->cmd_path, head->cmd, hell->envp) == -1)

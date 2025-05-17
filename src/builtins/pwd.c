@@ -1,9 +1,8 @@
 #include "../../includes/minishell.h"
 #include <linux/limits.h>
 
-int	ft_pwd(t_redir *redirs, int pipe)
+int	ft_pwd(t_hell *hell, t_redir *redirs, int pipe)
 {
-	char buf[PATH_MAX];
 	int fd = 1;
 	if (!pipe)
 	{
@@ -19,10 +18,11 @@ int	ft_pwd(t_redir *redirs, int pipe)
 		}
 	}
 	char *success = NULL;
-	success = getcwd(buf, sizeof(buf));
+	success = ft_getenv("PWD", hell->envp, 0); //getcwd(buf, sizeof(buf));
 	if (!success)
 		return (10); // free, error msg
-	ft_putendl_fd(buf, fd);
+	ft_putendl_fd(success, fd);
+	free(success);
 	if (fd != 1)
 		close(fd);
 	return (1);

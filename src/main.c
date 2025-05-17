@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/05/13 20:00:51 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/17 21:58:56 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,11 @@ int	main(int argc, char **argv, char **envp)
 		add_history(cmd);
 		local_init(&hell, cmd);
 		parse(&hell, cmd, *(hell.head));
-		print_list(*(hell.head));
+		// print_list(*(hell.head));
 		if (!hell.syntaxerr)
+		{
 			loop_cmds(&hell);
+		}
 		hell.syntaxerr = 0;
 		ft_terminate(1, &cmd);
 		close_proc(&hell);
@@ -63,4 +65,3 @@ int	main(int argc, char **argv, char **envp)
 	ft_terminate(1, &(hell.head));
 	return (hell.lastexit);
 }
-
