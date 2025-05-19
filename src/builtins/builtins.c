@@ -1,5 +1,14 @@
 #include "../../includes/minishell.h"
 
+int	built_err(t_hell *hell, char *type, char *msg, int exitnum)
+{
+	ft_putstr_fd(type, 2);
+	error_msg(hell, (*hell->head)->cmd[1], msg, exitnum);
+	if (exitnum == 2)
+		free_exit(hell, exitnum);
+	return (0);
+}
+
 int	is_builtin(t_proc *head)
 {
 	if (!head->cmd)

@@ -2,8 +2,12 @@
 
 int	ft_env(t_redir *redirs, char **envp, int pipe)
 {
-	int fd = 1;
-	t_redir *redirs_cpy = redirs;
+	int		fd;
+	t_redir	*redirs_cpy;
+	int		i;
+
+	fd = 1;
+	redirs_cpy = redirs;
 	if (!pipe)
 	{
 		while (redirs_cpy)
@@ -17,7 +21,7 @@ int	ft_env(t_redir *redirs, char **envp, int pipe)
 			redirs_cpy = redirs_cpy->next;
 		}
 	}
-	int i = 0;
+	i = 0;
 	while (envp[i])
 	{
 		ft_putendl_fd(envp[i], fd);

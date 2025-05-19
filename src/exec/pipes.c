@@ -28,28 +28,12 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs)
 	}
 }
 
-void	test_cmds(t_hell *hell, t_proc *head)
+void	try_paths(t_hell *hell, t_proc *head, char **path, char *path_cmd)
 {
-	char	*path_env = NULL;
-	char	**path;
 	char	*test_path;
-	char	*path_cmd;
 	int		i;
+
 	i = 0;
-	// path_env = ft_getenv("PATH", hell->envp);
-	// if ()
-	// printf("Test: [%s]", ft_getenv("PATH", hell->envp));
-	path_env = ft_malloc(hell, head->freeme, ft_getenv("PATH", hell->envp, 0));
-	
-	if (!path_env || !path_env[0])
-	{
-		error_msg(hell, head->cmd[0], ": No such file or directory", 127);
-		return ;
-	}
-	path = (char **)ft_mallocarr(hell, head->freeme, (void **)ft_split(path_env, ":"));
-	if (!path)
-		return (error_msg(hell, NULL, "Memory allocation failed", 1));
-	path_cmd = ft_malloc(hell, head->freeme, ft_strjoin("/", head->cmd[0]));
 	while (path && path[i])
 	{
 		test_path = ft_malloc(hell, head->freeme, ft_strjoin(path[i],
@@ -59,13 +43,30 @@ void	test_cmds(t_hell *hell, t_proc *head)
 			head->cmd_path = ft_malloc(hell, head->freeme, test_path);
 			break ;
 		}
-		//free(test_path);
 		i++;
 	}
+}
+
+void	test_cmds(t_hell *hell, t_proc *head)
+{
+	char	*path_env;
+	char	**path;
+	char	*path_cmd;
+
+	path_env = NULL;
+	path_env = ft_malloc(hell, head->freeme, ft_getenv("PATH", hell->envp, 0));
+	if (!path_env || !path_env[0])
+		return (error_msg(hell, head->cmd[0], ": No such file or directory",
+				127));
+	path = (char **)ft_mallocarr(hell, head->freeme, (void **)ft_split(path_env,
+				":"));
+	if (!path)
+		return (error_msg(hell, NULL, "Memory allocation failed", 1));
+	path_cmd = ft_malloc(hell, head->freeme, ft_strjoin("/", head->cmd[0]));
+	try_paths(hell, head, path, path_cmd);
 	if (!head->cmd_path)
 		head->cmd_path = head->cmd[0];
 }
-
 
 void	create_cmd(t_hell *hell, t_proc *head)
 {
@@ -79,14 +80,8 @@ void	create_cmd(t_hell *hell, t_proc *head)
 			error_msg(hell, head->cmd[0], ": No such file or directory 33", 1);
 		return ;
 	}
-	
 	else
 		test_cmds(hell, head);
-	// if (!head->cmd_path || access(head->cmd_path, X_OK) != 0)
-	// {
-	// 	error_msg(hell, head->cmd[0], ": command not found 1", 127);
-	// 	return ;
-	// }
 }
 
 void	ft_freeme(char **arr)
@@ -112,28 +107,46 @@ void	children(t_proc *head, t_hell *hell, int i)
 	{
 		input_redirection(hell, head, i);
 		output_redirection(hell, head, i);
-		ft_close(hell);
+		if (i >= 0)
+			ft_close(hell);
 		if (determine_builtin(hell, head, 1))
+		{
+			if (hell->exec_error)
+				free_exit(hell, hell->lastexit);
+			free_exit(hell, 0);
+		}
+		if (!head->cmd || !head->cmd[0])
 			free_exit(hell, 0);
 		create_cmd(hell, head);
 		if (hell->exec_error)
-			free_exit(hell, 127); //free_exit(hell, 127);
-		if (!head->cmd || !head->cmd[0])
-			free_exit(hell, 0);
-		if (execve(head->cmd_path, head->cmd, hell->envp) == -1)
-		{
-			error_msg(hell, head->cmd[0], ": command not found 2", 127);
 			free_exit(hell, 127);
-		}
+		execve(head->cmd_path, head->cmd, hell->envp);
+		error_msg(hell, head->cmd[0], ": command not found", 127);
+		jump_ship(hell, 127);
+	}
+}
+
+void	child_loop(t_hell *hell, t_proc *head_cpy)
+{
+	int	i;
+
+	i = 0;
+	while (i < hell->cmd_count)
+	{
+		hell->exec_error = 0;
+		children(head_cpy, hell, i);
+		if (hell->exec_error)
+			return ;
+		i++;
+		if (i < hell->cmd_count)
+			head_cpy = head_cpy->next;
 	}
 }
 
 void	ft_pipex(t_hell *hell)
 {
-	int		i;
 	t_proc	*head_cpy;
 
-	i = 0;
 	head_cpy = (*hell->head);
 	initialise_struct(hell, (*hell->head));
 	while (head_cpy)
@@ -145,18 +158,7 @@ void	ft_pipex(t_hell *hell)
 	}
 	initialise_pipes(hell, (*hell->head), (*(*hell->head)->redirs));
 	head_cpy = (*hell->head);
-	while (i < hell->cmd_count)
-	{
-		hell->exec_error = 0;
-		children(head_cpy, hell, i);
-		if (hell->exec_error)
-			return ;
-		i++;
-		if (i < hell->cmd_count)
-		{
-			head_cpy = head_cpy->next;
-		}
-	}
+	child_loop(hell, head_cpy);
 	ft_close(hell);
 	ft_wait(hell);
 }

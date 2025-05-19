@@ -24,6 +24,7 @@ int	newline_check(char **cmd)
 		return (0);
 	return (i);
 }
+
 void	ft_echo(t_hell *hell, t_proc *head, int pipe)
 {
 	int	fd;

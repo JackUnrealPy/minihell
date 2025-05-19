@@ -79,7 +79,7 @@ void	output_redirection(t_hell *hell, t_proc *head, int i)
 	int		len;
 
 	tmp = (*head->redirs);
-	while (tmp)
+	while (tmp) 
 	{
 		if (tmp->type == 1 || tmp->type == 2)
 		{

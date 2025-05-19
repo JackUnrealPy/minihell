@@ -78,6 +78,7 @@ typedef struct	s_hell
 // builtins
 int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
 int	builtins_output(t_hell *hell, t_proc *head);
+int	built_err(t_hell *hell, char *type, char *msg, int exitnum);
 void	ft_echo(t_hell *hell, t_proc *head, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_hell *hell, t_redir *redirs, int pipe);
@@ -90,7 +91,7 @@ void	ft_cd(t_hell *hell, t_proc *head);
 // environment vars
 char **	ft_double_strdup(t_hell *hell, char **envp);
 char	*ft_getenv(char *key, char **envp, int print_key);
-char	**ft_realloc_envp(char **envp, int new_element, char *new);
+char	**ft_realloc_envp(t_hell *hell, char **envp, int new_element, char *new);
 
 // exec
 int loop_cmds(t_hell *hell);

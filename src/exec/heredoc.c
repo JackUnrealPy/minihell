@@ -30,10 +30,6 @@ void	heredoc_sig(int sig)
 	{
 		g_sig_flag = SIGINT;
 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-		// printf("\n");
-		// rl_on_new_line();
-		// rl_replace_line("", 0);
-		// rl_redisplay();
 	}
 }
 
@@ -73,70 +69,81 @@ void	generate_tmpfile(t_hell *hell, t_proc *head)
 				rando_txt));
 }
 
-int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
+void	expansion_heredoc(t_hell *hell, t_proc *head, char *buffer, char *tmp)
+{
+	int	i;
+
+	if (buffer && (*head->redirs)->type == 4)
+	{
+		i = 0;
+		while (buffer[i])
+		{
+			if (buffer[i] == '$')
+			{
+				tmp = buffer;
+				buffer = ft_strchr(buffer, '$');
+				ft_expand(hell, head, &buffer, 0);
+				break ;
+			}
+			i++;
+		}
+	}
+	(void)tmp;
+}
+
+int	break_heredoc(t_redir *redirs, char *buffer)
+{
+	if (!buffer)
+	{
+		ft_putstr_fd("Warning: here-document delimited by EOF\n", 2);
+		return (1);
+	}
+	if (ft_strlen(buffer) == ft_strlen(redirs->pathordel) && ft_strncmp(buffer,
+			redirs->pathordel, ft_strlen(redirs->pathordel)) == 0)
+	{
+		free(buffer);
+		return (1);
+	}
+	return (0);
+}
+
+void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 {
 	char	*buffer;
 	char	*tmp;
-	int		i;
 
-	(void)hell;
-	tmp = NULL;
-	buffer = NULL;
-	if (heredoc_check(redirs) == 0)
-		return (0);
-	g_sig_flag = 0;
-	i = 0;
-	generate_tmpfile(hell, head);
-	head->hdoc_fd = open(head->hdoc_tmpfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
-	signal(SIGINT, heredoc_sig);
-	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		buffer = readline("> ");
-		if (buffer && redirs->type == 4)
-		{
-			i = 0;
-			while (buffer[i])
-			{
-				if (buffer[i] == '$')
-				{
-					tmp = buffer;
-					buffer = ft_strchr(buffer, '$');
-					ft_expand(hell, head, &buffer, 0);
-					break ;
-				}
-				i++;
-			}
-		}
+		tmp = NULL;
+		expansion_heredoc(hell, head, buffer, tmp);
 		if (g_sig_flag == SIGINT)
 		{
 			g_sig_flag = 0;
 			hell->lastexit = 130;
 			break ;
 		}
-		if (!buffer)
-		{
-			ft_putstr_fd("Warning: here-document delimited by end-of-file (wanted `change me')\n",
-				2);
+		if (break_heredoc(redirs, buffer))
 			break ;
-		}
-		if (ft_strlen(buffer) == ft_strlen(redirs->pathordel)
-			&& ft_strncmp(buffer, redirs->pathordel,
-				ft_strlen(redirs->pathordel)) == 0)
-		{
-			free(buffer);
-			break ;
-		}
 		if (!g_sig_flag)
 			ft_putendl_fd(buffer, head->hdoc_fd);
 		if (tmp)
-		{
 			free(tmp);
-			tmp = NULL;
-		}
 		else
 			free(buffer);
 	}
+}
+
+int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
+{
+	if (heredoc_check(redirs) == 0)
+		return (0);
+	g_sig_flag = 0;
+	generate_tmpfile(hell, head);
+	head->hdoc_fd = open(head->hdoc_tmpfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	signal(SIGINT, heredoc_sig);
+	signal(SIGQUIT, SIG_IGN);
+	heredoc_loop(hell, head, redirs);
 	close(head->hdoc_fd);
 	return (1);
 }

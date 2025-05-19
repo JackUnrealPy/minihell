@@ -29,27 +29,8 @@ int	string_is_digit(const char *str)
 	return (1);
 }
 
-int	error_check(const char *str)
+int	check_long(const char *str, int i, int a)
 {
-	long	i;
-	int		a;
-
-	i = 0;
-	while ((str[i] < 14 && str[i] > 8) || (str[i] == 32))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		i++;
-	}
-	while (str[i] == '0')
-		i++;
-	a = 0;
-	while (str[i + a])
-	{
-		if (!string_is_digit(str + 1))
-			return (1);
-		a++;
-	}
 	if (a > 19)
 		return (2);
 	if (a == 19)
@@ -64,6 +45,29 @@ int	error_check(const char *str)
 	}
 	return (0);
 }
+
+int	error_check(const char *str)
+{
+	long	i;
+	int		a;
+
+	i = 0;
+	while ((str[i] < 14 && str[i] > 8) || (str[i] == 32))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i] == '0')
+		i++;
+	a = 0;
+	while (str[i + a])
+	{
+		if (!string_is_digit(str + 1))
+			return (1);
+		a++;
+	}
+	return (check_long(str, i, a));
+}
+
 long	ft_atol(const char *str)
 {
 	long	res;
@@ -93,47 +97,36 @@ long	ft_atol(const char *str)
 
 void	free_exit(t_hell *hell, int error)
 {
-	// close_proc(hell);
-	// rl_clear_history();
-	// throw_garbage(hell->freeme);
-	// if (hell->head)
-	// 	free(hell->head);
-	// exit(error);
 	jump_ship(hell, error);
+}
+
+int	exit_error(t_hell *hell, t_proc *head)
+{
+	if (string_is_digit(head->cmd[1]) && head->cmd[2])
+		return (error_msg(hell, NULL, "exit: too many arguments", 1), 1);
+	if (!string_is_digit(head->cmd[1]) || ft_strncmp(head->cmd[1], "\0",
+			ft_strlen(head->cmd[1])) == 0)
+		built_err(hell, "exit: ", ": numeric argument required", 2);
+	if (error_check(head->cmd[1]))
+		built_err(hell, "exit: ", ": numeric argument required", 2);
+	return (0);
 }
 
 void	ft_exit(t_hell *hell, t_proc *head, int is_pipe)
 {
 	long	num;
-	int		i;
 
 	num = 0;
-	i = 1;
 	if (is_pipe)
-	{
 		return ;
-	}
 	if (head->cmd[0] && !head->cmd[1])
 		free_exit(hell, 0);
 	if (head->cmd[0])
 	{
-		if (string_is_digit(head->cmd[1]) && head->cmd[2])
-			return (error_msg(hell, NULL, "exit: too many arguments", 1));
-		if (!string_is_digit(head->cmd[i]) || ft_strncmp(head->cmd[i], "\0",
-				ft_strlen(head->cmd[i])) == 0)
-		{
-			ft_putstr_fd("exit: ", 2);
-			error_msg(hell, head->cmd[1], ": numeric argument required", 2);
-			free_exit(hell, 2);
-		}
-		if (error_check(head->cmd[1]))
-		{
-			ft_putstr_fd("exit: ", 2), error_msg(hell, head->cmd[1],
-				": numeric argument required", 2);
-			free_exit(hell, 2);
-		}
-		num = ft_atol(head->cmd[i]);
+		if (exit_error(hell, head) == 1)
+			return ;
 	}
+	num = ft_atol(head->cmd[1]);
 	if (head->cmd[0] && head->cmd[1])
 	{
 		num = ft_atoi(head->cmd[1]);
@@ -144,9 +137,6 @@ void	ft_exit(t_hell *hell, t_proc *head, int is_pipe)
 		}
 	}
 	hell->lastexit = num;
-	if (!is_pipe)
-	{
-		ft_putendl_fd("exit", 1);
-		free_exit(hell, hell->lastexit);
-	}
+	ft_putendl_fd("exit", 1);
+	free_exit(hell, hell->lastexit);
 }

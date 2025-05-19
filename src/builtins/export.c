@@ -12,8 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-char	**ft_realloc_envp(char **envp, int new_element, char *new);
-
 void	print_var(char *var_to_print)
 {
 	int	i;
@@ -99,13 +97,9 @@ int	add_envp_var(t_hell *hell, t_proc *head)
 		i++;
 	}
 	if (error)
-	{
-		ft_putstr_fd("export: `", 2);
-		return (error_msg(hell, head->cmd[1], "': not a valid identifier", 1),
-			0);
-	}
+		return (built_err(hell, "export: `", "': not a valid identifier", 1));
 	hell->envp = (char **)ft_mallocarr(hell, hell->freeme,
-			(void **)ft_realloc_envp(hell->envp, 1, head->cmd[1]));
+			(void **)ft_realloc_envp(hell, hell->envp, 1, head->cmd[1]));
 	return (1);
 }
 

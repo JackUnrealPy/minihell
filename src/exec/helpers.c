@@ -52,7 +52,7 @@ void	ft_wait(t_hell *hell)
 
 void	initialise_struct(t_hell *hell, t_proc *head)
 {
-	t_proc *current;
+	t_proc	*current;
 
 	hell->cmd_count = 0;
 	current = head;
