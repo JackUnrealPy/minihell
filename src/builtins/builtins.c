@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/20 04:18:49 by marvin            #+#    #+#             */
+/*   Updated: 2025/05/20 04:21:59 by marvin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	built_err(t_hell *hell, char *type, char *msg, int exitnum)
@@ -5,7 +17,7 @@ int	built_err(t_hell *hell, char *type, char *msg, int exitnum)
 	ft_putstr_fd(type, 2);
 	error_msg(hell, (*hell->head)->cmd[1], msg, exitnum);
 	if (exitnum == 2)
-		free_exit(hell, exitnum);
+		jump_ship(hell, exitnum);
 	return (0);
 }
 
@@ -46,4 +58,31 @@ int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 	if (!hell->exec_error)
 		hell->lastexit = 0;
 	return (1);
+}
+
+long	ft_atol(const char *str)
+{
+	long	res;
+	long	i;
+	long	negative;
+
+	negative = 1;
+	res = 0;
+	i = 0;
+	while ((str[i] < 14 && str[i] > 8) || (str[i] == 32))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			negative *= -1;
+		i++;
+	}
+	while (str[i] == '0')
+		i++;
+	while (str[i] <= '9' && str[i] >= '0')
+	{
+		res = res * 10 + str[i] - 48;
+		i++;
+	}
+	return (res * negative);
 }

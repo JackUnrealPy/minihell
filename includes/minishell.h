@@ -35,7 +35,7 @@ typedef struct	s_free
 
 typedef	struct	s_redir
 {
-	int				type; // 0 input, 1output with trunc, 2output with append, 3heredoc
+	int				type; // 0 input, 1output with trunc, 2output with append, 3heredoc with quotes, 4 heredoc without quotes
 	char			*pathordel;
 	struct s_redir	*next;
 }	t_redir;
@@ -76,19 +76,24 @@ typedef struct	s_hell
 // EXECUTION
 
 // builtins
-int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
-int	builtins_output(t_hell *hell, t_proc *head);
-int	built_err(t_hell *hell, char *type, char *msg, int exitnum);
 void	ft_echo(t_hell *hell, t_proc *head, int pipe);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_hell *hell, t_redir *redirs, int pipe);
 void ft_unset(t_hell *hell, char **envp, char *var_to_delete);
 void	ft_exit(t_hell *hell, t_proc *head, int pipe);
-void	free_exit(t_hell *hell, int error);
 void	ft_export(t_hell *hell, t_proc *head);
 void	ft_cd(t_hell *hell, t_proc *head);
 
-// environment vars
+// builtins helpers
+long	ft_atol(const char *str);
+int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
+int	builtins_output(t_hell *hell, t_proc *head);
+int	built_err(t_hell *hell, char *type, char *msg, int exitnum);
+
+// environment
+char	*get_key(char *new);
+int	is_append(char *envp, char *key, char *new, int len);
+int	is_replace(char *envp, char *key, char *new, int len);
 char **	ft_double_strdup(t_hell *hell, char **envp);
 char	*ft_getenv(char *key, char **envp, int print_key);
 char	**ft_realloc_envp(t_hell *hell, char **envp, int new_element, char *new);
@@ -103,15 +108,13 @@ void	children(t_proc *head, t_hell *hell, int i);
 void	ft_pipex(t_hell *hell);
 
 // heredoc
-void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
-int		heredoc_check(t_redir *redirs);
-void	init_hdoc(t_hell *hell, t_proc *head);
-int    heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
-int     hdoc_pipes(t_hell *hell, t_proc *head);
+int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
+void	generate_tmpfile(t_hell *hell, t_proc *head);
+void	expansion_heredoc(t_hell *hell, t_proc *head, char *buffer, char *tmp);
+int	break_heredoc(t_redir *redirs, char *buffer);
 
 // redirection
-void	input_redirection(t_hell *hell, t_proc *head, int i);
-void	output_redirection(t_hell *hell, t_proc *head, int i);
+void	redirection(t_hell *hell, t_proc *head, int i);
 
 // single command
 void	single_cmd(t_hell *hell, t_proc *head);

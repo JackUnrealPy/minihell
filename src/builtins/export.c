@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 21:57:31 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/17 01:20:46 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/20 04:24:08 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ int	add_envp_var(t_hell *hell, t_proc *head)
 
 void	ft_export(t_hell *hell, t_proc *head)
 {
-	output_redirection(hell, head, -1);
 	if (add_envp_var(hell, head) || hell->exec_error)
 		return ;
 	if (head->cmd && head->cmd[0] && !head->cmd[1])

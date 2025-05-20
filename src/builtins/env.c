@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/20 04:19:03 by marvin            #+#    #+#             */
+/*   Updated: 2025/05/20 04:22:30 by marvin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	ft_env(t_redir *redirs, char **envp, int pipe)
@@ -21,12 +33,9 @@ int	ft_env(t_redir *redirs, char **envp, int pipe)
 			redirs_cpy = redirs_cpy->next;
 		}
 	}
-	i = 0;
-	while (envp[i])
-	{
+	i = -1;
+	while (envp[++i])
 		ft_putendl_fd(envp[i], fd);
-		i++;
-	}
 	if (fd != 1)
 		close(fd);
 	return (0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:59:12 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/04/18 21:27:08 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/20 04:22:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,38 +68,6 @@ int	error_check(const char *str)
 	return (check_long(str, i, a));
 }
 
-long	ft_atol(const char *str)
-{
-	long	res;
-	long	i;
-	long	negative;
-
-	negative = 1;
-	res = 0;
-	i = 0;
-	while ((str[i] < 14 && str[i] > 8) || (str[i] == 32))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			negative *= -1;
-		i++;
-	}
-	while (str[i] == '0')
-		i++;
-	while (str[i] <= '9' && str[i] >= '0')
-	{
-		res = res * 10 + str[i] - 48;
-		i++;
-	}
-	return (res * negative);
-}
-
-void	free_exit(t_hell *hell, int error)
-{
-	jump_ship(hell, error);
-}
-
 int	exit_error(t_hell *hell, t_proc *head)
 {
 	if (string_is_digit(head->cmd[1]) && head->cmd[2])
@@ -120,7 +88,7 @@ void	ft_exit(t_hell *hell, t_proc *head, int is_pipe)
 	if (is_pipe)
 		return ;
 	if (head->cmd[0] && !head->cmd[1])
-		free_exit(hell, 0);
+		jump_ship(hell, 0);
 	if (head->cmd[0])
 	{
 		if (exit_error(hell, head) == 1)
@@ -138,5 +106,5 @@ void	ft_exit(t_hell *hell, t_proc *head, int is_pipe)
 	}
 	hell->lastexit = num;
 	ft_putendl_fd("exit", 1);
-	free_exit(hell, hell->lastexit);
+	jump_ship(hell, hell->lastexit);
 }

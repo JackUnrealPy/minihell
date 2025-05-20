@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   helpers.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
+/*   Updated: 2025/05/20 04:18:26 by marvin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	error_msg(t_hell *hell, char *var, char *error, int exitcode)
@@ -61,4 +73,20 @@ void	initialise_struct(t_hell *hell, t_proc *head)
 		current = current->next;
 		hell->cmd_count++;
 	}
+}
+
+void	ft_freeme(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+		i++;
+	while (i >= 0)
+	{
+		free(arr[i]);
+		i--;
+	}
+	free(arr);
+	arr = NULL;
 }
