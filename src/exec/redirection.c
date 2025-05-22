@@ -6,19 +6,20 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/21 22:30:51 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 16:23:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int redirs_heredoc(t_hell *hell, t_proc *head)
+int	redirs_heredoc(t_hell *hell, t_proc *head)
 {
 	head->hdoc_fd = open(head->hdoc_tmpfile, O_RDONLY);
 	if (head->hdoc_fd < 0)
 		return (error_msg(hell, NULL, "could not open heredoc tmpfile", 1), 1);
 	if (dup2(head->hdoc_fd, STDIN_FILENO) == -1)
-		return (close(head->hdoc_fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
+		return (close(head->hdoc_fd), error_msg(hell, NULL, "dup2 failed", 1),
+			1);
 	close(head->hdoc_fd);
 	return (1);
 }
@@ -76,7 +77,7 @@ int	perform_redir(t_hell *hell, char *path, int redir_type)
 		return (close(fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
 	else if ((redir_type == 1 || redir_type == 2)
 		&& dup2(fd, STDOUT_FILENO) == -1)
-		return (close (fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
+		return (close(fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
 	close(fd);
 	return (0);
 }
@@ -84,7 +85,9 @@ int	perform_redir(t_hell *hell, char *path, int redir_type)
 void	redirection(t_hell *hell, t_proc *head, int i)
 {
 	t_redir	*tmp;
-	int hdoc = 0;
+	int		hdoc;
+
+	hdoc = 0;
 	tmp = (*head->redirs);
 	while (tmp)
 	{

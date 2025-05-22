@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/22 02:08:28 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 16:17:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ void	initialise_struct(t_hell *hell, t_proc *head)
 		current = current->next;
 		hell->cmd_count++;
 	}
-	
 }
 
 void	ft_freeme(char **arr)

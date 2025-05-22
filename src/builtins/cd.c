@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:53 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/21 22:00:32 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 16:22:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	cd_home(t_hell *hell, char *cmd1)
 {
 	char	*home;
 	int		ret;
+	char	*new_dir;
 
 	ret = 0;
 	home = ft_getenv("HOME", hell->envp, 0);
@@ -24,7 +25,7 @@ int	cd_home(t_hell *hell, char *cmd1)
 		return (free(home), error_msg(hell, NULL, "cd: HOME not set", 1), 1);
 	if (cmd1 && ft_strlen(cmd1) > 1)
 	{
-		char *new_dir = ft_strjoin(home, cmd1+1);
+		new_dir = ft_strjoin(home, cmd1 + 1);
 		ret = chdir(new_dir);
 		free(new_dir);
 	}
@@ -57,18 +58,21 @@ void	cd_update_vars(t_hell *hell, t_proc *head, char *old_pwd)
 	char	current[PATH_MAX];
 	char	*old;
 	char	*pwd;
+	char	*pwd_arr[2];
+	char	*old_arr[2];
 
 	(void)head;
 	getcwd(current, sizeof(current));
 	pwd = ft_strjoin("PWD=", current);
 	old = ft_strjoin("OLDPWD=", old_pwd);
-	char *pwd_arr[2] = {pwd, NULL};
-	char *old_arr[2] = {old, NULL};
-
+	pwd_arr[0] = pwd;
+	pwd_arr[1] = NULL;
+	old_arr[0] = old;
+	old_arr[1] = NULL;
 	hell->envp = (char **)ft_mallocarr(hell, hell->freeme,
-				(void **)ft_realloc_envp(hell->envp, 1, pwd_arr));
+			(void **)ft_realloc_envp(hell->envp, 1, pwd_arr));
 	hell->envp = (char **)ft_mallocarr(hell, hell->freeme,
-				(void **)ft_realloc_envp(hell->envp, 1, old_arr));
+			(void **)ft_realloc_envp(hell->envp, 1, old_arr));
 	free(pwd);
 	free(old);
 	free(old_pwd);

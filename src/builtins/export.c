@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 21:57:31 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/22 15:45:08 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 16:24:16 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,18 +33,6 @@ void	print_var(char *var_to_print)
 		i++;
 	}
 	ft_putstr_fd("\n", 1);
-}
-
-void	print_export(char **envp)
-{
-	int	a;
-
-	a = 0;
-	while (envp[a])
-	{
-		print_var(envp[a]);
-		a++;
-	}
 }
 
 void	sort_export(char **envp)
@@ -77,11 +65,13 @@ void	sort_export(char **envp)
 
 void	add_to_arr(t_hell *hell, t_proc *head)
 {
-	int i = 1;
+	int	i;
+
+	i = 1;
 	while (head->cmd[i])
 		i++;
 	hell->envp = (char **)ft_mallocarr(hell, hell->freeme,
-			(void **)ft_realloc_envp(hell->envp, i-1, head->cmd+1));
+			(void **)ft_realloc_envp(hell->envp, i - 1, head->cmd + 1));
 }
 
 int	add_envp_var(t_hell *hell, t_proc *head)

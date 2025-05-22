@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:19 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/22 15:44:17 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 16:17:23 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ void	fill_env_cpy(char **cpy, char *new, char *key, int found)
 	}
 	if (!found)
 		cpy[a] = ft_strdup(new);
-
 }
 
 char	**ft_realloc_envp(char **envp, int new_element, char **new)

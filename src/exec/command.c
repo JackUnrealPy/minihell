@@ -52,13 +52,15 @@ void	test_cmds(t_hell *hell, t_proc *head)
 		head->cmd_path = head->cmd[0];
 }
 
-
-		
 void	increment_shlvl(char **envp)
 {
-	int i = 0;
-	char *shlvl = ft_getenv("SHLVL", envp, 0);
-	char *new_shlvl = ft_strjoin("SHLVL=", ft_itoa((ft_atoi(shlvl) + 1)));
+	int		i;
+	char	*shlvl;
+	char	*new_shlvl;
+
+	i = 0;
+	shlvl = ft_getenv("SHLVL", envp, 0);
+	new_shlvl = ft_strjoin("SHLVL=", ft_itoa((ft_atoi(shlvl) + 1)));
 	while (envp[i])
 	{
 		if (envp[i] && ft_strncmp(envp[i], "SHLVL=", 6) == 0)
@@ -72,7 +74,6 @@ void	increment_shlvl(char **envp)
 	}
 	free(shlvl);
 	free(new_shlvl);
-	// return (envp);
 }
 
 void	create_cmd(t_hell *hell, t_proc *head)

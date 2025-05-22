@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:58 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/20 22:58:43 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 16:16:24 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 int	print_from(char **cmd)
 {
-	int i = 1;
-	int n;
+	int	i;
+	int	n;
+
+	i = 1;
 	while (cmd[i] && ft_strncmp(cmd[i], "-n", 2) == 0)
 	{
 		if (cmd[i] && ft_strncmp(cmd[i], "-n", 2) == 0)
