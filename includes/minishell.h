@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/17 22:54:11 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/21 20:00:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ typedef struct	s_hell
 // EXECUTION
 
 // builtins
-void	ft_echo(t_hell *hell, t_proc *head, int pipe);
+void	ft_echo(t_proc *head);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_hell *hell, t_redir *redirs, int pipe);
 void ft_unset(t_hell *hell, char **envp, char *var_to_delete);
@@ -96,7 +96,7 @@ int	is_append(char *envp, char *key, char *new, int len);
 int	is_replace(char *envp, char *key, char *new, int len);
 char **	ft_double_strdup(t_hell *hell, char **envp);
 char	*ft_getenv(char *key, char **envp, int print_key);
-char	**ft_realloc_envp(t_hell *hell, char **envp, int new_element, char *new);
+char	**ft_realloc_envp(char **envp, int new_element, char **new);
 
 // exec
 int loop_cmds(t_hell *hell);

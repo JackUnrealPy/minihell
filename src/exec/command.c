@@ -52,6 +52,29 @@ void	test_cmds(t_hell *hell, t_proc *head)
 		head->cmd_path = head->cmd[0];
 }
 
+
+		
+void	increment_shlvl(char **envp)
+{
+	int i = 0;
+	char *shlvl = ft_getenv("SHLVL", envp, 0);
+	char *new_shlvl = ft_strjoin("SHLVL=", ft_itoa((ft_atoi(shlvl) + 1)));
+	while (envp[i])
+	{
+		if (envp[i] && ft_strncmp(envp[i], "SHLVL=", 6) == 0)
+		{
+			free(envp[i]);
+			envp[i] = NULL;
+			envp[i] = ft_strdup(new_shlvl);
+			break ;
+		}
+		i++;
+	}
+	free(shlvl);
+	free(new_shlvl);
+	// return (envp);
+}
+
 void	create_cmd(t_hell *hell, t_proc *head)
 {
 	head->cmd_path = NULL;
@@ -60,6 +83,8 @@ void	create_cmd(t_hell *hell, t_proc *head)
 	else if (ft_strchr(head->cmd[0], '/'))
 	{
 		head->cmd_path = ft_malloc(hell, head->freeme, ft_strdup(head->cmd[0]));
+		if (ft_strncmp(head->cmd[0], "./minishell", 11) == 0)
+			increment_shlvl(hell->envp);
 		if (access(head->cmd_path, F_OK) == -1)
 			error_msg(hell, head->cmd[0], ": No such file or directory 33", 1);
 		return ;

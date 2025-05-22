@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:19 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/20 04:19:41 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 15:44:17 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ char	*ft_getenv(char *key, char **envp, int print_key)
 	value = NULL;
 	i = 0;
 	a = 0;
-	len = strlen(key);
+	len = ft_strlen(key);
 	while (envp[i])
 	{
-		if (strncmp(envp[i], key, len) == 0 && envp[i][len] == '=')
+		if (ft_strncmp(envp[i], key, len) == 0 && envp[i][len] == '=')
 		{
 			a = 1;
 			while (envp[i] && envp[i][a + len] && envp[i][a + len] != '\n')
@@ -50,7 +50,7 @@ char	**ft_double_strdup(t_hell *hell, char **envp)
 	while (envp[a])
 		a++;
 	b = a;
-	my_env = malloc((a + 1) * sizeof(char *));
+	my_env = ft_calloc((a + 1) * sizeof(char *), sizeof(char *));
 	if (!my_env)
 		return (error_msg(hell, NULL, "Memory allocation failed", 1), NULL);
 	a = 0;
@@ -64,56 +64,63 @@ char	**ft_double_strdup(t_hell *hell, char **envp)
 		}
 		a++;
 	}
-	my_env[a] = NULL;
 	return (my_env);
 }
 
-void	fill_env_cpy(char **envp, char **cpy, char *new, char *key)
+void	fill_env_cpy(char **cpy, char *new, char *key, int found)
 {
-	int	len;
-	int	found;
-	int	a;
+	int		len;
+	int		a;
+	char	*tmp;
 
 	len = ft_strlen(key);
-	found = 0;
 	a = -1;
-	while (envp[++a])
+	while (cpy[++a] && !found)
 	{
-		if (!found && is_append(envp[a], key, new, len))
+		if (is_append(cpy[a], key, new, len))
 		{
-			cpy[a] = ft_strjoin(envp[a], new + len + 1);
+			tmp = cpy[a];
+			cpy[a] = ft_strjoin(cpy[a], new + len + 1);
+			free(tmp);
 			found = 1;
 		}
-		else if (!found && is_replace(envp[a], key, new, len))
+		if (is_replace(cpy[a], key, new, len))
 		{
+			free(cpy[a]);
 			cpy[a] = ft_strdup(new);
 			found = 1;
 		}
-		else
-			cpy[a] = ft_strdup(envp[a]);
 	}
 	if (!found)
 		cpy[a] = ft_strdup(new);
-	cpy[a + 1] = NULL;
+
 }
 
-char	**ft_realloc_envp(t_hell *hell, char **envp, int new_element, char *new)
+char	**ft_realloc_envp(char **envp, int new_element, char **new)
 {
 	int		a;
 	char	**cpy;
 	char	*key;
+	int		i;
 
-	(void)hell;
+	i = 0;
 	a = 0;
 	while (envp[a])
 		a++;
 	cpy = ft_calloc(a + new_element + 1, sizeof(char *));
 	if (!cpy)
 		return (NULL);
-	key = get_key(new);
-	if (!key)
-		return (NULL);
-	fill_env_cpy(envp, cpy, new, key);
-	free(key);
+	a = -1;
+	while (envp[++a])
+		cpy[a] = ft_strdup(envp[a]);
+	while (new[i])
+	{
+		key = get_key(new[i]);
+		if (!key)
+			return (NULL);
+		fill_env_cpy(cpy, new[i], key, 0);
+		free(key);
+		i++;
+	}
 	return (cpy);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/17 18:46:30 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/22 15:45:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 void	single_cmd(t_hell *hell, t_proc *head)
 {
 	int	status;
-
+	if (head->cmd && head->cmd[0])
+		hell->cmd_count = 1;
+	else
+		hell->cmd_count = 0;
 	head->hdoc_present = heredoc(hell, head, (*head->redirs));
-	if ((*head->redirs == NULL) && determine_builtin(hell, (*hell->head), 0))
-	{
+	if (!(*head->redirs) && head->cmd && head->cmd[0] && (ft_strcmp(head->cmd[0], "cd") == 0 || ft_strcmp(head->cmd[0], "exit") == 0 || ft_strcmp(head->cmd[0], "export") == 0) && determine_builtin(hell, (*hell->head), 0))
 		return ;
-	}
 	status = 0;
 	children(head, hell, -1);
 	if (head->cmd && head->cmd[0] && ft_strncmp(head->cmd[0], "exit", 4) == 0)

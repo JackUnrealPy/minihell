@@ -6,14 +6,14 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:53 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/20 04:18:54 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/21 22:00:32 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 // add cd ~/whatever
-int	cd_home(t_hell *hell)
+int	cd_home(t_hell *hell, char *cmd1)
 {
 	char	*home;
 	int		ret;
@@ -22,7 +22,14 @@ int	cd_home(t_hell *hell)
 	home = ft_getenv("HOME", hell->envp, 0);
 	if (!home)
 		return (free(home), error_msg(hell, NULL, "cd: HOME not set", 1), 1);
-	ret = chdir(home);
+	if (cmd1 && ft_strlen(cmd1) > 1)
+	{
+		char *new_dir = ft_strjoin(home, cmd1+1);
+		ret = chdir(new_dir);
+		free(new_dir);
+	}
+	else
+		ret = chdir(home);
 	free(home);
 	return (ret);
 }
@@ -55,10 +62,13 @@ void	cd_update_vars(t_hell *hell, t_proc *head, char *old_pwd)
 	getcwd(current, sizeof(current));
 	pwd = ft_strjoin("PWD=", current);
 	old = ft_strjoin("OLDPWD=", old_pwd);
+	char *pwd_arr[2] = {pwd, NULL};
+	char *old_arr[2] = {old, NULL};
+
 	hell->envp = (char **)ft_mallocarr(hell, hell->freeme,
-			(void **)ft_realloc_envp(hell, hell->envp, 1, pwd));
+				(void **)ft_realloc_envp(hell->envp, 1, pwd_arr));
 	hell->envp = (char **)ft_mallocarr(hell, hell->freeme,
-			(void **)ft_realloc_envp(hell, hell->envp, 1, old));
+				(void **)ft_realloc_envp(hell->envp, 1, old_arr));
 	free(pwd);
 	free(old);
 	free(old_pwd);
@@ -74,7 +84,7 @@ void	ft_cd(t_hell *hell, t_proc *head)
 		return (error_msg(hell, NULL, "bash: cd: too many arguments", 1));
 	old_pwd = ft_getenv("PWD", hell->envp, 0);
 	if (!head->cmd[1] || head->cmd[1][0] == '~')
-		error_check = cd_home(hell);
+		error_check = cd_home(hell, head->cmd[1]);
 	else if (head->cmd[1] && head->cmd[1][0] == '-')
 		error_check = cd_oldpwd(hell);
 	else

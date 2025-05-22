@@ -6,20 +6,21 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/20 04:23:41 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/21 22:30:51 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	redirs_heredoc(t_hell *hell, t_proc *head)
+int redirs_heredoc(t_hell *hell, t_proc *head)
 {
 	head->hdoc_fd = open(head->hdoc_tmpfile, O_RDONLY);
 	if (head->hdoc_fd < 0)
-		return (error_msg(hell, NULL, "could not open heredoc tmpfile", 1));
+		return (error_msg(hell, NULL, "could not open heredoc tmpfile", 1), 1);
 	if (dup2(head->hdoc_fd, STDIN_FILENO) == -1)
-		return (error_msg(hell, NULL, "dup2 failed", 1));
+		return (close(head->hdoc_fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
 	close(head->hdoc_fd);
+	return (1);
 }
 
 void	redirs_error(t_hell *hell, char *pathordel, char *msg, int errnum)
@@ -72,10 +73,10 @@ int	perform_redir(t_hell *hell, char *path, int redir_type)
 	if (fd < 0)
 		return (error_msg(hell, path, ": permission denied", 1), 1);
 	if (redir_type == 0 && dup2(fd, STDIN_FILENO) == -1)
-		return (error_msg(hell, NULL, "dup2 failed", 1), 1);
+		return (close(fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
 	else if ((redir_type == 1 || redir_type == 2)
 		&& dup2(fd, STDOUT_FILENO) == -1)
-		return (error_msg(hell, NULL, "dup2 failed", 1), 1);
+		return (close (fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
 	close(fd);
 	return (0);
 }
@@ -83,21 +84,21 @@ int	perform_redir(t_hell *hell, char *path, int redir_type)
 void	redirection(t_hell *hell, t_proc *head, int i)
 {
 	t_redir	*tmp;
-
+	int hdoc = 0;
 	tmp = (*head->redirs);
 	while (tmp)
 	{
 		if (tmp->type == 3 || tmp->type == 4)
-			return (redirs_heredoc(hell, head));
+			hdoc = redirs_heredoc(hell, head);
 		else if (tmp && tmp->type >= 0 && tmp && tmp->type <= 2
 			&& perform_redir(hell, tmp->pathordel, tmp->type))
 			return ;
 		tmp = tmp->next;
 	}
-	if (i > 0 && hell->pipe_fd && dup2(hell->pipe_fd[(i - 1) * 2],
+	if (i > 0 && !hdoc && hell->pipe_fd && dup2(hell->pipe_fd[(i - 1) * 2],
 			STDIN_FILENO) == -1)
 		error_msg(hell, NULL, "dup2 failed", 1);
-	if (i != -1 && i != hell->cmd_count - 1)
+	if (i != -1 && i < hell->cmd_count - 1)
 	{
 		if (dup2(hell->pipe_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
 			error_msg(hell, NULL, "dup2 failed", 1);

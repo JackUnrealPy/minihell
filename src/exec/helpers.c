@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/20 04:18:26 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 02:08:28 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	error_msg(t_hell *hell, char *var, char *error, int exitcode)
 	}
 	hell->lastexit = exitcode;
 	hell->exec_error = 1;
+	if (hell->cmd_count > 1)
+		ft_close(hell);
 }
 
 void	ft_close(t_hell *hell)
@@ -73,6 +75,7 @@ void	initialise_struct(t_hell *hell, t_proc *head)
 		current = current->next;
 		hell->cmd_count++;
 	}
+	
 }
 
 void	ft_freeme(char **arr)

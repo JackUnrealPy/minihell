@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 21:57:31 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/20 04:24:08 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 15:45:08 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ void	sort_export(char **envp)
 		a = 0;
 		while (envp[a])
 		{
-			if ((!new_smallest || (strcmp(new_smallest, envp[a]) > 0))
-				&& (!old_smallest || strcmp(old_smallest, envp[a]) < 0)
+			if ((!new_smallest || (ft_strcmp(new_smallest, envp[a]) > 0))
+				&& (!old_smallest || ft_strcmp(old_smallest, envp[a]) < 0)
 				&& ((envp[a][0] >= 'A' && envp[a][0] <= 'Z')
 					|| (envp[a][0] >= 'a' && envp[a][0] <= 'z')))
 				new_smallest = envp[a];
@@ -73,6 +73,15 @@ void	sort_export(char **envp)
 		print_var(new_smallest);
 		old_smallest = new_smallest;
 	}
+}
+
+void	add_to_arr(t_hell *hell, t_proc *head)
+{
+	int i = 1;
+	while (head->cmd[i])
+		i++;
+	hell->envp = (char **)ft_mallocarr(hell, hell->freeme,
+			(void **)ft_realloc_envp(hell->envp, i-1, head->cmd+1));
 }
 
 int	add_envp_var(t_hell *hell, t_proc *head)
@@ -98,8 +107,7 @@ int	add_envp_var(t_hell *hell, t_proc *head)
 	}
 	if (error)
 		return (built_err(hell, "export: `", "': not a valid identifier", 1));
-	hell->envp = (char **)ft_mallocarr(hell, hell->freeme,
-			(void **)ft_realloc_envp(hell, hell->envp, 1, head->cmd[1]));
+	add_to_arr(hell, head);
 	return (1);
 }
 

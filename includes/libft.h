@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 16:13:13 by agara             #+#    #+#             */
-/*   Updated: 2025/03/04 20:42:15 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/21 15:00:14 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	*ft_memchr(const void *str, int c, size_t n);
 char	*ft_itoa(int n);
 void	*ft_calloc(size_t nmemb, size_t size);
 int		ft_atoi(const char *str);
-int		ft_atoi(const char *str);
+int		ft_strcmp(char *s1, char *s2);
 
 t_list	*ft_lstnew(void *content);
 void	ft_lstadd_front(t_list **lst, t_list *new);
