@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/05/10 15:03:08 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/22 16:04:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
 
 int g_sig_flag=0;
 
@@ -51,14 +50,10 @@ int	main(int argc, char **argv, char **envp)
 		add_history(cmd);
 		local_init(&hell, cmd);
 		parse(&hell, cmd, *(hell.head));
-		// printf("cmd[0]: %s\n cmd[1]: %s\n", (*hell.head)->cmd[0], (*hell.head)->cmd[1]);
 		// print_list(*(hell.head));
 		if (!hell.syntaxerr)
-		{
-			loop_cmds(&hell, &cmd);
-		}
-		else
-			hell.syntaxerr = 0;
+			loop_cmds(&hell);
+		hell.syntaxerr = 0;
 		ft_terminate(1, &cmd);
 		close_proc(&hell);
     }

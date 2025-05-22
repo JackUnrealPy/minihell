@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/05/10 15:03:03 by agara            ###   ########.fr       */
+/*   Updated: 2025/05/17 21:55:20 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,22 @@ void	local_init(t_hell *hell, char *cmd)
 	hell->exec_error = 0;
 }
 
-void	env_init(t_hell *hell, char **envp)
+void init_hell(t_hell *hell, char **envp)
 {
-	hell->test = ft_double_strdup(hell, envp, NULL);
-	if (hell->exec_error)
+	char pwd[PATH_MAX];
+	char *pwd_env = NULL;
+	char *env;
+	if (!envp[0])
 	{
-		free(hell->freeme);
-		exit(1);
+		getcwd(pwd, sizeof(pwd));
+		pwd_env = ft_strjoin("PWD=", pwd);
+		env = ft_strjoin(pwd_env, "\nSHLVL=1\n_=/usr/bin/env");
+		hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)ft_split(env, "\n"));
+		free(pwd_env);
+		free(env);
 	}
-    hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)hell->test);
+	else
+		hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)ft_double_strdup(hell, envp));
 }
 
 int	init(t_hell *hell, char **envp)
@@ -41,7 +48,7 @@ int	init(t_hell *hell, char **envp)
 	hell->exec_error = 0;
 	hell->freeme = malloc(sizeof(t_free *));
     (*hell->freeme) = NULL;
-	env_init(hell, envp);
+	init_hell(hell, envp);
 	node = malloc(sizeof(t_proc*)); 
 	if (!node)
 	{
