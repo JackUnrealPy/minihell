@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:19 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/22 16:17:23 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/04 19:22:07 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@ char	**ft_double_strdup(t_hell *hell, char **envp)
 	a = 0;
 	while (a < b)
 	{
-		my_env[a] = ft_strdup(envp[a]);
+		if (a == b - 1)
+			my_env[a] = ft_strdup("_=/bin/env");
+		else
+			my_env[a] = ft_strdup(envp[a]);
 		if (!my_env[a])
 		{
 			error_msg(hell, NULL, "Memory allocation failed", 1);

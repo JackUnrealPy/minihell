@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:17:46 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/20 04:17:46 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/05 20:06:07 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,18 @@ void	try_paths(t_hell *hell, t_proc *head, char **path, char *path_cmd)
 
 void	test_cmds(t_hell *hell, t_proc *head)
 {
+	char	*env_check;
 	char	*path_env;
 	char	**path;
 	char	*path_cmd;
 
 	path_env = NULL;
-	path_env = ft_malloc(hell, head->freeme, ft_getenv("PATH", hell->envp, 0));
+	env_check = ft_getenv("PATH", hell->envp, 0);
+	if (!env_check)
+		return (error_msg(hell, head->cmd[0], ": No such file or directory",
+				127));
+	path_env = ft_malloc(hell, head->freeme, env_check);
+	
 	if (!path_env || !path_env[0])
 		return (error_msg(hell, head->cmd[0], ": No such file or directory",
 				127));
@@ -81,6 +87,7 @@ void	create_cmd(t_hell *hell, t_proc *head)
 	head->cmd_path = NULL;
 	if (!head->cmd)
 		return ;
+
 	else if (ft_strchr(head->cmd[0], '/'))
 	{
 		head->cmd_path = ft_malloc(hell, head->freeme, ft_strdup(head->cmd[0]));
@@ -90,6 +97,13 @@ void	create_cmd(t_hell *hell, t_proc *head)
 			error_msg(hell, head->cmd[0], ": No such file or directory 33", 1);
 		return ;
 	}
+
 	else
+	{
 		test_cmds(hell, head);
+		if (hell->exec_error)
+			return ;
+		if (access(head->cmd_path, F_OK) == -1)
+			error_msg(hell, head->cmd[0], ": No such file or directory 33", 1);
+	}
 }

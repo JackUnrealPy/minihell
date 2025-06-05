@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/13 16:42:39 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/04 17:58:33 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ typedef struct	s_hell
 	t_proc	**head;
 	int		lastexit;
 	int		syntaxerr;
+	char *cmd;
 }	t_hell;
 
 // EXECUTION

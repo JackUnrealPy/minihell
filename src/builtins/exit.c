@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:59:12 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/21 22:00:54 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/04 17:36:36 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,11 @@ void	ft_exit(t_hell *hell, t_proc *head, int is_pipe)
 				num += 256;
 		}
 	}
+
 	hell->lastexit = num;
 	ft_putendl_fd("exit", 1);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
 	jump_ship(hell, hell->lastexit);
 }

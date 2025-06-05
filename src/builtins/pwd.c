@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:19:15 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/20 04:19:16 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/05 19:41:57 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,11 @@ int	ft_pwd(t_hell *hell, t_redir *redirs, int pipe)
 		}
 	}
 	success = NULL;
-	success = ft_getenv("PWD", hell->envp, 0);
-	ft_putendl_fd(success, fd);
+	// success = ft_getenv("PWD", hell->envp, 0);
+	// ft_putendl_fd(success, fd);
+	// free(success);
+	(void)hell;
+	ft_putendl_fd(getcwd(success, PATH_MAX), fd);
 	free(success);
 	if (fd != 1)
 		close(fd);

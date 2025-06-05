@@ -16,6 +16,7 @@ void	jump_ship(t_hell *hell, short int exitcode)
 	}
 	throw_garbage(hell->freeme);
 	ft_terminate(1, &(hell->head));
+	free(hell->cmd);
 	exit(exitcode);
 }
 

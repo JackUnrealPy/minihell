@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:49 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/21 19:47:09 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/04 18:02:04 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,20 @@ int	built_err(t_hell *hell, char *type, char *msg, int exitnum)
 		jump_ship(hell, exitnum);
 	return (0);
 }
+
+// void	error_msg(t_hell *hell, char *var, char *error, int exitcode)
+// {
+// 	if (error)
+// 	{
+// 		if (var)
+// 			ft_putstr_fd(var, STDERR_FILENO);
+// 		ft_putendl_fd(error, STDERR_FILENO);
+// 	}
+// 	hell->lastexit = exitcode;
+// 	hell->exec_error = 1;
+// 	if (hell->cmd_count > 1)
+// 		ft_close(hell);
+// }
 
 int	is_builtin(t_proc *head)
 {
