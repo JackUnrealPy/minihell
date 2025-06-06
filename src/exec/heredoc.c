@@ -40,13 +40,11 @@ int	heredoc_check(t_redir *redirs)
 void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 {
 	char	*buffer;
-	char	*tmp;
 
 	while (1)
 	{
 		buffer = readline("> ");
-		tmp = NULL;
-		expansion_heredoc(hell, head, buffer, tmp);
+		expansion_heredoc(hell, head, &buffer);
 		if (g_sig_flag == SIGINT)
 		{
 			g_sig_flag = 0;
@@ -57,10 +55,6 @@ void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 			break ;
 		if (!g_sig_flag)
 			ft_putendl_fd(buffer, head->hdoc_fd);
-		if (tmp)
-			free(tmp);
-		else
-			free(buffer);
 	}
 }
 

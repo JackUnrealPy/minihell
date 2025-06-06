@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/05/17 21:55:20 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:03:03 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	local_init(t_hell *hell, char *cmd)
 {
 	t_proc	*proc;
+
 	(void)cmd;
 	proc = create_proc(hell);
 	*(hell->head) = proc;
@@ -41,20 +42,19 @@ void init_hell(t_hell *hell, char **envp)
 
 int	init(t_hell *hell, char **envp)
 {
-	t_proc	**node;
-
 	hell->lastexit = 0;
 	hell->syntaxerr = 0;
 	hell->exec_error = 0;
+	hell->head = NULL;
+	hell->freeme = NULL;
+	hell->tokens = NULL;
 	hell->freeme = malloc(sizeof(t_free *));
+	if (!hell->freeme)
+		exit (1);
     (*hell->freeme) = NULL;
 	init_hell(hell, envp);
-	node = malloc(sizeof(t_proc*)); 
-	if (!node)
-	{
-		ft_terminate(1, &(hell->freeme));
-		exit (1);
-	}
-	hell->head = node;
+	hell->head = malloc(sizeof(t_proc*)); 
+	if (!hell->head)
+		jump_ship(hell, 1);
 	return (1);
 }

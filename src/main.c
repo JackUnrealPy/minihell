@@ -3,23 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/06/05 18:45:43 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:26:52 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
 
 int g_sig_flag=0;
 
 void handle_sig(int sig)
 {
 	g_sig_flag = sig;
-	write(1, "\n", 1);
-	rl_replace_line("", 0);
+	printf("\n");
 	rl_on_new_line();
+	rl_replace_line("", 0);
 	rl_redisplay();
 }
 
@@ -40,7 +41,6 @@ int	all_whitespace(char *cmd)
 		return 1;
 	return (0);
 }
-
 int	main(int argc, char **argv, char **envp)
 {
 	// char	*cmd;
@@ -72,7 +72,7 @@ int	main(int argc, char **argv, char **envp)
 			{
 				add_history(hell.cmd);
 				local_init(&hell, hell.cmd);
-				parse(&hell, hell.cmd, *(hell.head));
+				parse(&hell, hell.cmd);
 				// print_list(*(hell.head));
 				if (!hell.syntaxerr)
 					loop_cmds(&hell);

@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/06/04 17:58:33 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/05/13 16:42:39 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,31 @@ typedef struct	s_free
 	struct s_free	*next;
 }	t_free;
 
+typedef struct	s_token
+{
+	void			*token;
+	struct s_token	*next;
+	struct s_token	*prev;
+	int				*qoute;
+	int				*expansion;
+}	t_token;
+
 typedef	struct	s_redir
 {
 	int				type; // 0 input, 1output with trunc, 2output with append, 3heredoc
 	char			*pathordel;
+	t_token			*redt;
 	struct s_redir	*next;
 }	t_redir;
 
 
 typedef	struct	s_proc
 {
+	t_token			**tokens;
 	t_free			**freeme;
 	t_redir			**redirs;
 	char			**cmd;
+	int				expansion;
 	char			*cmd_path;
 	pid_t			pid;
 	int				hdoc_present;
@@ -59,6 +71,8 @@ typedef	struct	s_proc
 typedef struct	s_hell
 {
 	t_free	**freeme;
+	t_token	**tokens;
+	t_proc	**head;
 	char	**argv;
 	char	**test;
 	int 	argc;
@@ -67,10 +81,9 @@ typedef struct	s_hell
 	int		*pipe_fd;
 	char	**localvars;
 	char	**envp;
-	t_proc	**head;
 	int		lastexit;
 	int		syntaxerr;
-	char *cmd;
+	char	*cmd;
 }	t_hell;
 
 // EXECUTION
@@ -110,7 +123,7 @@ void	ft_pipex(t_hell *hell);
 // heredoc
 int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
 void	generate_tmpfile(t_hell *hell, t_proc *head);
-void	expansion_heredoc(t_hell *hell, t_proc *head, char *buffer, char *tmp);
+void	expansion_heredoc(t_hell *hell, t_proc *head, char **buffer);
 int	break_heredoc(t_redir *redirs, char *buffer);
 
 // redirection
@@ -126,26 +139,30 @@ void	ft_wait(t_hell *hell);
 void	initialise_struct( t_hell *hell, t_proc *head);
 void    error_msg(t_hell *hell, char* var, char *error, int exitcode);
 
+
 // Init
 void	local_init(t_hell *hell, char *cmd);
 int		init(t_hell *hell, char **envp);
-void	writeprompt(void);
 
-void	parse(t_hell *hell, char *cmd, t_proc *proc);
-int		ft_expand(t_hell *hell, t_proc *proc, char **str, int pos);
-int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos);
-char	*get_squote(t_hell *hell, t_proc *proc, char *quote);
-char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos);
-int	get_quotelen(char *cmd);
-int		get_redir(t_hell *hell, t_proc *proc, char *str);
-void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
-void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme);
-int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i);
+// Parse
+
+void	parse(t_hell *hell, char *cmd);
+void	tokenize(t_hell *hell, char *cmd);
+void	divide_procs(t_hell *hell, t_proc *proc);
+void	parse_expand(t_hell *hell, t_proc *proc, t_token **tokens);
+char	*get_exp(t_hell *hell, t_proc *proc, char *str, int *i);
+int		get_quotelen(char *cmd);
+void	purge_quotes(t_hell *hell, t_proc *proc, t_token **v);
+void	parse_redirs(t_hell *hell, t_proc *proc, t_token **v);
+void	collect_redirs(t_hell *hell, t_proc *proc);
 
 
 // Alloctracker
 void	*ft_malloc(t_hell *hell, t_free **head, void *obj);
 void	**ft_mallocarr(t_hell *hell, t_free **head, void **obj);
+// Deletes by obj pointer or if all==1 deletes all tokens
+void	pop_token(t_token **head, void *ptr, int all);
+void	pop_free(t_free **head, void *ptr);
 
 // cleares a t_free llist
 void	throw_garbage(t_free **head);
@@ -154,13 +171,26 @@ void	throw_garbage(t_free **head);
 void	jump_ship(t_hell *hell, short int exitcode);
 
 //	Utils
+//		Parse utils
+void	word_split(t_hell *hell, t_proc *proc, t_token **v);
+void	ft_update_cmd(t_hell *hell, t_proc *proc, char **cmd, char *str);
+void	ft_update_token(t_hell *hell, t_token *token, int pos, char *str);
+void	add_token(t_hell *hell, t_token **tokens, char *val);
+void	del_token(t_token **tokens,  t_token *token);
+void	add_num(t_hell *hell, int **ptr, int num);
+int		get_last_num(int *nums);
+void	divide_tokens(t_hell *hell, t_token *token, int pos, int spaces);
+t_token	*cut_token(t_token **tokens, t_token *token);
+int		is_immun(int *exp, int num);
+int		ft_update_quote(t_hell *hell, t_token *token, int pos);
+
 // 		Proc utils
+t_proc	*get_last_proc(t_proc **head);
 void	close_proc(t_hell *hell);
 t_proc	*create_proc(t_hell *hell);
 void	addproc(t_proc **head, t_proc *next);
 
 //		String utils
-void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
 int		ft_isspace(char c);
 int		ismeta(char *c);
 
