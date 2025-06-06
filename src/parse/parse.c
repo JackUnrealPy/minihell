@@ -13,7 +13,7 @@
 #include "../../includes/minishell.h"
 
 
-void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme)
+static void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme)
 {
 	int		len;
 	char	**res;
@@ -37,172 +37,73 @@ void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme)
 	proc->cmd = res;
 }
 
-
-int	pipecommandcheck(t_proc **head)
+static void	parse_iter(t_hell *hell, t_proc *proc, int ctrl, void(*f)(t_hell *,t_proc *, t_token **))
 {
-	t_proc	*node;
-
-	if (!*head)
-		return (-1);
-	node = *head;
-	while (node->next)
-		node = node->next;
-	if (node->cmd)
-		return 1;
-	return 0;
-}
-
-void	handlepipe(t_hell *hell, char *cmd, int i, t_proc *proc)
-{
-	t_proc	*next;
-	
-	next = NULL;
-	if (!pipecommandcheck(hell->head))
-		return (sysntaxerr(hell, cmd + i, 1));
-	if (cmd[i + 1])
-		next = create_proc(hell);
-	addproc(hell->head ,next);
-	parse(hell, ft_malloc(hell, next->freeme, ft_strdup(cmd + i + 1)), proc->next);
-}
-
-void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme)
-{
-	int		lendest;
-	int		lensrc;
-	char	**res;
-
-	lensrc = -1;
-	while (proc->cmd[++lensrc])
-		;
-	lendest = -1;
-	while (addme[++lendest])
-		;
-	res = ft_malloc(hell ,proc->freeme, malloc(sizeof(char *) * (lendest  + lensrc + 1)));
-	lensrc = -1;
-	while (proc->cmd[++lensrc])
-		res[lensrc] = proc->cmd[lensrc];
-	lendest = -1;
-	while (addme[++lendest])
-		res[lensrc + lendest] = addme[lendest];
-	res[lendest + lensrc] = NULL;
-	proc->cmd = res;
-}
-
-int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i)
-{
-	int		len;
-	char	*cmds;
-	int		lasttoken;
-	int		inspace;
-
-	lasttoken = 0;
-	inspace = 0;
-	cmds = *ptr + i;
-	len = -1;
-	while (cmds[++len])
+	while (proc)
 	{
-		if ((cmds[len] == '<' || cmds[len] == '>' || cmds[len] == '|') && proc->var <= 0)
-			break;
-		if (cmds[len] == '$')
-		{
-			if (!ft_expand(hell, proc, ptr, len + i))
-				len--;
-			cmds = *ptr + i;
-			if (inspace)
-			{
-				inspace = 0;
-				lasttoken = len;
-			}
-		}
-		if (ft_isspace(cmds[len]) && !inspace)
-		{
-			add_to_cmdarr(hell, proc, ft_malloc(hell, proc->freeme, ft_substr(cmds, lasttoken, len - lasttoken)));
-			inspace = 1;
-			lasttoken = 99999999;
-		}
-		if (!ft_isspace(cmds[len]) && inspace)
-		{
-			inspace = 0;
-			lasttoken = len;
-		}	
-		if (cmds[len] == '\'' || cmds[len] == '\"')
-		{
-			len += handle_quote(hell, proc, ptr ,i + len);
-			cmds = *ptr + i;
-		}
+		if (ctrl == 1)
+			f(hell, proc, proc->tokens);
+		else if (!ctrl)
+			f(hell, proc, NULL);
+		proc = proc->next;
 	}
-	if ((!cmds[len] || !inspace) && (len - lasttoken) > 0)
-		add_to_cmdarr(hell, proc, ft_malloc(hell, proc->freeme, ft_substr(cmds, lasttoken, len - lasttoken)));
-	return (len - 1);
-}
-
-void    parse_export(t_hell *hell, t_proc *proc)
-{
-        int             i;
-        int             j;
-        int             k;
-        int             inspace;
-        char    *processed_cmd;
-
-        processed_cmd = NULL;
-        i = 0;
-        while (proc->cmd[i])
-        {
-                inspace = 0;
-                processed_cmd = ft_calloc(sizeof(char) , ft_strlen(proc->cmd[i]) + 1);
-                if (!processed_cmd)
-                        jump_ship(hell, 1);
-                j = 0;
-                k = 0;
-                while (proc->cmd[i][j])
-                {
-                        if (ft_isspace(proc->cmd[i][j]))
-                        {
-                                if (!inspace)
-                                        processed_cmd[k++] = ' ';
-                                inspace = 1;
-                        }
-                        else
-                        {
-                                inspace = 0;
-                                processed_cmd[k++] = proc->cmd[i][j];
-                        }
-                        j++;
-                }
-                if (ft_strlen(processed_cmd) != ft_strlen(proc->cmd[i]))
-                        proc->cmd[i] = ft_malloc(hell, proc->freeme ,processed_cmd);
-                else
-                        ft_terminate(1, &processed_cmd);
-                i++;
-        }
 }
 
 
-
-void	parse(t_hell *hell, char *cmd, t_proc *proc)
+static void	get_cmds(t_hell *hell, t_proc *proc, t_token **v)
 {
-	int		i;
-	
-	i = -1;
-	while (cmd[++i])
+	t_token	*token;
+
+	(void)v;
+	token = *(proc->tokens);
+	while (token)
 	{
-		proc->var--;
-		if (hell->syntaxerr)
-			return ;
-		if (cmd[i] == '$')
-			ft_expand(hell, proc, &cmd, i);
-		if (ft_isspace(cmd[i]))
-			continue ;
-		else if ((cmd[i] == '|') && proc->var <= 0)
-		{
-			handlepipe(hell, cmd, i, proc);
-			break ;
-		}
-		else if ((cmd[i] == '>' || cmd[i] == '<') && proc->var <= 0)
-			i += get_redir(hell, proc, cmd + i);
-		else
-			i += get_cmdarr(hell, proc, &cmd, i);
+		add_to_cmdarr(hell, proc, ft_malloc(hell, proc->freeme, ft_strdup(((char *)token->token))));
+		token = token->next;
 	}
-	if (proc->cmd && proc->cmd[0] && ft_strlen(proc->cmd[0]) > 6 && !ft_strncmp(proc->cmd[0], "export", 7)) 
-		parse_export(hell, proc); 
+}
+
+void	parse(t_hell *hell, char *cmd)
+{
+	// t_token *node;
+	// t_proc	*proc;
+
+	tokenize(hell, cmd);
+
+	// node = *(hell->tokens);
+	// while (node)
+	// {
+	// 	printf("token[%s]\n", (char *)node->token);
+	// 	node = node->next;
+	// }
+	divide_procs(hell, *(hell->head));
+	if (hell->syntaxerr)
+		return ;
+	parse_iter(hell, *(hell->head), 0, parse_redirs);
+	parse_iter(hell, *(hell->head), 1, parse_expand);
+	parse_iter(hell, *(hell->head), 0, word_split);
+	parse_iter(hell, *(hell->head), 1, purge_quotes);
+	parse_iter(hell, *(hell->head), 0, get_cmds);
+	
+	// proc = *(hell->head);
+	// int i = 0;
+	// int	j;
+	// while (proc)
+	// {
+	// 	node = *(proc->tokens);
+	// 	while (node)
+	// 	{
+	// 		printf("cmd%d[%s] ",i, (char *)node->token);
+	// 		if (node->expansion)
+	// 		{
+	// 			j = 0;
+	// 			while (node->expansion[j] != -1)
+	// 				printf("expansion[%d] ", node->expansion[j++]);
+	// 		}
+	// 		printf("\n");
+	// 		node = node->next;
+	// 	}
+	// 	i++;
+	// 	proc = proc->next;
+	// }
 }

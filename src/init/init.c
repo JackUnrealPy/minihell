@@ -15,39 +15,46 @@
 void	local_init(t_hell *hell, char *cmd)
 {
 	t_proc	*proc;
+
 	(void)cmd;
 	proc = create_proc(hell);
 	*(hell->head) = proc;
 	hell->exec_error = 0;
 }
 
-void	env_init(t_hell *hell, char **envp)
+void init_hell(t_hell *hell, char **envp)
 {
-	hell->test = ft_double_strdup(hell, envp, NULL);
-	if (hell->exec_error)
+	char pwd[PATH_MAX];
+	char *pwd_env = NULL;
+	char *env;
+	if (!envp[0])
 	{
-		free(hell->freeme);
-		exit(1);
+		getcwd(pwd, sizeof(pwd));
+		pwd_env = ft_strjoin("PWD=", pwd);
+		env = ft_strjoin(pwd_env, "\nSHLVL=1\n_=/usr/bin/env");
+		hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)ft_split(env, "\n"));
+		free(pwd_env);
+		free(env);
 	}
-    hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)hell->test);
+	else
+		hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)ft_double_strdup(hell, envp));
 }
 
 int	init(t_hell *hell, char **envp)
 {
-	t_proc	**node;
-
 	hell->lastexit = 0;
 	hell->syntaxerr = 0;
 	hell->exec_error = 0;
+	hell->head = NULL;
+	hell->freeme = NULL;
+	hell->tokens = NULL;
 	hell->freeme = malloc(sizeof(t_free *));
-    (*hell->freeme) = NULL;
-	env_init(hell, envp);
-	node = malloc(sizeof(t_proc*)); 
-	if (!node)
-	{
-		ft_terminate(1, &(hell->freeme));
+	if (!hell->freeme)
 		exit (1);
-	}
-	hell->head = node;
+    (*hell->freeme) = NULL;
+	init_hell(hell, envp);
+	hell->head = malloc(sizeof(t_proc*)); 
+	if (!hell->head)
+		jump_ship(hell, 1);
 	return (1);
 }

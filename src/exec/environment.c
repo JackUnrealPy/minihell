@@ -1,26 +1,46 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   environment.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/20 04:18:19 by marvin            #+#    #+#             */
+/*   Updated: 2025/06/04 19:22:07 by nrumpfhu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-char	*ft_getenv(char *key, char **envp)
+char	*ft_getenv(char *key, char **envp, int print_key)
 {
-	char *value = NULL;
-	int i = 0;
-	int a = 0;
-    int len = strlen(key);
+	char	*value;
+	int		i;
+	int		a;
+	int		len;
+
+	value = NULL;
+	i = 0;
+	a = 0;
+	len = ft_strlen(key);
 	while (envp[i])
 	{
-		if (strncmp(envp[i], key, len) == 0 && envp[i][len] == '=')
+		if (ft_strncmp(envp[i], key, len) == 0 && envp[i][len] == '=')
 		{
-            a = 1;
-            while (envp[i] && envp[i][a+len] && envp[i][a+len] != '\n')
-                a++;
-            value = ft_substr(envp[i], len + 1, a - 1);
+			a = 1;
+			while (envp[i] && envp[i][a + len] && envp[i][a + len] != '\n')
+				a++;
+			if (envp[i] && !print_key)
+				value = ft_substr(envp[i], len + 1, a - 1);
+			else if (envp[i] && print_key)
+				value = ft_strdup(envp[i]);
 		}
-        i++;
+		i++;
 	}
-	return(value);
+	return (value);
 }
 
-char	**ft_double_strdup(t_hell *hell, char **envp, char **cmd)
+char	**ft_double_strdup(t_hell *hell, char **envp)
 {
 	int		a;
 	int		b;
@@ -30,96 +50,79 @@ char	**ft_double_strdup(t_hell *hell, char **envp, char **cmd)
 	while (envp[a])
 		a++;
 	b = a;
-	my_env = malloc((a + 1) * sizeof(char *));
+	my_env = ft_calloc((a + 1) * sizeof(char *), sizeof(char *));
 	if (!my_env)
-	{
-		error_msg(hell, cmd, "Memory allocation failed", 1);
-		return (NULL);
-	}
+		return (error_msg(hell, NULL, "Memory allocation failed", 1), NULL);
 	a = 0;
 	while (a < b)
 	{
-		my_env[a] = ft_strdup(envp[a]);
+		if (a == b - 1)
+			my_env[a] = ft_strdup("_=/bin/env");
+		else
+			my_env[a] = ft_strdup(envp[a]);
 		if (!my_env[a])
 		{
-			error_msg(hell, cmd, "Memory allocation failed", 1);
-			ft_freeme(my_env);
-			return (NULL);
+			error_msg(hell, NULL, "Memory allocation failed", 1);
+			return (ft_freeme(my_env), NULL);
 		}
 		a++;
 	}
-	my_env[a] = NULL;
 	return (my_env);
 }
 
-char	**ft_realloc_envp(char **envp, int new_element, char *new)
+void	fill_env_cpy(char **cpy, char *new, char *key, int found)
 {
+	int		len;
 	int		a;
-	int		b;
-	char	**cpy;
+	char	*tmp;
 
-	a = 0;
-	while (envp[a])
-		a++;
-	b = a + new_element;
-	cpy = ft_calloc(a + new_element + 1, sizeof(char *));
-	if (!cpy)
-		return(NULL);
-	a = 0;
-	int i=0;
-	while (new[i] && new[i] != '=')
-		i++;
-	char key[i+1];
-	ft_strlcpy(key, new, i+1);
-	int len = ft_strlen(key);
-	int found = 0;
-	while (envp[a] && a < b)
+	len = ft_strlen(key);
+	a = -1;
+	while (cpy[++a] && !found)
 	{
-		if (ft_strncmp(envp[a], key, i-1) == 0 && envp[a][len-1] == '=' && new[len] == '=' && new[len-1] == '+')
+		if (is_append(cpy[a], key, new, len))
 		{
-			cpy[a] = ft_strjoin(envp[a], new+i+1);
+			tmp = cpy[a];
+			cpy[a] = ft_strjoin(cpy[a], new + len + 1);
+			free(tmp);
 			found = 1;
 		}
-		else if (!found && ft_strncmp(envp[a], key, ft_strlen(key)) == 0 && envp[a][len] == '=' && new[len] == '=')
+		if (is_replace(cpy[a], key, new, len))
 		{
+			free(cpy[a]);
 			cpy[a] = ft_strdup(new);
 			found = 1;
 		}
-		else
-			cpy[a] = ft_strdup(envp[a]);
-		a++;
 	}
 	if (!found)
 		cpy[a] = ft_strdup(new);
-	cpy[a+1] = NULL;
-	return (cpy);
 }
 
-// // void add_list_element(t_list *a, void *content)
-// // {
-// // 	while (a->next)
-// // 		a = a->next;
-// // 	a->content = ft_lstnew(content);
-// // 	a->next = NULL;
-// // }
+char	**ft_realloc_envp(char **envp, int new_element, char **new)
+{
+	int		a;
+	char	**cpy;
+	char	*key;
+	int		i;
 
-// // t_list *create_env_list(char **envp)
-// // {
-// // 	int i = 1;
-// // 	t_list *env_lst = ft_lstnew(envp[0]);
-// // 	while (envp[i])
-// // 	{
-// // 		ft_lstadd_back(&env_lst, ft_lstnew(envp[i]));
-// // 		i++;
-// // 	}
-// // 	return (env_lst);
-// // }
-
-// // void print_list(t_list *a)
-// // {
-// // 	while (a->next)
-// // 	{
-// // 		printf("%s\n", (char *)a->content);
-// // 		a = a->next;
-// // 	}
-// // }
+	i = 0;
+	a = 0;
+	while (envp[a])
+		a++;
+	cpy = ft_calloc(a + new_element + 1, sizeof(char *));
+	if (!cpy)
+		return (NULL);
+	a = -1;
+	while (envp[++a])
+		cpy[a] = ft_strdup(envp[a]);
+	while (new[i])
+	{
+		key = get_key(new[i]);
+		if (!key)
+			return (NULL);
+		fill_env_cpy(cpy, new[i], key, 0);
+		free(key);
+		i++;
+	}
+	return (cpy);
+}

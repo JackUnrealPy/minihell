@@ -47,6 +47,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_strnstr(const char *big, const char *small, size_t len);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_strcmp(char *s1, char *s2);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 size_t	ft_strlcpy(char *dest, const char *src, size_t dsize);
 size_t	ft_strlcat(char *dest, const char *src, size_t dsize);

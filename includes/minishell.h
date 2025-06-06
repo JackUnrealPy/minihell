@@ -33,19 +33,31 @@ typedef struct	s_free
 	struct s_free	*next;
 }	t_free;
 
+typedef struct	s_token
+{
+	void			*token;
+	struct s_token	*next;
+	struct s_token	*prev;
+	int				*qoute;
+	int				*expansion;
+}	t_token;
+
 typedef	struct	s_redir
 {
 	int				type; // 0 input, 1output with trunc, 2output with append, 3heredoc
 	char			*pathordel;
+	t_token			*redt;
 	struct s_redir	*next;
 }	t_redir;
 
 
 typedef	struct	s_proc
 {
+	t_token			**tokens;
 	t_free			**freeme;
 	t_redir			**redirs;
 	char			**cmd;
+	int				expansion;
 	char			*cmd_path;
 	pid_t			pid;
 	int				hdoc_present;
@@ -53,13 +65,14 @@ typedef	struct	s_proc
 	int				hdoc_fd;
 	struct s_proc	*next;
 	struct s_proc	*prev;
-	int				var;
 }	t_proc;
 
 // struct to have everything ,we should have only one instance of this
 typedef struct	s_hell
 {
 	t_free	**freeme;
+	t_token	**tokens;
+	t_proc	**head;
 	char	**argv;
 	char	**test;
 	int 	argc;
@@ -68,79 +81,88 @@ typedef struct	s_hell
 	int		*pipe_fd;
 	char	**localvars;
 	char	**envp;
-	t_proc	**head;
 	int		lastexit;
 	int		syntaxerr;
+	char	*cmd;
 }	t_hell;
 
 // EXECUTION
 
 // builtins
-int	determine_builtin(t_hell *hell, t_proc *head, char **cmd, int pipe);
-int	builtins_output(t_hell *hell, t_proc *head, char **cmd);
-void	ft_echo(t_hell *hell, t_proc *head, char **cmd, int pipe);
+void	ft_echo(t_proc *head);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
-int	ft_pwd(t_redir *redirs, int pipe);
+int	ft_pwd(t_hell *hell, t_redir *redirs, int pipe);
 void ft_unset(t_hell *hell, char **envp, char *var_to_delete);
-void	ft_exit(t_hell *hell, t_proc *head, char **cmd, int pipe);
-void	ft_export(t_hell *hell, t_proc *head, char **cmd);
-void	ft_cd(t_hell *hell, t_proc *head, char **cmd);
+void	ft_exit(t_hell *hell, t_proc *head, int pipe);
+void	ft_export(t_hell *hell, t_proc *head);
+void	ft_cd(t_hell *hell, t_proc *head);
 
-// environment vars
-char **	ft_double_strdup(t_hell *hell, char **envp, char **cmd);
-char	*ft_getenv(char *key, char **envp);
-char	**ft_realloc_envp(char **envp, int new_element, char *new);
+// builtins helpers
+long	ft_atol(const char *str);
+int	determine_builtin(t_hell *hell, t_proc *head, int pipe);
+int	builtins_output(t_hell *hell, t_proc *head);
+int	built_err(t_hell *hell, char *type, char *msg, int exitnum);
+
+// environment
+char	*get_key(char *new);
+int	is_append(char *envp, char *key, char *new, int len);
+int	is_replace(char *envp, char *key, char *new, int len);
+char **	ft_double_strdup(t_hell *hell, char **envp);
+char	*ft_getenv(char *key, char **envp, int print_key);
+char	**ft_realloc_envp(char **envp, int new_element, char **new);
 
 // exec
-int loop_cmds(t_hell *hell, char **cmd);
+int loop_cmds(t_hell *hell);
 
 // pipes
-void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
-void	create_cmd(t_hell *hell, t_proc *head, char **cmd);
-void	children(t_proc *head, t_hell *hell, char **cmd, int i);
-void	ft_pipex(t_hell *hell, char **cmd);
+void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs);
+void	create_cmd(t_hell *hell, t_proc *head);
+void	children(t_proc *head, t_hell *hell, int i);
+void	ft_pipex(t_hell *hell);
 
 // heredoc
-void    single_heredoc(t_hell *hell, t_proc *head, t_redir *redirs, char **cmd);
-int		heredoc_check(t_redir *redirs);
-void	init_hdoc(t_hell *hell, t_proc *head, char **cmd);
-int    heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
-int     hdoc_pipes(t_hell *hell, t_proc *head);
+int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs);
+void	generate_tmpfile(t_hell *hell, t_proc *head);
+void	expansion_heredoc(t_hell *hell, t_proc *head, char **buffer);
+int	break_heredoc(t_redir *redirs, char *buffer);
 
 // redirection
-void	input_redirection(t_hell *hell, t_proc *head, char **cmd, int i);
-void	output_redirection(t_hell *hell, t_proc *head, char **cmd, int i);
+void	redirection(t_hell *hell, t_proc *head, int i);
 
 // single command
-void	single_cmd(t_hell *hell, t_proc *head, char **cmd);
+void	single_cmd(t_hell *hell, t_proc *head);
 
 // helpers
 void	ft_freeme(char **arr);
 void	ft_close(t_hell *hell);
-void	ft_wait(t_hell *hell, char **cmd);
+void	ft_wait(t_hell *hell);
 void	initialise_struct( t_hell *hell, t_proc *head);
-void    error_msg(t_hell *hell, char **cmd, char *error, int exitcode);
+void    error_msg(t_hell *hell, char* var, char *error, int exitcode);
+
 
 // Init
 void	local_init(t_hell *hell, char *cmd);
 int		init(t_hell *hell, char **envp);
-void	writeprompt(void);
 
-void	parse(t_hell *hell, char *cmd, t_proc *proc);
-int		ft_expand(t_hell *hell, t_proc *proc, char **str, int pos);
-int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos);
-char	*get_squote(t_hell *hell, t_proc *proc, char *quote);
-char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos);
-int	get_quotelen(char *cmd);
-int		get_redir(t_hell *hell, t_proc *proc, char *str);
-void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
-void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme);
-int	get_cmdarr(t_hell *hell, t_proc *proc, char **ptr, int i);
+// Parse
+
+void	parse(t_hell *hell, char *cmd);
+void	tokenize(t_hell *hell, char *cmd);
+void	divide_procs(t_hell *hell, t_proc *proc);
+void	parse_expand(t_hell *hell, t_proc *proc, t_token **tokens);
+char	*get_exp(t_hell *hell, t_proc *proc, char *str, int *i);
+int		get_quotelen(char *cmd);
+void	purge_quotes(t_hell *hell, t_proc *proc, t_token **v);
+void	parse_redirs(t_hell *hell, t_proc *proc, t_token **v);
+void	collect_redirs(t_hell *hell, t_proc *proc);
 
 
 // Alloctracker
 void	*ft_malloc(t_hell *hell, t_free **head, void *obj);
 void	**ft_mallocarr(t_hell *hell, t_free **head, void **obj);
+// Deletes by obj pointer or if all==1 deletes all tokens
+void	pop_token(t_token **head, void *ptr, int all);
+void	pop_free(t_free **head, void *ptr);
 
 // cleares a t_free llist
 void	throw_garbage(t_free **head);
@@ -149,13 +171,26 @@ void	throw_garbage(t_free **head);
 void	jump_ship(t_hell *hell, short int exitcode);
 
 //	Utils
+//		Parse utils
+void	word_split(t_hell *hell, t_proc *proc, t_token **v);
+void	ft_update_cmd(t_hell *hell, t_proc *proc, char **cmd, char *str);
+void	ft_update_token(t_hell *hell, t_token *token, int pos, char *str);
+void	add_token(t_hell *hell, t_token **tokens, char *val);
+void	del_token(t_token **tokens,  t_token *token);
+void	add_num(t_hell *hell, int **ptr, int num);
+int		get_last_num(int *nums);
+void	divide_tokens(t_hell *hell, t_token *token, int pos, int spaces);
+t_token	*cut_token(t_token **tokens, t_token *token);
+int		is_immun(int *exp, int num);
+int		ft_update_quote(t_hell *hell, t_token *token, int pos);
+
 // 		Proc utils
+t_proc	*get_last_proc(t_proc **head);
 void	close_proc(t_hell *hell);
 t_proc	*create_proc(t_hell *hell);
 void	addproc(t_proc **head, t_proc *next);
 
 //		String utils
-void	add_arr_to_cmdarr(t_hell *hell, t_proc *proc, char **addme);
 int		ft_isspace(char c);
 int		ismeta(char *c);
 
