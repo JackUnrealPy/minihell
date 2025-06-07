@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 21:57:31 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/04 19:43:04 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/07 17:51:30 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	print_var(char *var_to_print)
 			ft_putchar_fd('"', 1);
 			start_quote = 0;
 		}
-		if (var_to_print[i + 1] == '\0')
+		if (var_to_print[i + 1] == '\0' && !start_quote)
 			ft_putchar_fd('"', 1);
 		i++;
 	}

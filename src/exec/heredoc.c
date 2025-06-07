@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:14:59 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/20 04:19:51 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/07 21:31:33 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,23 +39,30 @@ int	heredoc_check(t_redir *redirs)
 
 void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 {
-	char	*buffer;
-
+	signal(SIGINT, heredoc_sig);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
-		buffer = readline("> ");
-		expansion_heredoc(hell, head, &buffer);
+		hell->hdoc_cmd = readline("> ");
+		if (!hell->hdoc_cmd)
+		{
+            g_sig_flag = 0;
+            break;
+        }
+		expansion_heredoc(hell, head, &hell->hdoc_cmd);
 		if (g_sig_flag == SIGINT)
 		{
 			g_sig_flag = 0;
 			hell->lastexit = 130;
 			break ;
 		}
-		if (break_heredoc(redirs, buffer))
+		if (break_heredoc(redirs, hell->hdoc_cmd))
 			break ;
 		if (!g_sig_flag)
-			ft_putendl_fd(buffer, head->hdoc_fd);
+			ft_putendl_fd(hell->hdoc_cmd, head->hdoc_fd);
 	}
+	signal(SIGINT, handle_sig);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
@@ -65,9 +72,9 @@ int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
 	g_sig_flag = 0;
 	generate_tmpfile(hell, head);
 	head->hdoc_fd = open(head->hdoc_tmpfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
-	signal(SIGINT, heredoc_sig);
-	signal(SIGQUIT, SIG_IGN);
+
 	heredoc_loop(hell, head, redirs);
+	
 	close(head->hdoc_fd);
 	return (1);
 }

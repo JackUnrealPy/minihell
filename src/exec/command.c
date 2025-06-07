@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:17:46 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/05 20:06:07 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/07 22:32:41 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	create_cmd(t_hell *hell, t_proc *head)
 		if (ft_strncmp(head->cmd[0], "./minishell", 11) == 0)
 			increment_shlvl(hell->envp);
 		if (access(head->cmd_path, F_OK) == -1)
-			error_msg(hell, head->cmd[0], ": No such file or directory 33", 1);
+			error_msg(hell, head->cmd[0], ": No such file or directory", 1);
 		return ;
 	}
 
@@ -103,7 +103,7 @@ void	create_cmd(t_hell *hell, t_proc *head)
 		test_cmds(hell, head);
 		if (hell->exec_error)
 			return ;
-		if (access(head->cmd_path, F_OK) == -1)
-			error_msg(hell, head->cmd[0], ": No such file or directory 33", 1);
+		// if (access(head->cmd_path, F_OK) == -1)
+		// 	error_msg(hell, head->cmd[0], ": No such file or directory 33", 1);
 	}
 }

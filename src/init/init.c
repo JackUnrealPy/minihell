@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/05/10 15:03:03 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/07 17:45:39 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void init_hell(t_hell *hell, char **envp)
 	if (!envp[0])
 	{
 		getcwd(pwd, sizeof(pwd));
-		pwd_env = ft_strjoin("PWD=", pwd);
+		pwd_env = ft_strjoin("OLDPWD\nPWD=", pwd);
 		env = ft_strjoin(pwd_env, "\nSHLVL=1\n_=/usr/bin/env");
 		hell->envp = (char **)ft_mallocarr(hell, hell->freeme, (void **)ft_split(env, "\n"));
 		free(pwd_env);

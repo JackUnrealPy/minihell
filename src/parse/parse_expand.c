@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_expand.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/05/13 21:53:26 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/07 18:42:04 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,15 @@ char *get_var(t_hell *hell, t_proc *proc, char *str, int *i)
 	char	*s;
 	char	*var;
 
+	var = NULL;
 	while (++*i)
 	{
 		if(!str[*i] || !ft_isalnum(str[*i]))
 		{
 			s = ft_malloc(hell, proc->freeme, ft_substr(str, 1, *i - 1));
 			var = lookup_exp_val(hell, proc, s);
-			if (!var)
-				var = getenv(s);
+			// if (!var)
+			// 	var = getenv(s);
 			break;	
 		}
 	}
@@ -89,7 +90,10 @@ static char	*ft_expand(t_hell *hell, t_proc *proc, t_token *token, int pos)
 static int	step_over_q(t_token *token, int *i, int inquote)
 {
 	if (*(char*)(token->token) && ((char *)token->token)[*i] == '\"')
+	{
 		inquote = *i + get_quotelen((char *)token->token + *i);
+		// (*i)++;
+	}
 	else if (*(char*)(token->token) && ((char *)token->token)[*i] == '\'' && inquote < 1)
 		*i += get_quotelen((char *)token->token + *i);
 	return (inquote - 1);

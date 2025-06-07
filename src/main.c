@@ -3,25 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/05/15 18:26:52 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/07 21:28:47 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
+#include <signal.h>
 
 int g_sig_flag=0;
 
 void handle_sig(int sig)
 {
-	g_sig_flag = sig;
-	printf("\n");
+	(void)sig;
+
+	g_sig_flag = 1;
+	write(1, "\n", 1);
+
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+	// ioctl(STDOUT_FILENO, TIOCSTI, "\n");
 }
 
 int	all_whitespace(char *cmd)
@@ -41,9 +45,9 @@ int	all_whitespace(char *cmd)
 		return 1;
 	return (0);
 }
+
 int	main(int argc, char **argv, char **envp)
 {
-	// char	*cmd;
 	t_hell	hell;
 
 	(void)argc;
@@ -65,7 +69,8 @@ int	main(int argc, char **argv, char **envp)
 		{
 			if (!hell.cmd)
 			{
-				printf("exit\n");
+				free(hell.cmd);
+				write(1, "exit\n", 5);
 				break;
 			}
 			if (!all_whitespace(hell.cmd))

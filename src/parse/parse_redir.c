@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/05/13 16:39:53 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/07 18:54:52 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,10 @@ void	collect_redirs(t_hell *hell, t_proc *proc)
 			sysntaxerr(hell, (char *)token->token, ft_strlen((char *)token->token));
 		if (type != -1)
 		{
-			if (!tmp || ismeta(tmp->token))
+			if ((!tmp || ismeta(tmp->token)) && !token->next)
 				return (sysntaxerr(hell, token->token, ft_strlen(token->token)));
+			else if ((!tmp || ismeta(tmp->token)) && token->next->token)
+				return (sysntaxerr(hell, token->next->token, ft_strlen(token->token)));
 			pop_token(proc->tokens, token->token, 0);
 			red = create_redir(hell, proc, type);
 			token = tmp->next;

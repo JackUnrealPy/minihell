@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:49 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/04 18:02:04 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/07 19:48:07 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	is_builtin(t_proc *head)
 
 int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 {
-	if (!head->cmd)
+	if (!head->cmd || !head->cmd[0])
 		return (0);
 	else if (ft_strncmp(head->cmd[0], "echo", ft_strlen(head->cmd[0])) == 0)
 		ft_echo(head);
@@ -63,7 +63,7 @@ int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 	else if (ft_strcmp("export", head->cmd[0]) == 0)
 		ft_export(hell, head);
 	else if (ft_strncmp("unset", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
-		ft_unset(hell, hell->envp, head->cmd[1]);
+		ft_unset(hell, hell->envp, head->cmd);
 	else if (ft_strncmp("exit", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
 		ft_exit(hell, head, pipe);
 	else

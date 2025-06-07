@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/05/13 16:42:39 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/07 21:31:12 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,15 +84,17 @@ typedef struct	s_hell
 	int		lastexit;
 	int		syntaxerr;
 	char	*cmd;
+	char	*hdoc_cmd;
 }	t_hell;
 
 // EXECUTION
 
+void handle_sig(int sig);
 // builtins
 void	ft_echo(t_proc *head);
 int	ft_env(t_redir *redirs, char **envp, int pipe);
 int	ft_pwd(t_hell *hell, t_redir *redirs, int pipe);
-void ft_unset(t_hell *hell, char **envp, char *var_to_delete);
+void ft_unset(t_hell *hell, char **envp, char **var_to_delete);
 void	ft_exit(t_hell *hell, t_proc *head, int pipe);
 void	ft_export(t_hell *hell, t_proc *head);
 void	ft_cd(t_hell *hell, t_proc *head);

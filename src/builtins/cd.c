@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:53 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/22 16:22:45 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/07 17:54:11 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	cd_home(t_hell *hell, char *cmd1)
 	ret = 0;
 	home = ft_getenv("HOME", hell->envp, 0);
 	if (!home)
-		return (free(home), error_msg(hell, NULL, "cd: HOME not set", 1), 1);
+		return (free(home), error_msg(hell, NULL, "minishell: cd: HOME not set", 1), 1);
 	if (cmd1 && ft_strlen(cmd1) > 1)
 	{
 		new_dir = ft_strjoin(home, cmd1 + 1);
@@ -85,7 +85,7 @@ void	ft_cd(t_hell *hell, t_proc *head)
 
 	error_check = 0;
 	if (head->cmd[1] && head->cmd[2])
-		return (error_msg(hell, NULL, "bash: cd: too many arguments", 1));
+		return (error_msg(hell, NULL, "minishell: cd: too many arguments", 1));
 	old_pwd = ft_getenv("PWD", hell->envp, 0);
 	if (!head->cmd[1] || head->cmd[1][0] == '~')
 		error_check = cd_home(hell, head->cmd[1]);
@@ -98,7 +98,7 @@ void	ft_cd(t_hell *hell, t_proc *head)
 		free(old_pwd);
 		if (error_check > 0)
 			return ;
-		ft_putstr_fd("bash: cd: ", 2);
+		ft_putstr_fd("minishell: cd: ", 2);
 		error_msg(hell, head->cmd[1], ": No such file or directory", 1);
 		return ;
 	}
