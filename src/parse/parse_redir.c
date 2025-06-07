@@ -47,7 +47,8 @@ void	parse_redirs(t_hell *hell, t_proc *proc, t_token **v)
 		backup = ft_strdup((char *)node->redt->token);
 		if (!backup)
 			jump_ship(hell, 1);
-		parse_expand(hell, proc, &node->redt);
+		if (node->type != 4 && node->type != 3)
+			parse_expand(hell, proc, &node->redt);
 		if (!((char *)node->redt->token)[0])
 		{
 			ft_terminate(1, &node->redt->token);
