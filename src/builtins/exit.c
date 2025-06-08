@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:59:12 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/08 14:48:44 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 17:16:18 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,12 +104,7 @@ void	ft_exit(t_hell *hell, t_proc *head, int is_pipe)
 				num += 256;
 		}
 	}
-
 	hell->lastexit = num;
 	ft_putendl_fd("exit", 1);
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	close(STDERR_FILENO);
-	// free(hell->cmd);
 	jump_ship(hell, hell->lastexit);
 }

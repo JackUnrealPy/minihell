@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:49 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/07 19:48:07 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 17:41:04 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,21 +50,21 @@ int	is_builtin(t_proc *head)
 
 int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 {
-	if (!head->cmd || !head->cmd[0])
+	if (!head->cmd || !head->cmd[0] || !head->cmd[0][0])
 		return (0);
-	else if (ft_strncmp(head->cmd[0], "echo", ft_strlen(head->cmd[0])) == 0)
+	else if (ft_strcmp(head->cmd[0], "echo") == 0)
 		ft_echo(head);
 	else if (ft_strcmp("pwd", head->cmd[0]) == 0)
-		ft_pwd(hell, *(head->redirs), pipe);
+		ft_pwd(hell);
 	else if (ft_strcmp("cd", head->cmd[0]) == 0)
 		ft_cd(hell, head);
 	else if (ft_strcmp("env", head->cmd[0]) == 0)
-		ft_env((*head->redirs), hell->envp, pipe);
+		ft_env(hell->envp);
 	else if (ft_strcmp("export", head->cmd[0]) == 0)
 		ft_export(hell, head);
-	else if (ft_strncmp("unset", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
-		ft_unset(hell, hell->envp, head->cmd);
-	else if (ft_strncmp("exit", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
+	else if (ft_strcmp("unset", head->cmd[0]) == 0)
+		ft_unset(hell->envp, head->cmd);
+	else if (ft_strcmp("exit", head->cmd[0]) == 0)
 		ft_exit(hell, head, pipe);
 	else
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:19 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/04 19:22:07 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 18:14:34 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ char	**ft_double_strdup(t_hell *hell, char **envp)
 	b = a;
 	my_env = ft_calloc((a + 1) * sizeof(char *), sizeof(char *));
 	if (!my_env)
-		return (error_msg(hell, NULL, "Memory allocation failed", 1), NULL);
+		init_mem(hell, NULL, NULL, NULL);
 	a = 0;
 	while (a < b)
 	{
@@ -61,10 +61,7 @@ char	**ft_double_strdup(t_hell *hell, char **envp)
 		else
 			my_env[a] = ft_strdup(envp[a]);
 		if (!my_env[a])
-		{
-			error_msg(hell, NULL, "Memory allocation failed", 1);
-			return (ft_freeme(my_env), NULL);
-		}
+			(ft_freeme(my_env), init_mem(hell, NULL, NULL, NULL));
 		a++;
 	}
 	return (my_env);

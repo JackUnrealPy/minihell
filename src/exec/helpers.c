@@ -6,25 +6,11 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/08 15:47:08 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 22:07:32 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-void	error_msg(t_hell *hell, char *var, char *error, int exitcode)
-{
-	if (error)
-	{
-		if (var)
-			ft_putstr_fd(var, STDERR_FILENO);
-		ft_putendl_fd(error, STDERR_FILENO);
-	}
-	hell->lastexit = exitcode;
-	hell->exec_error = 1;
-	if (hell->cmd_count > 1)
-		ft_close(hell);
-}
 
 void	ft_close(t_hell *hell)
 {
@@ -38,45 +24,47 @@ void	ft_close(t_hell *hell)
 	}
 }
 
-void	ft_wait(t_hell *hell)
+void	check_exitstatus(t_hell *hell, t_proc *head)
 {
-	int		wstatus;
-	t_proc	*head_cpy;
-	int signal = 0;
+	int	wstatus;
+	int	signal;
+	int	sig;
 
+	signal = 0;
 	wstatus = 0;
-	head_cpy = (*hell->head);
-	while (head_cpy)
+	while (head)
 	{
-		if (head_cpy->pid != 0 && waitpid(head_cpy->pid, &wstatus, 0) == -1)
-		{
-			error_msg(hell, NULL, "waitpid failed", WEXITSTATUS(wstatus));
-			return ;
-		}
+		if (head->pid != 0 && waitpid(head->pid, &wstatus, 0) == -1)
+			return (error_msg(hell, NULL, "waitpid failed",
+					WEXITSTATUS(wstatus)));
 		if (WIFSIGNALED(wstatus))
-        {
-            int sig = WTERMSIG(wstatus);
-            if (sig == SIGINT || sig == SIGQUIT)
-                signal = 1;
-            hell->lastexit = 128 + sig;
-        }
-        else if (WIFEXITED(wstatus))
-        {
-            hell->lastexit = WEXITSTATUS(wstatus);
-        }
-		head_cpy = head_cpy->next;
+		{
+			sig = WTERMSIG(wstatus);
+			if (sig == SIGINT || sig == SIGQUIT)
+				signal = 1;
+			hell->lastexit = 128 + sig;
+		}
+		else if (WIFEXITED(wstatus))
+			hell->lastexit = WEXITSTATUS(wstatus);
+		head = head->next;
 	}
 	hell->lastexit = WEXITSTATUS(wstatus);
+	if (signal && WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
+		write(1, "\n", 1);
+}
+
+void	ft_wait(t_hell *hell)
+{
+	t_proc	*head_cpy;
+
+	head_cpy = (*hell->head);
+	check_exitstatus(hell, head_cpy);
 	head_cpy = (*hell->head);
 	while (head_cpy)
 	{
 		if (head_cpy->hdoc_present && head_cpy->hdoc_tmpfile)
 			unlink(head_cpy->hdoc_tmpfile);
 		head_cpy = head_cpy->next;
-	}
-	if (signal && WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
-	{
-		write(1, "\n", 1);
 	}
 }
 
