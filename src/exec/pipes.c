@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/08 16:52:19 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 20:38:07 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,13 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs)
 
 void	close_unused(t_hell *hell, int i)
 {
-	int	j = 0;
+	int	j;
+
+	j = 0;
 	while (j < (hell->cmd_count - 1) * 2)
 	{
-		if (!(i > 0 && j == (i-1)*2) && !(i < hell->cmd_count-1 && j == (i*2)+1))
+		if (!(i > 0 && j == (i - 1) * 2) && !(i < hell->cmd_count - 1 && j == (i
+					* 2) + 1))
 			close(hell->pipe_fd[j]);
 		j++;
 	}
@@ -62,7 +65,6 @@ void	children(t_proc *head, t_hell *hell, int i)
 			jump_ship(hell, 127);
 		execve(head->cmd_path, head->cmd, hell->envp);
 		error_msg(hell, head->cmd[0], ": command not found", 127);
-		// free(hell->cmd);
 		jump_ship(hell, 127);
 	}
 }
@@ -84,7 +86,6 @@ void	child_loop(t_hell *hell, t_proc *head_cpy)
 		if (i < hell->cmd_count)
 			head_cpy = head_cpy->next;
 	}
-
 }
 
 void	ft_pipex(t_hell *hell)

@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:53 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/08 16:49:46 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 17:17:18 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ int	cd_home(t_hell *hell, char *cmd1)
 	ret = 0;
 	home = ft_getenv("HOME", hell->envp, 0);
 	if (!home)
-		return (free(home), error_msg(hell, NULL, "minishell: cd: HOME not set", 1), 1);
+		return (free(home), error_msg(hell, NULL, "minishell: cd: HOME not set",
+				1), 1);
 	if (cmd1 && ft_strlen(cmd1) > 1)
 	{
 		new_dir = ft_strjoin(home, cmd1 + 1);

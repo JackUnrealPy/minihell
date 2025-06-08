@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:28 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/08 16:51:53 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 22:32:41 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ int	break_heredoc(t_redir *redirs, char *buffer)
 			redirs->pathordel, ft_strlen(redirs->pathordel)) == 0)
 	{
 		free(buffer);
+		buffer = NULL;
 		return (1);
 	}
 	return (0);
