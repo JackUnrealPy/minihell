@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/07 20:27:15 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 15:47:08 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,16 @@ void	ft_wait(t_hell *hell)
 			return ;
 		}
 		if (WIFSIGNALED(wstatus))
-			signal = 1;
+        {
+            int sig = WTERMSIG(wstatus);
+            if (sig == SIGINT || sig == SIGQUIT)
+                signal = 1;
+            hell->lastexit = 128 + sig;
+        }
+        else if (WIFEXITED(wstatus))
+        {
+            hell->lastexit = WEXITSTATUS(wstatus);
+        }
 		head_cpy = head_cpy->next;
 	}
 	hell->lastexit = WEXITSTATUS(wstatus);
@@ -65,7 +74,7 @@ void	ft_wait(t_hell *hell)
 			unlink(head_cpy->hdoc_tmpfile);
 		head_cpy = head_cpy->next;
 	}
-	if (signal)
+	if (signal && WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
 	{
 		write(1, "\n", 1);
 	}

@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:14:59 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/07 21:31:33 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 15:53:13 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,12 @@ void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 			break ;
 		}
 		if (break_heredoc(redirs, hell->hdoc_cmd))
+		{
 			break ;
+		}
 		if (!g_sig_flag)
 			ft_putendl_fd(hell->hdoc_cmd, head->hdoc_fd);
+		free(hell->hdoc_cmd);
 	}
 	signal(SIGINT, handle_sig);
 	signal(SIGQUIT, SIG_IGN);

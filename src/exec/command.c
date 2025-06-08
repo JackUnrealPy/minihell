@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:17:46 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/07 22:32:41 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:08:21 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,22 @@
 
 void	try_paths(t_hell *hell, t_proc *head, char **path, char *path_cmd)
 {
-	char	*test_path;
+	char	*test_path = NULL;
 	int		i;
 
 	i = 0;
 	while (path && path[i])
 	{
-		test_path = ft_malloc(hell, head->freeme, ft_strjoin(path[i],
-					path_cmd));
+		test_path = ft_strjoin(path[i], path_cmd);
+		if (!test_path)
+			jump_ship(hell, 1);
 		if (access(test_path, R_OK | X_OK) == 0)
 		{
 			head->cmd_path = ft_malloc(hell, head->freeme, test_path);
 			break ;
 		}
+		free(test_path);
+		test_path = NULL;
 		i++;
 	}
 }
