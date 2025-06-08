@@ -23,15 +23,6 @@ void	heredoc_sig(int sig)
 	}
 }
 
-// void heredoc_sig(int sig)
-// {
-//     (void)sig;
-//     g_sig_flag = SIGINT;
-//     // Don't write newline here - let handle_sig do it
-//     rl_replace_line("", 0);
-//     rl_done = 1;  // This makes readline return immediately
-// }
-
 int	heredoc_check(t_redir *redirs)
 {
 	t_redir	*tmp;
