@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_helpers.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:28 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/20 04:18:28 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/08 16:51:53 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,26 +34,43 @@ void	generate_tmpfile(t_hell *hell, t_proc *head)
 				rando_txt));
 }
 
-void	expansion_heredoc(t_hell *hell, t_proc *head, char *buffer, char *tmp)
+void	expand_heredoc(t_hell *hell, t_proc *head, char **buffer, int pos)
 {
-	int	i;
+	char	*val;
+	char	*res;
+	int		j;
 
-	if (buffer && (*head->redirs)->type == 4)
+	j = 0;
+	val = get_exp(hell, head, *buffer, &j);
+	res = ft_calloc(sizeof(char), ft_strlen(*buffer) - j + ft_strlen(val) + 1);
+	if (!res)
+		jump_ship(hell, 1);
+	ft_memcpy(res, *buffer, pos);
+	ft_memcpy(res + pos, val, ft_strlen(val));
+	ft_memcpy(res + ft_strlen(val) + pos,
+		*buffer + pos + j,
+		ft_strlen(*buffer + pos) - j);
+	pop_free(head->freeme, *buffer);
+	*buffer = res;
+}
+
+void	expansion_heredoc(t_hell *hell, t_proc *head, char **buffer)
+{
+	int		i;
+
+	if (*buffer && (*head->redirs)->type == 4)
 	{
 		i = 0;
-		while (buffer[i])
+		while ((*buffer)[i])
 		{
-			if (buffer[i] == '$')
+			if ((*buffer)[i] == '$')
 			{
-				tmp = buffer;
-				buffer = ft_strchr(buffer, '$');
-				ft_expand(hell, head, &buffer, 0);
+				expand_heredoc(hell, head, buffer, i);
 				break ;
 			}
 			i++;
 		}
 	}
-	(void)tmp;
 }
 
 int	break_heredoc(t_redir *redirs, char *buffer)

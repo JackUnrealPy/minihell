@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-void print_list(t_proc *a)
+void	print_list(t_proc *a)
 {
 	t_redir	*reds;
 	int		i;
@@ -18,7 +18,7 @@ void print_list(t_proc *a)
 		{
 			printf("reds [%d]:{%s}\n", reds->type, reds->pathordel);
 			reds = reds->next;
-		}	
+		}
 		a = a->next;
 	}
 }

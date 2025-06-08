@@ -12,6 +12,16 @@
 
 #include "../../includes/minishell.h"
 
+t_proc	*get_last_proc(t_proc **head)
+{
+	t_proc	*proc;
+
+	proc = *head;
+	while (proc->next)
+		proc = proc->next;
+	return (proc);
+}
+
 void	addproc(t_proc **head, t_proc *next)
 {
 	t_proc	*node;
@@ -26,24 +36,27 @@ void	addproc(t_proc **head, t_proc *next)
 t_proc	*create_proc(t_hell *hell)
 {
 	t_proc	*proc;
-	t_free	**freeme;
-	
+
+	proc = NULL;
 	proc = malloc(sizeof(t_proc));
 	if (!proc)
 		jump_ship(hell, 1);
-	freeme = malloc(sizeof(t_free*));
-	if (!freeme)
+	proc->freeme = malloc(sizeof(t_free *));
+	if (!proc->freeme)
 	{
 		ft_terminate(1, &proc);
 		jump_ship(hell, 1);
 	}
-	proc->freeme = freeme;
-	proc->cmd = NULL;
 	*(proc->freeme) = NULL;
+	proc->cmd = NULL;
 	proc->prev = NULL;
 	proc->next = NULL;
-	proc->redirs =  ft_malloc(hell ,proc->freeme, malloc(sizeof(t_redir*)));
+	proc->redirs = ft_malloc(hell, proc->freeme, malloc(sizeof(t_redir *)));
 	*(proc->redirs) = NULL;
+	proc->tokens = malloc(sizeof(t_token *));
+	if (!proc->tokens)
+		jump_ship(hell, 1);
+	*(proc->tokens) = NULL;
 	return (proc);
 }
 
@@ -72,8 +85,11 @@ void	close_proc(t_hell *hell)
 	while (proc)
 	{
 		tmp = proc->next;
+		pop_token(proc->tokens, NULL, 1);
+		ft_terminate(1, &(proc->tokens));
 		throw_garbage(proc->freeme);
 		proc = tmp;
 	}
+	ft_terminate(1, &(hell->tokens));
 	ft_procclear(hell->head);
 }

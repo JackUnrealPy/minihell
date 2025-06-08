@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:19:03 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/20 04:22:30 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/08 16:50:06 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,10 @@ int	ft_env(t_redir *redirs, char **envp, int pipe)
 	}
 	i = -1;
 	while (envp[++i])
-		ft_putendl_fd(envp[i], fd);
+	{
+		if (ft_strchr(envp[i], '='))
+			ft_putendl_fd(envp[i], fd);
+	}
 	if (fd != 1)
 		close(fd);
 	return (0);

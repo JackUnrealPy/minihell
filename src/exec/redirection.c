@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/22 16:23:35 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/08 16:46:13 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,12 +98,18 @@ void	redirection(t_hell *hell, t_proc *head, int i)
 			return ;
 		tmp = tmp->next;
 	}
-	if (i > 0 && !hdoc && hell->pipe_fd && dup2(hell->pipe_fd[(i - 1) * 2],
-			STDIN_FILENO) == -1)
-		error_msg(hell, NULL, "dup2 failed", 1);
+	if (i > 0 && !hdoc && hell->pipe_fd)
+	{
+		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
+			(ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
+		// close(STDIN_FILENO);
+		// close(hell->pipe_fd[(i - 1) * 2]);
+	}
 	if (i != -1 && i < hell->cmd_count - 1)
 	{
 		if (dup2(hell->pipe_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
-			error_msg(hell, NULL, "dup2 failed", 1);
+			(ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
+		// close(STDOUT_FILENO);
+		// close(hell->pipe_fd[(i * 2) + 1]);
 	}
 }

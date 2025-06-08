@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/05/17 22:52:12 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:53:47 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,81 +37,23 @@ int	get_quotelen(char *cmd)
 	return (0);
 }
 
-int	handle_quote(t_hell *hell, t_proc *proc, char **cmd, int pos)
+void	purge_quotes(t_hell *hell, t_proc *proc, t_token **v)
 {
-	char	*str;
-	char	*res;
-	int		len;
-
-	res = NULL;
-	len = 1;
-	while (*(*cmd + len + pos) && *(*cmd + pos + len) != *(*cmd+pos))
-		len++;
-	len ++;
-	str = NULL;
-	if (*(*cmd+pos) == '\'')
-	{
-		str =  get_squote(hell, proc, *cmd + pos);
-		res = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) , ((ft_strlen(*cmd) - len) + ft_strlen(str) + 1)) );
-		ft_memcpy(res, *cmd, pos);
-		ft_memcpy(res + pos, str, ft_strlen(str));
-		ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + len, ft_strlen(*cmd + pos + len));
-	}
-	else
-	{
-		str = get_dquote(hell, proc, cmd , pos);
-		
-		res = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) , ((ft_strlen(*cmd) - len) + ft_strlen(str) + 3)) );
-		ft_memcpy(res, *cmd, pos);
-		ft_memcpy(res + pos, str, ft_strlen(str));
-		ft_memcpy(res + pos + ft_strlen(str), *cmd + pos + ft_strlen(str) + 2, ft_strlen(*cmd + pos + ft_strlen(str) + 2));
-	}
-	res[(ft_strlen(*cmd) - len) + ft_strlen(str) ] = 0;
-	*cmd = res;
-	return (ft_strlen(str) - 1);
-	
-}
-
-char	*get_squote(t_hell *hell, t_proc *proc, char *quote)
-{
-	char	*str;
 	int		i;
-	int		len;
-	
-	len = 0;
-	len = get_quotelen(quote);
-	if (!len)
-		sysntaxerr(hell, quote, 1);
-	str = NULL;
-	str = ft_malloc(hell, proc->freeme, ft_calloc(sizeof(char) ,len + 1));
-	i = -1;
-	while (++i < len - 1)
-		str[i] = quote[i + 1];
-	return (str);
-}
+	t_token	*token;
 
-char	*get_dquote(t_hell *hell, t_proc *proc, char **cmd, int pos)
-{
-	char	*str;
-	int		len;
-	int		i;
+	(void)proc;
+	token = *v;
 
-	len = 0;
-	len = get_quotelen(*cmd + pos);
-	if (!len)
-		sysntaxerr(hell, *cmd + pos, 1);
-	str = NULL;
-	i = 0;
-	while (++i < len)
+	(void) hell;
+	while (token)
 	{
-		if ((*cmd)[pos + i] == '$')
+		i = -1;
+		while (((char *)token->token)[++i])
 		{
-			ft_expand(hell, proc, cmd, pos + i);
-			len = get_quotelen(*cmd + pos);
-			if (!len)
-				sysntaxerr(hell, *cmd + pos, 1);
+			if ((((char *)token->token)[i] == '\'' || ((char *)token->token)[i] == '\"') && !is_immun(token->expansion, i))
+				i += ft_update_quote(hell, token, i) - 1;
 		}
+		token = token->next;
 	}
-	str = ft_malloc(hell, proc->freeme, ft_substr(*cmd + 1, pos, len - 1));
-	return (str); 
 }

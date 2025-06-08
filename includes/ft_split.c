@@ -98,12 +98,12 @@ char	**ft_split(char const *s, char *charset)
 		{
 			res[j++] = getword(s + i, charset);
 			while (s[i] && !inset(charset, s[i]))
-				i++; // i incrementation was wrong before
+				i++; 
 		}
 		else
 			i++;
 	}
-	res[j] = NULL; // here it was j + 1
+	res[j] = NULL;
 
 	return (res);
 }

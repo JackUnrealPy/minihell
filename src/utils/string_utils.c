@@ -21,7 +21,7 @@ int	ft_isspace(char c)
 
 int	ismeta(char *c)
 {
-	if (*c == '|' || *c == '\'' || *c == '\"' || *c == '$')
+	if (*c == '|')
 		return (*c);
 	if (*c == '<')
 	{

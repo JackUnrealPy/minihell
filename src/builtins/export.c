@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 21:57:31 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/05/22 16:24:16 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/08 16:50:40 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	print_var(char *var_to_print)
 			ft_putchar_fd('"', 1);
 			start_quote = 0;
 		}
-		if (var_to_print[i + 1] == '\0')
+		if (var_to_print[i + 1] == '\0' && !start_quote)
 			ft_putchar_fd('"', 1);
 		i++;
 	}

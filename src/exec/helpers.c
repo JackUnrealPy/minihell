@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/22 16:17:35 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/08 16:51:42 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	ft_wait(t_hell *hell)
 {
 	int		wstatus;
 	t_proc	*head_cpy;
+	int signal = 0;
 
 	wstatus = 0;
 	head_cpy = (*hell->head);
@@ -52,6 +53,17 @@ void	ft_wait(t_hell *hell)
 			error_msg(hell, NULL, "waitpid failed", WEXITSTATUS(wstatus));
 			return ;
 		}
+		if (WIFSIGNALED(wstatus))
+        {
+            int sig = WTERMSIG(wstatus);
+            if (sig == SIGINT || sig == SIGQUIT)
+                signal = 1;
+            hell->lastexit = 128 + sig;
+        }
+        else if (WIFEXITED(wstatus))
+        {
+            hell->lastexit = WEXITSTATUS(wstatus);
+        }
 		head_cpy = head_cpy->next;
 	}
 	hell->lastexit = WEXITSTATUS(wstatus);
@@ -61,6 +73,10 @@ void	ft_wait(t_hell *hell)
 		if (head_cpy->hdoc_present && head_cpy->hdoc_tmpfile)
 			unlink(head_cpy->hdoc_tmpfile);
 		head_cpy = head_cpy->next;
+	}
+	if (signal && WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
+	{
+		write(1, "\n", 1);
 	}
 }
 

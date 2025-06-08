@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:49 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/21 19:47:09 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/08 16:49:04 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,20 @@ int	built_err(t_hell *hell, char *type, char *msg, int exitnum)
 		jump_ship(hell, exitnum);
 	return (0);
 }
+
+// void	error_msg(t_hell *hell, char *var, char *error, int exitcode)
+// {
+// 	if (error)
+// 	{
+// 		if (var)
+// 			ft_putstr_fd(var, STDERR_FILENO);
+// 		ft_putendl_fd(error, STDERR_FILENO);
+// 	}
+// 	hell->lastexit = exitcode;
+// 	hell->exec_error = 1;
+// 	if (hell->cmd_count > 1)
+// 		ft_close(hell);
+// }
 
 int	is_builtin(t_proc *head)
 {
@@ -36,7 +50,7 @@ int	is_builtin(t_proc *head)
 
 int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 {
-	if (!head->cmd)
+	if (!head->cmd || !head->cmd[0])
 		return (0);
 	else if (ft_strncmp(head->cmd[0], "echo", ft_strlen(head->cmd[0])) == 0)
 		ft_echo(head);
@@ -49,7 +63,7 @@ int	determine_builtin(t_hell *hell, t_proc *head, int pipe)
 	else if (ft_strcmp("export", head->cmd[0]) == 0)
 		ft_export(hell, head);
 	else if (ft_strncmp("unset", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
-		ft_unset(hell, hell->envp, head->cmd[1]);
+		ft_unset(hell, hell->envp, head->cmd);
 	else if (ft_strncmp("exit", head->cmd[0], ft_strlen(head->cmd[0])) == 0)
 		ft_exit(hell, head, pipe);
 	else
