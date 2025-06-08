@@ -65,7 +65,7 @@ static void	trim_token(t_token *token)
 	{
 		token->expansion[j] -= i;
 		if (token->expansion[j] < 0)
-			token->expansion = 0;
+			token->expansion[j] = 0;
 	}
 	i = ft_strlen((char *)token->token);
 	if (!i)

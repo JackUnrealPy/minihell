@@ -49,15 +49,15 @@ void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
             g_sig_flag = 0;
             break;
         }
+		if (break_heredoc(redirs, hell->hdoc_cmd))
+		{
+			break ;
+		}
 		expansion_heredoc(hell, head, &hell->hdoc_cmd);
 		if (g_sig_flag == SIGINT)
 		{
 			g_sig_flag = 0;
 			hell->lastexit = 130;
-			break ;
-		}
-		if (break_heredoc(redirs, hell->hdoc_cmd))
-		{
 			break ;
 		}
 		if (!g_sig_flag)

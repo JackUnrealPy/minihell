@@ -38,7 +38,6 @@ typedef struct	s_token
 	void			*token;
 	struct s_token	*next;
 	struct s_token	*prev;
-	int				*qoute;
 	int				*expansion;
 }	t_token;
 

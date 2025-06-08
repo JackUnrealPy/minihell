@@ -49,6 +49,12 @@ void	purge_quotes(t_hell *hell, t_proc *proc, t_token **v)
 	while (token)
 	{
 		i = -1;
+		if (!((char *)token->token)[0] && *v == token)
+		{
+			pop_token(v, token->token, 0);
+			token = *v;
+			continue;
+		}
 		while (((char *)token->token)[++i])
 		{
 			if ((((char *)token->token)[i] == '\'' || ((char *)token->token)[i] == '\"') && !is_immun(token->expansion, i))

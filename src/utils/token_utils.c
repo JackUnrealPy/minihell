@@ -20,7 +20,6 @@ t_token	*new_token(t_hell *hell, char *val)
 		jump_ship(hell, 1);
 	}
 	token->expansion[0] = -1;
-	token->qoute = NULL;
 	token->token = val;
 	token->next = NULL;
 	token->prev = NULL;

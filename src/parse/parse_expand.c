@@ -49,8 +49,6 @@ char *get_var(t_hell *hell, t_proc *proc, char *str, int *i)
 		{
 			s = ft_malloc(hell, proc->freeme, ft_substr(str, 1, *i - 1));
 			var = lookup_exp_val(hell, proc, s);
-			// if (!var)
-			// 	var = getenv(s);
 			break;	
 		}
 	}
@@ -87,16 +85,32 @@ static char	*ft_expand(t_hell *hell, t_proc *proc, t_token *token, int pos)
 	return (var);
 }
 
-static int	step_over_q(t_token *token, int *i, int inquote)
+static void	step_over_q(t_hell *hell, t_token *token, int *i, int *qi)
 {
-	if (*(char*)(token->token) && ((char *)token->token)[*i] == '\"')
+	int	end;
+
+	end = 0;
+	if (*qi != -1)
 	{
-		inquote = *i + get_quotelen((char *)token->token + *i);
-		// (*i)++;
+		end = get_quotelen((char *)token->token + *qi);
+		if ((end + *qi) < *i)
+			*qi = -1;
 	}
-	else if (*(char*)(token->token) && ((char *)token->token)[*i] == '\'' && inquote < 1)
-		*i += get_quotelen((char *)token->token + *i);
-	return (inquote - 1);
+	end = 0;
+	if (*(char*)(token->token) && ((char *)token->token)[*i] == '\"' && *qi == -1)
+	{
+		end = get_quotelen((char *)token->token + *i);
+		if (!end)
+			sysntaxerr(hell, (char *)token->token, ft_strlen((char *)token->token));
+		*qi = *i;
+	}
+	else if (*(char*)(token->token) && ((char *)token->token)[*i] == '\'' && *qi == -1)
+	{
+		end = get_quotelen((char *)token->token + *i);
+		if (!end)
+			sysntaxerr(hell, (char *)token->token, ft_strlen((char *)token->token));
+		(*i) += end;
+	}
 }
 
 void	parse_expand(t_hell *hell, t_proc *proc, t_token **tokens)
@@ -104,13 +118,13 @@ void	parse_expand(t_hell *hell, t_proc *proc, t_token **tokens)
 	t_token	*token;
 	int		i;
 	char	*val;
-	int		inquote;
+	int		qi;
 
 	token = *tokens;
 	while (token)
 	{
 		i = -1;
-		inquote = 0;
+		qi = -1;
 		while(((char *)token->token)[++i])
 		{
 			if (((char *)token->token)[i] == '$')
@@ -119,10 +133,10 @@ void	parse_expand(t_hell *hell, t_proc *proc, t_token **tokens)
 				val = ft_expand(hell, proc, token, i);
 				ft_update_token(hell, token, i, val);
 				i += ft_strlen(val) - 1;
-				inquote -= ft_strlen(val) - 1;
 				pop_free(proc->freeme, val);
 			}
-			inquote = step_over_q(token, &i, inquote);
+			else
+				step_over_q(hell, token, &i, &qi);
 		}
 		token = token->next;
 	}
