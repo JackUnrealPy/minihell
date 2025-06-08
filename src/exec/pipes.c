@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/07 23:20:32 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 15:05:52 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	children(t_proc *head, t_hell *hell, int i)
 			jump_ship(hell, 127);
 		execve(head->cmd_path, head->cmd, hell->envp);
 		error_msg(hell, head->cmd[0], ": command not found", 127);
-		free(hell->cmd);
+		// free(hell->cmd);
 		jump_ship(hell, 127);
 	}
 }

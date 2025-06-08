@@ -6,6 +6,8 @@ void	jump_ship(t_hell *hell, short int exitcode)
 	pop_token(hell->tokens, NULL, 1);
 	throw_garbage(hell->freeme);
 	ft_terminate(1, &(hell->head));
+	if (hell->cmd)
+		free(hell->cmd);
 	exit(exitcode);
 }
 
