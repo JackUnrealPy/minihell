@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 12:03:58 by agara             #+#    #+#             */
-/*   Updated: 2025/04/17 22:06:26 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/08 21:22:44 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,7 @@ char	**ft_split(char const *s, char *charset)
 	int		i;
 	int		j;
 
-	if (!s || !s[0])
-		return (NULL);
-	if (!countwords(s, charset))
+	if (!s || !s[0] || !countwords(s, charset))
 		return (NULL);
 	res = malloc(sizeof(char *) * (countwords(s, charset) + 1));
 	if (!res)
@@ -98,13 +96,12 @@ char	**ft_split(char const *s, char *charset)
 		{
 			res[j++] = getword(s + i, charset);
 			while (s[i] && !inset(charset, s[i]))
-				i++; 
+				i++;
 		}
 		else
 			i++;
 	}
 	res[j] = NULL;
-
 	return (res);
 }
 

@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/20 04:19:15 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/08 17:24:52 by nrumpfhu         ###   ########.fr       */
+/*   Created: 2025/06/08 20:57:03 by nrumpfhu          #+#    #+#             */
+/*   Updated: 2025/06/08 20:58:42 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	ft_pwd(t_hell *hell)
+void	error_msg(t_hell *hell, char *var, char *error, int exitcode)
 {
-	char	pwd[PATH_MAX];
-	char	*success;
-
-	success = getcwd(pwd, PATH_MAX);
-	if (!success)
+	if (error)
 	{
-		ft_putendl_fd("getcwd failed", 2);
-		jump_ship(hell, 1);
+		if (var)
+			ft_putstr_fd(var, STDERR_FILENO);
+		ft_putendl_fd(error, STDERR_FILENO);
 	}
-	ft_putendl_fd(pwd, 1);
-	return (1);
+	hell->lastexit = exitcode;
+	hell->exec_error = 1;
+	if (hell->cmd_count > 1)
+		ft_close(hell);
 }

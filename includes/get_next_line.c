@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42vienna.com>         +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 21:54:29 by agara             #+#    #+#             */
-/*   Updated: 2025/01/16 21:54:30 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/08 21:23:18 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ char	*get_next_line(int fd, int *flag)
 {
 	static char	*buf = NULL;
 	char		*line;
-	
+
 	line = NULL;
 	if (*flag == -1)
 		return (ft_terminate(1, &buf), NULL);
