@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 int	get_quotelen(char *cmd)
 {
@@ -42,10 +42,9 @@ void	purge_quotes(t_hell *hell, t_proc *proc, t_token **v)
 	int		i;
 	t_token	*token;
 
-	(void)proc;
-	token = *v;
-
+	(void) proc;
 	(void) hell;
+	token = *v;
 	while (token)
 	{
 		i = -1;
@@ -53,11 +52,13 @@ void	purge_quotes(t_hell *hell, t_proc *proc, t_token **v)
 		{
 			pop_token(v, token->token, 0);
 			token = *v;
-			continue;
+			continue ;
 		}
 		while (((char *)token->token)[++i])
 		{
-			if ((((char *)token->token)[i] == '\'' || ((char *)token->token)[i] == '\"') && !is_immun(token->expansion, i))
+			if ((((char *)token->token)[i] == '\''
+				|| ((char *)token->token)[i] == '\"')
+				&& !is_immun(token->expansion, i))
 				i += ft_update_quote(hell, token, i) - 1;
 		}
 		token = token->next;

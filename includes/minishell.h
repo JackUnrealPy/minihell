@@ -162,7 +162,7 @@ char				*get_exp(t_hell *hell, t_proc *proc, char *str, int *i);
 int					get_quotelen(char *cmd);
 void				purge_quotes(t_hell *hell, t_proc *proc, t_token **v);
 void				parse_redirs(t_hell *hell, t_proc *proc, t_token **v);
-void				collect_redirs(t_hell *hell, t_proc *proc);
+int					gen_redir(t_hell *hell, t_proc *proc, t_redir *red, t_token **token);
 
 // Alloctracker
 void				*ft_malloc(t_hell *hell, t_free **head, void *obj);
