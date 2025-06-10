@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:17:46 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/10 13:45:42 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/10 16:11:32 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,14 @@ void	create_cmd(t_hell *hell, t_proc *head)
 		if (ft_strncmp(head->cmd[0], "./minishell", 11) == 0)
 			increment_shlvl(hell->envp);
 		if (access(head->cmd_path, F_OK) == -1)
-			error_msg(hell, head->cmd[0], ": No such file or directory", 1);
-		return ;
+			error_msg(hell, head->cmd[0], ": No such file or directory", 127);
+		else if (access(head->cmd_path, X_OK) == -1)
+			error_msg(hell, head->cmd[0], ": Permission denied", 126);
+		// if (!hell->exec_error)
+		// {
+		// 	// printf("path: %s\ncmd: %s\n", head->cmd[0], head->cmd[0]);
+		// 	// execve(head->cmd[0], head->cmd, hell->envp);
+		// }
 	}
 	else
 	{
