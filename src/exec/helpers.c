@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/08 22:07:32 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:45:31 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,10 @@ void	check_exitstatus(t_hell *hell, t_proc *head)
 				signal = 1;
 			hell->lastexit = 128 + sig;
 		}
-		else if (WIFEXITED(wstatus))
+		else
 			hell->lastexit = WEXITSTATUS(wstatus);
 		head = head->next;
 	}
-	hell->lastexit = WEXITSTATUS(wstatus);
 	if (signal && WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
 		write(1, "\n", 1);
 }

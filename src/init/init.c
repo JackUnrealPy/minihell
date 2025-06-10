@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/06/08 22:29:09 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/09 13:59:59 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	empty_env(t_hell *hell)
 	env = NULL;
 	split = NULL;
 	getcwd(pwd, sizeof(pwd));
-	pwd_env = ft_strjoin("OLDPWD\nPWD=", pwd);
+	pwd_env = ft_strjoin("PWD=", pwd);
 	if (!pwd_env)
 		init_mem(hell, pwd_env, env, split);
 	env = ft_strjoin(pwd_env, "\nSHLVL=1\n_=/usr/bin/env");

@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:14:59 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/08 22:35:47 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:46:06 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 {
 	char	*cmd;
 
-	cmd = NULL;
 	signal(SIGINT, heredoc_sig);
 	signal(SIGQUIT, SIG_IGN);
 	while (1)
@@ -49,18 +48,24 @@ void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 		cmd = readline("> ");
 		if (!cmd || g_sig_flag == SIGINT)
 		{
-			if (g_sig_flag == SIGINT)
-				hell->lastexit = 130;
-			g_sig_flag = 0;
+			free(cmd);
+			break ;
+		}
+		if (break_heredoc(redirs, cmd))
+		{
 			free(cmd);
 			break ;
 		}
 		expansion_heredoc(hell, head, &cmd);
-		if (break_heredoc(redirs, cmd))
-			break ;
-		ft_putendl_fd(cmd, head->hdoc_fd);
+		if (g_sig_flag != SIGINT)
+			ft_putendl_fd(cmd, head->hdoc_fd);
 		free(cmd);
 	}
+	// if (g_sig_flag == SIGINT)
+	// {
+	// 	hell->hdoc_sig = 1;
+	// 	// write(STDOUT_FILENO, "\033[A\033[2K", 6);
+	// }
 }
 
 int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
