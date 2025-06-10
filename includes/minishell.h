@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/06/08 21:29:01 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:44:20 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,8 @@ char				*get_exp(t_hell *hell, t_proc *proc, char *str, int *i);
 int					get_quotelen(char *cmd);
 void				purge_quotes(t_hell *hell, t_proc *proc, t_token **v);
 void				parse_redirs(t_hell *hell, t_proc *proc, t_token **v);
-int					gen_redir(t_hell *hell, t_proc *proc, t_redir *red, t_token **token);
+int					gen_redir(t_hell *hell, t_proc *proc,
+						t_redir *red, t_token **token);
 
 // Alloctracker
 void				*ft_malloc(t_hell *hell, t_free **head, void *obj);

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/04 19:50:23 by agara             #+#    #+#             */
-/*   Updated: 2025/03/19 19:41:36agara            ###   ########.fr       */
+/*   Created: 2025/06/10 13:35:18 by agara             #+#    #+#             */
+/*   Updated: 2025/06/10 13:41:36 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	add_to_cmdarr(t_hell *hell, t_proc *proc, char *addme)
 }
 
 static void	parse_iter(t_hell *hell, t_proc *proc, int ctrl,
-		(void(*f)(t_hell *, t_proc *, t_token **)))
+		void (*f)(t_hell *, t_proc *, t_token **))
 {
 	while (proc)
 	{

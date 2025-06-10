@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_expand.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/10 13:27:59 by agara             #+#    #+#             */
+/*   Updated: 2025/06/10 13:55:19 by agara            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static char	*lookup_exp_val(t_hell *hell, t_proc *proc, char *str)
@@ -35,7 +47,7 @@ char	*get_var(t_hell *hell, t_proc *proc, char *str, int *i)
 	var = NULL;
 	while (++*i)
 	{
-		if (!str[*i] || !ft_isalnum(str[*i]))
+		if (!str[*i] || (!ft_isalnum(str[*i]) && str[*i] != '_'))
 		{
 			s = ft_malloc(hell, proc->freeme, ft_substr(str, 1, *i - 1));
 			var = lookup_exp_val(hell, proc, s);
