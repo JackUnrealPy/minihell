@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/06/08 22:12:19 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:25:59 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 int	g_sig_flag = 0;
 
+
 void	handle_sig(int sig)
 {
 	(void)sig;
-	g_sig_flag = 1;
+	g_sig_flag = SIGINT;
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -57,6 +58,7 @@ static int	process_input(t_hell *hell)
 		add_history(hell->cmd);
 		local_init(hell, hell->cmd);
 		parse(hell, hell->cmd);
+		// print_list(*hell->head);
 		if (!hell->syntaxerr)
 			loop_cmds(hell);
 		hell->syntaxerr = 0;
@@ -87,8 +89,8 @@ int	main(int argc, char **argv, char **envp)
 	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
-		handle_signals(&hell);
 		hell.cmd = readline("minishell> ");
+		handle_signals(&hell);
 		if (!process_input(&hell))
 			break ;
 	}

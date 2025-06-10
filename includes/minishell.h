@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/06/08 21:29:01 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:50:03 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,12 @@ typedef struct s_hell
 	int				syntaxerr;
 	char			*cmd;
 	char			*hdoc_cmd;
+	int				hdoc_sig;
 }					t_hell;
 
 // SIGNALS
 void				handle_sig(int sig);
+int	setflag(int num);
 
 // EXECUTION
 

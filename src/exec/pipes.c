@@ -6,11 +6,13 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/08 20:38:07 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:46:26 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+extern int	g_sig_flag;
 
 void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs)
 {
@@ -97,7 +99,7 @@ void	ft_pipex(t_hell *hell)
 	while (head_cpy)
 	{
 		head_cpy->hdoc_present = heredoc(hell, head_cpy, (*head_cpy->redirs));
-		if (hell->exec_error || hell->lastexit == 130)
+		if (hell->exec_error)
 			return ;
 		head_cpy = head_cpy->next;
 	}

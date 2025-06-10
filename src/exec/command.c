@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:17:46 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/08 17:43:51 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:45:42 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,35 @@ void	try_paths(t_hell *hell, t_proc *head, char **path, char *path_cmd)
 	}
 }
 
+void	no_env_cmd(t_hell *hell, t_proc *head)
+{
+	char	pwd[PATH_MAX];
+	char	*cmd;
+	int		i;
+
+	cmd = NULL;
+	cmd = getcwd(pwd, sizeof(pwd));
+	if (!cmd)
+	{
+		ft_putendl_fd("getcwd failed", 2);
+		jump_ship(hell, 1);
+	}
+	i = 0;
+	while (pwd[i])
+		i++;
+	pwd[i] = '/';
+	pwd[i + 1] = 0;
+	cmd = NULL;
+	cmd = ft_strjoin(pwd, head->cmd[0]);
+	if (!cmd)
+		return (error_msg(hell, NULL, "Memory allocation failed", 1));
+	if (access(cmd, R_OK | X_OK) == 0)
+		head->cmd_path = ft_malloc(hell, head->freeme, cmd);
+	else
+		return (error_msg(hell, head->cmd[0], ": No such file or directory",
+				127));
+}
+
 void	test_cmds(t_hell *hell, t_proc *head)
 {
 	char	*env_check;
@@ -45,8 +74,7 @@ void	test_cmds(t_hell *hell, t_proc *head)
 	path_env = NULL;
 	env_check = ft_getenv("PATH", hell->envp, 0);
 	if (!env_check)
-		return (error_msg(hell, head->cmd[0], ": No such file or directory",
-				127));
+		return (no_env_cmd(hell, head));
 	path_env = ft_malloc(hell, head->freeme, env_check);
 	if (!path_env || !path_env[0])
 		return (error_msg(hell, head->cmd[0], ": No such file or directory",
