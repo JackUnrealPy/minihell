@@ -4,7 +4,7 @@ CC = cc -Wall -Wextra -Werror -g
 
 SRC = src/main.c \
 	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c src/exec/errors.c src/exec/helpers.c src/exec/redirection.c src/exec/heredoc_helpers.c src/exec/env_helpers.c src/exec/command.c \
-	src/parse/parse.c src/parse/parse_redir.c src/parse/parse_expand.c src/parse/quotes.c src/parse/tokenizer.c \
+	src/parse/parse.c src/parse/parse_redir.c src/parse/gen_redir.c src/parse/parse_expand.c src/parse/get_expand.c src/parse/quotes.c src/parse/tokenizer.c \
 	src/init/init.c \
 	src/utils/exit.c src/utils/parse_utils.c src/utils/token_utils.c src/utils/expansion_tracker.c \
 	src/utils/string_utils.c src/utils/alloc_utils.c src/utils/process_utils.c src/utils/dealloc_utils.c src/utils/list_utils.c \
@@ -13,13 +13,6 @@ SRC = src/main.c \
 OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
 
 RM = rm -rf
-
-#Colors
-GREEN = \033[0;32m
-YELLOW = \033[0;33m
-BLUE = \033[0;34m
-RED = \033[0;31m
-RESET = \033[0m
 
 all: $(NAME)
 

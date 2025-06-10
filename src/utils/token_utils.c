@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/10 13:42:28 by agara             #+#    #+#             */
+/*   Updated: 2025/06/10 13:42:29 by agara            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 t_token	*new_token(t_hell *hell, char *val)
@@ -20,7 +32,6 @@ t_token	*new_token(t_hell *hell, char *val)
 		jump_ship(hell, 1);
 	}
 	token->expansion[0] = -1;
-	token->qoute = NULL;
 	token->token = val;
 	token->next = NULL;
 	token->prev = NULL;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/10 13:42:36 by agara             #+#    #+#             */
+/*   Updated: 2025/06/10 13:42:37 by agara            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	ft_update_token(t_hell *hell, t_token *token, int pos, char *str)
@@ -65,7 +77,7 @@ static void	trim_token(t_token *token)
 	{
 		token->expansion[j] -= i;
 		if (token->expansion[j] < 0)
-			token->expansion = 0;
+			token->expansion[j] = 0;
 	}
 	i = ft_strlen((char *)token->token);
 	if (!i)

@@ -12,71 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-static char	*lookup_exp_val(t_hell *hell, t_proc *proc, char *str)
-{
-	char	*res;
-	int		i;
-
-	res = NULL;
-	i = -1;
-	while (hell->envp[++i])
-	{
-		if (!ft_strncmp(hell->envp[i], str, ft_strlen(str)) && hell->envp[i][ft_strlen(str)] == '=')
-			res = ft_malloc(hell, proc->freeme, ft_substr(hell->envp[i], ft_strlen(str) + 1, ft_strlen(hell->envp[i]) - ft_strlen(str)));
-	}
-
-	return (res);
-}
-
-static char	*expand_exit(t_hell *hell, t_proc *proc)
-{
-	char	*var;
-
-	var = NULL;
-	var = ft_malloc(hell, proc->freeme, ft_itoa(hell->lastexit));
-	return	(var);
-}
-
-char *get_var(t_hell *hell, t_proc *proc, char *str, int *i)
-{
-	char	*s;
-	char	*var;
-
-	var = NULL;
-	while (++*i)
-	{
-		if(!str[*i] || !ft_isalnum(str[*i]))
-		{
-			s = ft_malloc(hell, proc->freeme, ft_substr(str, 1, *i - 1));
-			var = lookup_exp_val(hell, proc, s);
-			// if (!var)
-			// 	var = getenv(s);
-			break;	
-		}
-	}
-	return (var);
-}
-
-char	*get_exp(t_hell *hell, t_proc *proc, char *str, int *i)
-{
-	char	*var;
-
-	var = NULL;
-	*i = 0;
-	if (str[1] == '?')
-	{
-		var = expand_exit(hell, proc);
-		*i = 2;
-	}
-	else
-		var = get_var(hell, proc, str, i);
-	if (*i == 1 && *str == '$')
-		var = ft_malloc(hell, proc->freeme, ft_strdup("$"));	
-	if (!var)
-		var = ft_malloc(hell, proc->freeme, ft_strdup(""));
-	return (var);
-}
-
 static char	*ft_expand(t_hell *hell, t_proc *proc, t_token *token, int pos)
 {
 	int		i;
@@ -87,16 +22,39 @@ static char	*ft_expand(t_hell *hell, t_proc *proc, t_token *token, int pos)
 	return (var);
 }
 
-static int	step_over_q(t_token *token, int *i, int inquote)
+static int	check_qlen(t_hell *hell, char *token, int i)
 {
-	if (*(char*)(token->token) && ((char *)token->token)[*i] == '\"')
+	int	end;
+
+	end = 0;
+	end = get_quotelen(token + i);
+	if (!end)
+		sysntaxerr(hell, token, ft_strlen(token));
+	return (end);
+}
+
+static void	step_over_q(t_hell *hell, t_token *token, int *i, int *qi)
+{
+	int	end;
+
+	if (*qi != -1)
 	{
-		inquote = *i + get_quotelen((char *)token->token + *i);
-		// (*i)++;
+		end = get_quotelen((char *)token->token + *qi);
+		if ((end + *qi) < *i)
+			*qi = -1;
 	}
-	else if (*(char*)(token->token) && ((char *)token->token)[*i] == '\'' && inquote < 1)
-		*i += get_quotelen((char *)token->token + *i);
-	return (inquote - 1);
+	if (*(char *)(token->token) && ((char *)token->token)[*i] == '\"'
+		&& *qi == -1)
+	{
+		check_qlen(hell, (char *)token->token, *i);
+		*qi = *i;
+	}
+	else if (*(char *)(token->token) && ((char *)token->token)[*i] == '\''
+		&& *qi == -1)
+	{
+		end = check_qlen(hell, (char *)token->token, *i);
+		(*i) += end;
+	}
 }
 
 void	parse_expand(t_hell *hell, t_proc *proc, t_token **tokens)
@@ -104,25 +62,25 @@ void	parse_expand(t_hell *hell, t_proc *proc, t_token **tokens)
 	t_token	*token;
 	int		i;
 	char	*val;
-	int		inquote;
+	int		qi;
 
 	token = *tokens;
 	while (token)
 	{
 		i = -1;
-		inquote = 0;
-		while(((char *)token->token)[++i])
+		qi = -1;
+		while (((char *)token->token)[++i])
 		{
 			if (((char *)token->token)[i] == '$')
 			{
-				add_num(hell, &(token->expansion), i);	
+				add_num(hell, &(token->expansion), i);
 				val = ft_expand(hell, proc, token, i);
 				ft_update_token(hell, token, i, val);
 				i += ft_strlen(val) - 1;
-				inquote -= ft_strlen(val) - 1;
 				pop_free(proc->freeme, val);
 			}
-			inquote = step_over_q(token, &i, inquote);
+			else
+				step_over_q(hell, token, &i, &qi);
 		}
 		token = token->next;
 	}
