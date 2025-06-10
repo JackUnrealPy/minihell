@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_helpers.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:28 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/10 13:46:14 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/10 16:06:23 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,14 @@ void	generate_tmpfile(t_hell *hell, t_proc *head)
 				rando_txt));
 }
 
-void	expand_heredoc(t_hell *hell, t_proc *head, char **buffer, int pos)
+int	expand_heredoc(t_hell *hell, t_proc *head, char **buffer, int pos)
 {
 	char	*val;
 	char	*res;
 	int		j;
 
 	j = 0;
-	val = get_exp(hell, head, *buffer, &j);
+	val = get_exp(hell, head, *buffer + pos, &j);
 	res = ft_calloc(sizeof(char), ft_strlen(*buffer) - j + ft_strlen(val) + 1);
 	if (!res)
 		jump_ship(hell, 1);
@@ -52,6 +52,7 @@ void	expand_heredoc(t_hell *hell, t_proc *head, char **buffer, int pos)
 		ft_strlen(*buffer + pos) - j);
 	pop_free(head->freeme, *buffer);
 	*buffer = res;
+	return (ft_strlen(val) - j);
 }
 
 void	expansion_heredoc(t_hell *hell, t_proc *head, char **buffer)
@@ -65,8 +66,8 @@ void	expansion_heredoc(t_hell *hell, t_proc *head, char **buffer)
 		{
 			if ((*buffer)[i] == '$')
 			{
-				expand_heredoc(hell, head, buffer, i);
-				break ;
+				i += expand_heredoc(hell, head, buffer, i);
+				continue ;
 			}
 			i++;
 		}

@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:27:59 by agara             #+#    #+#             */
-/*   Updated: 2025/06/10 13:55:19 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/10 15:31:57 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char	*get_var(t_hell *hell, t_proc *proc, char *str, int *i)
 	char	*var;
 
 	var = NULL;
-	while (++*i)
+	while (++(*i))
 	{
 		if (!str[*i] || (!ft_isalnum(str[*i]) && str[*i] != '_'))
 		{

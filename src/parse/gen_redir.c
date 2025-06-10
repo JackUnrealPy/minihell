@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:27:55 by agara             #+#    #+#             */
-/*   Updated: 2025/06/10 13:27:57 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/10 14:19:25 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,7 @@ int	gen_redir(t_hell *hell, t_proc *proc, t_redir *red, t_token **token)
 	tmp = (*token)->next;
 	type = check_red_type((*token)->token, tmp);
 	if (type == -2)
-		sysntaxerr(hell, (char *)(*token)->token,
-			ft_strlen((char *)(*token)->token));
+		sysntaxerr(hell, "newline", 7);
 	if (type != -1)
 	{
 		if ((!tmp || ismeta(tmp->token)) && !(*token)->next)
