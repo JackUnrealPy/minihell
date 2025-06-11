@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/10 13:45:31 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 14:45:48 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ void	ft_close(t_hell *hell)
 	i = 0;
 	while (i < (hell->cmd_count - 1) * 2)
 	{
-		close(hell->pipe_fd[i]);
+		if (hell->pipe_fd[i] != -1)
+			close(hell->pipe_fd[i]);
+		else
+			break;
 		i++;
 	}
 }
@@ -48,7 +51,7 @@ void	check_exitstatus(t_hell *hell, t_proc *head)
 			hell->lastexit = WEXITSTATUS(wstatus);
 		head = head->next;
 	}
-	if (signal && WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
+	if (signal || (WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT))
 		write(1, "\n", 1);
 }
 
@@ -57,7 +60,8 @@ void	ft_wait(t_hell *hell)
 	t_proc	*head_cpy;
 
 	head_cpy = (*hell->head);
-	check_exitstatus(hell, head_cpy);
+	if (!hell->hdoc_sig)
+		check_exitstatus(hell, head_cpy);
 	head_cpy = (*hell->head);
 	while (head_cpy)
 	{

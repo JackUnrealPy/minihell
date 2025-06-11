@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/06/10 13:44:20 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/11 16:21:41 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <sys/ioctl.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 
 // linked list with all the stuff to free
 typedef struct s_free
@@ -84,6 +85,7 @@ typedef struct s_hell
 	int				syntaxerr;
 	char			*cmd;
 	char			*hdoc_cmd;
+	int				hdoc_sig;
 }					t_hell;
 
 // SIGNALS
@@ -139,6 +141,8 @@ void				redirection(t_hell *hell, t_proc *head, int i);
 void				single_cmd(t_hell *hell, t_proc *head);
 
 // helpers
+
+int					is_directory(char *cmd);
 void				ft_freeme(char **arr);
 void				ft_close(t_hell *hell);
 void				ft_wait(t_hell *hell);
