@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/11 17:16:55 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 19:32:37 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_close(t_hell *hell)
 		if (hell->pipe_fd[i] != -1)
 			close(hell->pipe_fd[i]);
 		else
-			break;
+			break ;
 		i++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/11 16:54:30 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 19:40:06 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ void	check_folder(t_hell *hell, char *path)
 	}
 }
 
-int open_fd(t_hell *hell, char *path, int redir_type)
+int	open_fd(t_hell *hell, char *path, int redir_type)
 {
-	int fd;
+	int	fd;
 
 	if (redir_type == 1)
 		fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
@@ -74,11 +74,13 @@ int open_fd(t_hell *hell, char *path, int redir_type)
 int	perform_redir(t_hell *hell, t_proc *head, char *path, int redir_type)
 {
 	int	fd;
+
 	if (head->redirerr)
 	{
 		while ((*head->redirs)->next && (*head->redirs)->next->pathordel)
 			(*head->redirs) = (*head->redirs)->next;
-		redirs_error(hell, (*head->redirs)->pathordel, ": ambiguous redirect", 1);
+		redirs_error(hell, (*head->redirs)->pathordel, ": ambiguous redirect",
+			1);
 	}
 	if (is_directory(path))
 	{
@@ -95,34 +97,32 @@ int	perform_redir(t_hell *hell, t_proc *head, char *path, int redir_type)
 	&& dup2(fd, STDOUT_FILENO) == -1)
 		return (close(fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
 	close(fd);
-	return (0);
+	return (1);
 }
 
 void	redirection(t_hell *hell, t_proc *head, int i)
 {
 	t_redir	*tmp;
-	int		hdoc;
+	int		redir;
 
-	hdoc = 0;
+	redir = 0;
 	tmp = (*head->redirs);
 	while (tmp)
 	{
 		if (tmp->type == 3 || tmp->type == 4)
-			hdoc = redirs_heredoc(hell, head);
-		else if (tmp && tmp->type >= 0 && tmp && tmp->type <= 2
-			&& perform_redir(hell, head, tmp->pathordel, tmp->type))
-			return ;
+			redirs_heredoc(hell, head);
+		else if (tmp && tmp->type >= 0 && tmp->type <= 2 && perform_redir(hell,
+				head, tmp->pathordel, tmp->type))
+			redir = 1;
 		tmp = tmp->next;
 	}
-	if (i > 0 && !hdoc && hell->pipe_fd)
+	if (i > 0 && hell->pipe_fd && !redir)
 	{
-		close(STDIN_FILENO);
 		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
 			return (ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
 	}
-	if (i != -1 && i < hell->cmd_count - 1)
+	if (i != -1 && i < hell->cmd_count - 1 && !redir)
 	{
-		close(STDOUT_FILENO);
 		if (dup2(hell->pipe_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
 			return (ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
 	}

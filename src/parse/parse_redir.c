@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/06/11 16:59:14 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/11 19:33:03 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	exp_hasspace(char *str)
 {
 	int	i;
-	
+
 	i = -1;
 	while (str[++i])
 	{
@@ -47,7 +47,8 @@ static void	process_redir(t_hell *hell, t_proc *proc, t_redir **node)
 		jump_ship(hell, 1);
 	if ((*node)->type != 4 && (*node)->type != 3)
 		parse_expand(hell, proc, &(*node)->redt);
-	if (!((char *)(*node)->redt->token)[0] || exp_hasspace((char *)(*node)->redt->token))
+	if (!((char *)(*node)->redt->token)[0]
+		|| exp_hasspace((char *)(*node)->redt->token))
 	{
 		proc->redirerr = 1;
 		ft_terminate(1, &(*node)->redt->token);

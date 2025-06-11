@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:28 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/11 17:28:53 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 19:30:35 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,10 @@ void	expansion_heredoc(t_hell *hell, t_proc *head, char **buffer)
 			if ((*buffer)[i] == '$')
 			{
 				i += expand_heredoc(hell, head, buffer, i);
-				continue ;
+				if (i >= 0)
+					continue ;
+				else
+					break ;
 			}
 			i++;
 		}
@@ -81,10 +84,10 @@ int	break_heredoc(t_redir *redirs, char *buffer)
 		ft_putstr_fd("Warning: here-document delimited by EOF\n", 2);
 		return (1);
 	}
-	while (redirs) // cpy?
+	while (redirs)
 	{
 		if (redirs->type == 4 || redirs->type == 3)
-			break;
+			break ;
 		redirs = redirs->next;
 	}
 	if (ft_strlen(buffer) == ft_strlen(redirs->pathordel) && ft_strncmp(buffer,

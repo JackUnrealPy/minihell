@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/11 17:22:11 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 19:36:22 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,19 @@ extern int	g_sig_flag;
 
 void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs)
 {
-	int	i;
+	int		i;
+	t_proc	*head_cpy;
 
 	(void)redirs;
 	(void)head;
 	hell->pipe_fd = ft_malloc(hell, hell->freeme, malloc(sizeof(int)
 				* (hell->cmd_count - 1) * 2));
-	t_proc *head_cpy = head;
+	head_cpy = head;
 	while (head_cpy)
 	{
 		head_cpy->pid = -1;
 		head_cpy = head_cpy->next;
 	}
-	// i = 0;
-	// while (i < (hell->cmd_count - 1) * 2)
-	// {
-	// 	hell->pipe_fd[i] = -1;
-	// 	i++;
-	// }
 	i = 0;
 	while (i < hell->cmd_count - 1)
 	{
@@ -43,7 +38,6 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs)
 			error_msg(hell, NULL, "pipe() failed", errno);
 			jump_ship(hell, 1);
 		}
-		
 	}
 }
 
@@ -82,6 +76,8 @@ void	children(t_proc *head, t_hell *hell, int i)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		redirection(hell, head, i);
+		if (hell->exec_error)
+			jump_ship(hell, hell->lastexit);
 		if (i >= 0)
 			ft_close(hell);
 		check_cmd_exists(hell, head);
@@ -111,7 +107,7 @@ void	child_loop(t_hell *hell, t_proc *head_cpy)
 		signal(SIGQUIT, SIG_IGN);
 		hell->exec_error = 0;
 		children(head_cpy, hell, i);
-		if (hell->exec_error) // || head_cpy->redirerr)
+		if (hell->exec_error)
 			return ;
 		i++;
 		if (i < hell->cmd_count)
