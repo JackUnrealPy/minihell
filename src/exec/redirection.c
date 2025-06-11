@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/10 13:53:46 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:25:29 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,6 @@ int	perform_redir(t_hell *hell, char *path, int redir_type)
 {
 	int	fd;
 
-	if (path[0] == '$' && path[1])
-		redirs_error(hell, path, ": ambiguous redirect", 1);
 	check_folder(hell, path);
 	if (redir_type == 1)
 		fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
