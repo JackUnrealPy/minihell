@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/06/11 16:55:11 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 17:25:24 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <signal.h>
 
 int	g_sig_flag = 0;
-
 
 void	handle_sig(int sig)
 {
@@ -58,7 +57,7 @@ static int	process_input(t_hell *hell)
 		add_history(hell->cmd);
 		local_init(hell, hell->cmd);
 		parse(hell, hell->cmd);
-		// print_list(*hell->head);
+		print_list(*hell->head);
 		if (!hell->syntaxerr)
 			loop_cmds(hell);
 		hell->syntaxerr = 0;

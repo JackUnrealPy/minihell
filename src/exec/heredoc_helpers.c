@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_helpers.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:28 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/10 16:06:23 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/11 17:28:53 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,12 @@ int	break_heredoc(t_redir *redirs, char *buffer)
 	{
 		ft_putstr_fd("Warning: here-document delimited by EOF\n", 2);
 		return (1);
+	}
+	while (redirs) // cpy?
+	{
+		if (redirs->type == 4 || redirs->type == 3)
+			break;
+		redirs = redirs->next;
 	}
 	if (ft_strlen(buffer) == ft_strlen(redirs->pathordel) && ft_strncmp(buffer,
 			redirs->pathordel, ft_strlen(redirs->pathordel)) == 0)

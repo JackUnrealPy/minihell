@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:25 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/11 14:45:48 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 17:16:55 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	check_exitstatus(t_hell *hell, t_proc *head)
 	wstatus = 0;
 	while (head)
 	{
-		if (head->pid != 0 && waitpid(head->pid, &wstatus, 0) == -1)
+		if (head->pid > 0 && waitpid(head->pid, &wstatus, 0) == -1)
 			return (error_msg(hell, NULL, "waitpid failed",
 					WEXITSTATUS(wstatus)));
 		if (WIFSIGNALED(wstatus))

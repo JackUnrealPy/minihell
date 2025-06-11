@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:14:59 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/11 15:13:22 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 17:02:07 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,22 @@ int	heredoc_check(t_redir *redirs)
 	return (0);
 }
 
+void	hdoc_check_sig(t_hell *hell, char *cmd)
+{
+	if (!cmd)
+	{
+		ft_putstr_fd("Warning: here-document delimited by EOF\n", 2);
+		hell->lastexit = 0;
+		hell->hdoc_sig = 1;
+	}
+	else if (g_sig_flag == SIGINT)
+	{
+		hell->lastexit = 130;
+		hell->hdoc_sig = 1;
+		free(cmd);
+	}
+}
+
 void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 {
 	char	*cmd;
@@ -48,18 +64,9 @@ void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 	while (1)
 	{
 		cmd = readline("> ");
-		if (!cmd)
+		if (!cmd || g_sig_flag == SIGINT)
 		{
-			ft_putstr_fd("Warning: here-document delimited by EOF\n", 2);
-			hell->lastexit = 0;
-			hell->hdoc_sig = 1;
-			break;
-		}
-		if (g_sig_flag == SIGINT)
-		{
-			hell->lastexit = 130;
-			hell->hdoc_sig = 1;
-			free(cmd);
+			hdoc_check_sig(hell, cmd);
 			break ;
 		}
 		if (break_heredoc(redirs, cmd))
@@ -72,12 +79,6 @@ void	heredoc_loop(t_hell *hell, t_proc *head, t_redir *redirs)
 			ft_putendl_fd(cmd, head->hdoc_fd);
 		free(cmd);
 	}
-	// g_sig_flag = 0;
-	// if (g_sig_flag == SIGINT)
-	// {
-	// 	hell->hdoc_sig = 1;
-	// 	// write(STDOUT_FILENO, "\033[A\033[2K", 6);
-	// }
 }
 
 int	heredoc(t_hell *hell, t_proc *head, t_redir *redirs)
