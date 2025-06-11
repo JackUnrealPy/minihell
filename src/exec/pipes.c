@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/11 16:33:33 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:41:22 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	child_loop(t_hell *hell, t_proc *head_cpy)
 		signal(SIGQUIT, SIG_IGN);
 		hell->exec_error = 0;
 		children(head_cpy, hell, i);
-		if (hell->exec_error || head->redirerr)
+		if (hell->exec_error || head_cpy->redirerr)
 			return ;
 		i++;
 		if (i < hell->cmd_count)

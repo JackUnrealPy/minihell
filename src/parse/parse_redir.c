@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/06/11 16:30:14 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/11 16:46:52 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@ static int	exp_hasspace(char *str)
 	}
 	if (!str[i])
 		return (0);
-	while (!ft_isspace(str[++i]))
-		;
+	i++;
+	while (str[i] && !ft_isspace(str[i]))
+		i++;
 	if (!str[i])
 		return (0);
 	return (1);
