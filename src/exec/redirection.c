@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/11 19:40:06 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 20:57:14 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,10 +110,17 @@ void	redirection(t_hell *hell, t_proc *head, int i)
 	while (tmp)
 	{
 		if (tmp->type == 3 || tmp->type == 4)
+		{
+			if (!head->next)
+				redir=1;
 			redirs_heredoc(hell, head);
+		}
 		else if (tmp && tmp->type >= 0 && tmp->type <= 2 && perform_redir(hell,
 				head, tmp->pathordel, tmp->type))
-			redir = 1;
+		{
+			if (tmp->type != 0)
+				redir = 1;
+		}
 		tmp = tmp->next;
 	}
 	if (i > 0 && hell->pipe_fd && !redir)

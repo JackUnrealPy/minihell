@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:43:29 by agara             #+#    #+#             */
-/*   Updated: 2025/06/10 13:43:30 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/11 21:05:29 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static int	handle_pipe(t_hell *hell, t_proc *proc,
 {
 	if (!(*node)->next || !(*node)->prev
 		|| ((char *)(*node)->next->token)[0] == '|')
-		return (sysntaxerr(hell, "newline", 7), 0);
+		return (sysntaxerr(hell, "|", 1), 0);
 	if (*node == *(proc->tokens))
 		return (sysntaxerr(hell, "|", 1), 0);
 	*tmp = (*node)->prev;

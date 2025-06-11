@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/06/11 16:39:24 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 21:16:44 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ void				redirection(t_hell *hell, t_proc *head, int i);
 void				single_cmd(t_hell *hell, t_proc *head);
 
 // helpers
-
+int					all_whitespace(char *cmd);
 int					is_directory(char *cmd);
 void				ft_freeme(char **arr);
 void				ft_close(t_hell *hell);
