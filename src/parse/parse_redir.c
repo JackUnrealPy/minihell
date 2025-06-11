@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/06/11 16:46:52 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:59:14 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@ static void	process_redir(t_hell *hell, t_proc *proc, t_redir **node)
 {
 	char	*backup;
 
+	if (proc->redirerr)
+	{
+		ft_terminate(1, &(*node)->redt->token);
+		*node = (*node)->next;
+		return ;
+	}
 	backup = ft_strdup((char *)(*node)->redt->token);
 	if (!backup)
 		jump_ship(hell, 1);
@@ -77,11 +83,7 @@ void	parse_redirs(t_hell *hell, t_proc *proc, t_token **v)
 	collect_redirs(hell, proc);
 	node = *(proc->redirs);
 	while (node)
-	{
 		process_redir(hell, proc, &node);
-		if (proc->redirerr)
-			return ;
-	}
 	node = *(proc->redirs);
 	while (node)
 	{
