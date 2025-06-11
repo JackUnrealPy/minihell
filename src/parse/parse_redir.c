@@ -3,14 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   parse_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/06/07 18:54:52 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:30:14 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+static int	exp_hasspace(char *str)
+{
+	int	i;
+	
+	i = -1;
+	while (str[++i])
+	{
+		if (!ft_isspace(str[i]))
+			break ;
+	}
+	if (!str[i])
+		return (0);
+	while (!ft_isspace(str[++i]))
+		;
+	if (!str[i])
+		return (0);
+	return (1);
+}
 
 static void	process_redir(t_hell *hell, t_proc *proc, t_redir **node)
 {
@@ -21,8 +40,9 @@ static void	process_redir(t_hell *hell, t_proc *proc, t_redir **node)
 		jump_ship(hell, 1);
 	if ((*node)->type != 4 && (*node)->type != 3)
 		parse_expand(hell, proc, &(*node)->redt);
-	if (!((char *)(*node)->redt->token)[0])
+	if (!((char *)(*node)->redt->token)[0] || exp_hasspace((char *)(*node)->redt->token))
 	{
+		proc->redirerr = 1;
 		ft_terminate(1, &(*node)->redt->token);
 		(*node)->redt->token = backup;
 	}
@@ -56,7 +76,11 @@ void	parse_redirs(t_hell *hell, t_proc *proc, t_token **v)
 	collect_redirs(hell, proc);
 	node = *(proc->redirs);
 	while (node)
+	{
 		process_redir(hell, proc, &node);
+		if (proc->redirerr)
+			return ;
+	}
 	node = *(proc->redirs);
 	while (node)
 	{

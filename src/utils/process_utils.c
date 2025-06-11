@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:50:23 by agara             #+#    #+#             */
-/*   Updated: 2025/04/17 22:18:12 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:15:38 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ t_proc	*create_proc(t_hell *hell)
 	proc->cmd = NULL;
 	proc->prev = NULL;
 	proc->next = NULL;
+	proc->redirerr = 0;
 	proc->redirs = ft_malloc(hell, proc->freeme, malloc(sizeof(t_redir *)));
 	*(proc->redirs) = NULL;
 	proc->tokens = malloc(sizeof(t_token *));

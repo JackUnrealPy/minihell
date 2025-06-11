@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/06/11 16:21:41 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:39:24 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ typedef struct s_proc
 	t_free			**freeme;
 	t_redir			**redirs;
 	char			**cmd;
-	int				expansion;
+	int				redirerr;
 	char			*cmd_path;
 	pid_t			pid;
 	int				hdoc_present;

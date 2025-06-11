@@ -12,12 +12,29 @@
 
 #include "../../includes/minishell.h"
 
+static void update_expansion(t_token *token, int num)
+{
+	int		i;
+
+	i = 0;
+	while (token->expansion[i] != -1)
+		i++;
+	if (num < 0)
+	{
+		num = -1;
+		if (i > 1)
+			token->expansion[i - 2] = num;
+
+	}
+	if (i > 0)
+		token->expansion[i - 1] = num;
+}
+
 void	ft_update_token(t_hell *hell, t_token *token, int pos, char *str)
 {
 	int		len;
 	char	*res;
 	char	*val;
-	int		i;
 
 	val = token->token;
 	len = ft_strlen(val) - get_last_num(token->expansion) + ft_strlen(str);
@@ -30,11 +47,8 @@ void	ft_update_token(t_hell *hell, t_token *token, int pos, char *str)
 		val + pos + get_last_num(token->expansion),
 		ft_strlen(val) - pos - get_last_num(token->expansion));
 	ft_terminate(1, &val);
-	i = 0;
-	while (token->expansion[i] != -1)
-		i++;
-	token->expansion[i - 1] = (ft_strlen(str) + pos) - 1;
 	token->token = res;
+	update_expansion(token, ft_strlen(str) - pos - 1);
 }
 
 int	ft_update_quote(t_hell *hell, t_token *token, int pos)
