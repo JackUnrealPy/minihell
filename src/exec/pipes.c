@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/10 16:06:52 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:41:22 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,38 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs)
 	while (i < hell->cmd_count - 1)
 	{
 		if (pipe(&hell->pipe_fd[(i++) * 2]) == -1)
+		{
+			hell->pipe_fd[(i - 1) * 2] = -1;
 			error_msg(hell, NULL, "pipe() failed", errno);
+			jump_ship(hell, 1);
+		}
 	}
 }
 
-void	close_unused(t_hell *hell, int i)
+int	is_directory(char *cmd)
 {
-	int	j;
+	struct stat	buf;
 
-	j = 0;
-	while (j < (hell->cmd_count - 1) * 2)
+	if (cmd[0] == '~' && (!cmd[1] || cmd[1] == '/'))
+		return (1);
+	if (stat(cmd, &buf) == 0 && S_ISDIR(buf.st_mode))
+		return (1);
+	return (0);
+}
+
+void	check_cmd_exists(t_hell *hell, t_proc *head)
+{
+	if (!head->cmd)
+		jump_ship(hell, 0);
+	if (!head->cmd || !head->cmd[0] || !head->cmd[0][0])
 	{
-		if (!(i > 0 && j == (i - 1) * 2) && !(i < hell->cmd_count - 1 && j == (i
-					* 2) + 1))
-			close(hell->pipe_fd[j]);
-		j++;
+		error_msg(hell, NULL, ": command not found", 127);
+		jump_ship(hell, 127);
+	}
+	if (head->cmd[0][0] != '.' && is_directory(head->cmd[0]))
+	{
+		error_msg(hell, head->cmd[0], ": Is a directory", 126);
+		jump_ship(hell, 126);
 	}
 }
 
@@ -54,8 +71,7 @@ void	children(t_proc *head, t_hell *hell, int i)
 		redirection(hell, head, i);
 		if (i >= 0)
 			ft_close(hell);
-		if (!head->cmd || !head->cmd[0] || !head->cmd[0][0])
-			jump_ship(hell, 0);
+		check_cmd_exists(hell, head);
 		if (head->cmd && head->cmd[0] && determine_builtin(hell, head, 1))
 		{
 			if (hell->exec_error)
@@ -82,7 +98,7 @@ void	child_loop(t_hell *hell, t_proc *head_cpy)
 		signal(SIGQUIT, SIG_IGN);
 		hell->exec_error = 0;
 		children(head_cpy, hell, i);
-		if (hell->exec_error)
+		if (hell->exec_error || head_cpy->redirerr)
 			return ;
 		i++;
 		if (i < hell->cmd_count)
@@ -99,13 +115,14 @@ void	ft_pipex(t_hell *hell)
 	while (head_cpy)
 	{
 		head_cpy->hdoc_present = heredoc(hell, head_cpy, (*head_cpy->redirs));
-		if (hell->exec_error)
+		if (hell->exec_error || g_sig_flag == SIGINT)
 			return ;
 		head_cpy = head_cpy->next;
 	}
 	initialise_pipes(hell, (*hell->head), (*(*hell->head)->redirs));
 	head_cpy = (*hell->head);
-	child_loop(hell, head_cpy);
+	if (!hell->hdoc_sig)
+		child_loop(hell, head_cpy);
 	ft_close(hell);
 	ft_wait(hell);
 }

@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/10 13:46:56 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 13:14:44 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	single_cmd(t_hell *hell, t_proc *head)
 	}
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-	children(head, hell, -1);
+	if (!hell->hdoc_sig)
+		children(head, hell, -1);
 	ft_wait(hell);
 }

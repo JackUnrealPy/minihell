@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/11 16:25:29 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/11 16:54:30 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,10 @@ void	check_folder(t_hell *hell, char *path)
 	}
 }
 
-int	perform_redir(t_hell *hell, char *path, int redir_type)
+int open_fd(t_hell *hell, char *path, int redir_type)
 {
-	int	fd;
+	int fd;
 
-	check_folder(hell, path);
 	if (redir_type == 1)
 		fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	else if (redir_type == 2)
@@ -69,12 +68,31 @@ int	perform_redir(t_hell *hell, char *path, int redir_type)
 			redirs_error(hell, path, ": No such file or directory", 1);
 		fd = open(path, O_RDONLY, 0644);
 	}
+	return (fd);
+}
+
+int	perform_redir(t_hell *hell, t_proc *head, char *path, int redir_type)
+{
+	int	fd;
+	if (head->redirerr)
+	{
+		while ((*head->redirs)->next && (*head->redirs)->next->pathordel)
+			(*head->redirs) = (*head->redirs)->next;
+		redirs_error(hell, (*head->redirs)->pathordel, ": ambiguous redirect", 1);
+	}
+	if (is_directory(path))
+	{
+		error_msg(hell, path, ": Is a directory", 1);
+		jump_ship(hell, 1);
+	}
+	check_folder(hell, path);
+	fd = open_fd(hell, path, redir_type);
 	if (fd < 0)
 		return (error_msg(hell, path, ": permission denied", 1), 1);
 	if (redir_type == 0 && dup2(fd, STDIN_FILENO) == -1)
 		return (close(fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
-	else if ((redir_type == 1 || redir_type == 2)
-		&& dup2(fd, STDOUT_FILENO) == -1)
+	else if ((redir_type == 1 || redir_type == 2) \
+	&& dup2(fd, STDOUT_FILENO) == -1)
 		return (close(fd), error_msg(hell, NULL, "dup2 failed", 1), 1);
 	close(fd);
 	return (0);
@@ -92,18 +110,20 @@ void	redirection(t_hell *hell, t_proc *head, int i)
 		if (tmp->type == 3 || tmp->type == 4)
 			hdoc = redirs_heredoc(hell, head);
 		else if (tmp && tmp->type >= 0 && tmp && tmp->type <= 2
-			&& perform_redir(hell, tmp->pathordel, tmp->type))
+			&& perform_redir(hell, head, tmp->pathordel, tmp->type))
 			return ;
 		tmp = tmp->next;
 	}
 	if (i > 0 && !hdoc && hell->pipe_fd)
 	{
+		close(STDIN_FILENO);
 		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
-			(ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
+			return (ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
 	}
 	if (i != -1 && i < hell->cmd_count - 1)
 	{
+		close(STDOUT_FILENO);
 		if (dup2(hell->pipe_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
-			(ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
+			return (ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
 	}
 }
