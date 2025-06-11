@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/11 16:48:02 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:54:30 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,12 @@ int open_fd(t_hell *hell, char *path, int redir_type)
 int	perform_redir(t_hell *hell, t_proc *head, char *path, int redir_type)
 {
 	int	fd;
-	// if (path[0] == '$' && path[1])
 	if (head->redirerr)
-		redirs_error(hell, path, ": ambiguous redirect", 1);
+	{
+		while ((*head->redirs)->next && (*head->redirs)->next->pathordel)
+			(*head->redirs) = (*head->redirs)->next;
+		redirs_error(hell, (*head->redirs)->pathordel, ": ambiguous redirect", 1);
+	}
 	if (is_directory(path))
 	{
 		error_msg(hell, path, ": Is a directory", 1);
