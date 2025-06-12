@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/06/11 19:33:03 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 17:27:45 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,23 @@ static int	exp_hasspace(char *str)
 	return (1);
 }
 
-static void	process_redir(t_hell *hell, t_proc *proc, t_redir **node)
+static int	redir_check(t_proc *proc, t_redir **node)
 {
-	char	*backup;
-
 	if (proc->redirerr)
 	{
 		ft_terminate(1, &(*node)->redt->token);
 		*node = (*node)->next;
-		return ;
+		return (1);
 	}
+	return (0);
+}
+
+static void	process_redir(t_hell *hell, t_proc *proc, t_redir **node)
+{
+	char	*backup;
+
+	if (redir_check(proc, node))
+		return ;
 	backup = ft_strdup((char *)(*node)->redt->token);
 	if (!backup)
 		jump_ship(hell, 1);
