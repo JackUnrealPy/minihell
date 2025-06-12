@@ -6,13 +6,13 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:42:36 by agara             #+#    #+#             */
-/*   Updated: 2025/06/10 13:42:37 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/12 17:27:06 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void update_expansion(t_token *token, int num)
+static void	update_expansion(t_token *token, int num)
 {
 	int		i;
 
@@ -24,7 +24,6 @@ static void update_expansion(t_token *token, int num)
 		num = -1;
 		if (i > 1)
 			token->expansion[i - 2] = num;
-
 	}
 	if (i > 0)
 		token->expansion[i - 1] = num;
@@ -49,30 +48,6 @@ void	ft_update_token(t_hell *hell, t_token *token, int pos, char *str)
 	ft_terminate(1, &val);
 	token->token = res;
 	update_expansion(token, ft_strlen(str) - pos - 1);
-}
-
-int	ft_update_quote(t_hell *hell, t_token *token, int pos)
-{
-	int		len;
-	int		third;
-	int		i;
-
-	len = get_quotelen((char *)token->token + pos);
-	if (!len--)
-		return (sysntaxerr(hell, (char *)token->token + pos, 1), 0);
-	third = ft_strlen((char *)token->token) - len - pos - 1;
-	ft_memmove(token->token + pos, token->token + pos + 1, len);
-	ft_memmove(token->token + pos + len, token->token + pos + len + 2, third);
-	((char *)token->token)[len + pos + third] = 0;
-	i = 0;
-	while (token->expansion[i] != -1)
-	{
-		token->expansion[i] -= 2;
-		if (token->expansion[i] < 0)
-			token->expansion[i] = 0;
-		i++;
-	}
-	return (len);
 }
 
 static void	trim_token(t_token *token)
