@@ -6,7 +6,7 @@
 /*   By: agara <agara@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:52:33 by agara             #+#    #+#             */
-/*   Updated: 2025/06/12 17:27:45 by agara            ###   ########.fr       */
+/*   Updated: 2025/06/12 18:37:36 by agara            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static int	exp_hasspace(char *str)
 	i = -1;
 	while (str[++i])
 	{
+		if (str[i] == '\'' || str[i] == '\"')
+			i += get_quotelen(str + i);
 		if (!ft_isspace(str[i]))
 			break ;
 	}
@@ -26,7 +28,11 @@ static int	exp_hasspace(char *str)
 		return (0);
 	i++;
 	while (str[i] && !ft_isspace(str[i]))
+	{
+		if (str[i] == '\'' || str[i] == '\"')
+			i += get_quotelen(str + i);
 		i++;
+	}
 	if (!str[i])
 		return (0);
 	return (1);
