@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:59:12 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/12 13:57:49 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 17:36:48 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 int	string_is_digit(const char *str)
 {
-	int	i = 0;
+	int	i;
 
+	i = 0;
 	while (str[i] && ((str[i] >= 9 && str[i] <= 13) || str[i] == ' '))
 		i++;
 	if (str[i] == '-' || str[i] == '+')
@@ -31,11 +32,8 @@ int	string_is_digit(const char *str)
 	return (1);
 }
 
-
 int	check_long(const char *str, int i, int a, int negative)
 {
-	// printf("comp: %d\n", ft_strncmp(str + i, "9223372036854775808",
-	// 				19) > 0);
 	if (a > 19)
 		return (2);
 	if (a == 19)
@@ -55,28 +53,26 @@ int	error_check(const char *str)
 {
 	long	i;
 	int		a;
-	int sign = 0;
+	int		sign;
 
+	sign = 0;
 	i = 0;
 	while ((str[i] < 14 && str[i] > 8) || (str[i] == 32))
 		i++;
+	if (str[i] == '-')
+		sign = 1;
 	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = 1;
 		i++;
-	}
 	while (str[i] == '0')
 		i++;
 	a = 0;
 	while (str[i + a])
 	{
-		if (!ft_isdigit(str[i+a]))
-		{
-			if ((a > 0 || str[i+a-1] == '0') && all_whitespace((char *)str+i+a))
-				break;
+		if (!ft_isdigit(str[i + a]) && (a > 0 || str[i + a - 1] == '0') \
+			&& all_whitespace((char *)str + i + a))
+			break ;
+		else if (!ft_isdigit(str[i + a]))
 			return (1);
-		}
 		a++;
 	}
 	return (check_long(str, i, a, sign));

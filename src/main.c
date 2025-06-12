@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:12:38 by agara             #+#    #+#             */
-/*   Updated: 2025/06/11 20:41:42 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 17:52:28 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ static int	process_input(t_hell *hell)
 		add_history(hell->cmd);
 		local_init(hell, hell->cmd);
 		parse(hell, hell->cmd);
-		// print_list(*hell->head);
 		if (!hell->syntaxerr)
 			loop_cmds(hell);
 		hell->syntaxerr = 0;

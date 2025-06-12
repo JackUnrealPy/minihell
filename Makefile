@@ -3,7 +3,7 @@ NAME = minishell
 CC = cc -Wall -Wextra -Werror -g
 
 SRC = src/main.c \
-	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c src/exec/errors.c src/exec/helpers.c src/exec/redirection.c src/exec/heredoc_helpers.c src/exec/env_helpers.c src/exec/command.c \
+	src/exec/exec.c src/exec/environment.c src/exec/heredoc.c src/exec/pipes.c src/exec/single_cmd.c src/exec/errors.c src/exec/redir_helpers.c src/exec/helpers.c src/exec/redirection.c src/exec/heredoc_helpers.c src/exec/env_helpers.c src/exec/command.c \
 	src/parse/parse.c src/parse/parse_redir.c src/parse/gen_redir.c src/parse/parse_expand.c src/parse/get_expand.c src/parse/quotes.c src/parse/tokenizer.c \
 	src/init/init.c \
 	src/utils/exit.c src/utils/parse_utils.c src/utils/token_utils.c src/utils/expansion_tracker.c \

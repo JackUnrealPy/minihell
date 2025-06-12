@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 16:37:05 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/11 19:36:22 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 17:40:56 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,6 @@ void	initialise_pipes(t_hell *hell, t_proc *head, t_redir *redirs)
 			jump_ship(hell, 1);
 		}
 	}
-}
-
-int	is_directory(char *cmd)
-{
-	struct stat	buf;
-
-	if (cmd[0] == '~' && (!cmd[1] || cmd[1] == '/'))
-		return (1);
-	if (stat(cmd, &buf) == 0 && S_ISDIR(buf.st_mode))
-		return (1);
-	return (0);
 }
 
 void	check_cmd_exists(t_hell *hell, t_proc *head)

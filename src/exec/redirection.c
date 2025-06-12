@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 17:54:29 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/11 20:57:14 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 17:41:23 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,6 @@ int	redirs_heredoc(t_hell *hell, t_proc *head)
 			1);
 	close(head->hdoc_fd);
 	return (1);
-}
-
-void	redirs_error(t_hell *hell, char *pathordel, char *msg, int errnum)
-{
-	error_msg(hell, pathordel, msg, errnum);
-	jump_ship(hell, errnum);
 }
 
 void	check_folder(t_hell *hell, char *path)
@@ -52,23 +46,6 @@ void	check_folder(t_hell *hell, char *path)
 		}
 		free(dir);
 	}
-}
-
-int	open_fd(t_hell *hell, char *path, int redir_type)
-{
-	int	fd;
-
-	if (redir_type == 1)
-		fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	else if (redir_type == 2)
-		fd = open(path, O_CREAT | O_WRONLY | O_APPEND, 0644);
-	else
-	{
-		if (access(path, F_OK) == -1)
-			redirs_error(hell, path, ": No such file or directory", 1);
-		fd = open(path, O_RDONLY, 0644);
-	}
-	return (fd);
 }
 
 int	perform_redir(t_hell *hell, t_proc *head, char *path, int redir_type)
@@ -100,6 +77,20 @@ int	perform_redir(t_hell *hell, t_proc *head, char *path, int redir_type)
 	return (1);
 }
 
+void	dup_fd(t_hell *hell, int redir, int i)
+{
+	if (i > 0 && hell->pipe_fd && !redir)
+	{
+		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
+			return (ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
+	}
+	if (i != -1 && i < hell->cmd_count - 1 && !redir)
+	{
+		if (dup2(hell->pipe_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
+			return (ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
+	}
+}
+
 void	redirection(t_hell *hell, t_proc *head, int i)
 {
 	t_redir	*tmp;
@@ -112,7 +103,7 @@ void	redirection(t_hell *hell, t_proc *head, int i)
 		if (tmp->type == 3 || tmp->type == 4)
 		{
 			if (!head->next)
-				redir=1;
+				redir = 1;
 			redirs_heredoc(hell, head);
 		}
 		else if (tmp && tmp->type >= 0 && tmp->type <= 2 && perform_redir(hell,
@@ -123,14 +114,5 @@ void	redirection(t_hell *hell, t_proc *head, int i)
 		}
 		tmp = tmp->next;
 	}
-	if (i > 0 && hell->pipe_fd && !redir)
-	{
-		if (dup2(hell->pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1)
-			return (ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
-	}
-	if (i != -1 && i < hell->cmd_count - 1 && !redir)
-	{
-		if (dup2(hell->pipe_fd[(i * 2) + 1], STDOUT_FILENO) == -1)
-			return (ft_close(hell), error_msg(hell, NULL, "dup2 failed", 1));
-	}
+	dup_fd(hell, redir, i);
 }

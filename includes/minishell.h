@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/06/11 21:16:44 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 17:53:36 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 # include <stdlib.h>
 # include <string.h>
 # include <sys/ioctl.h>
+# include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-# include <sys/stat.h>
 
 // linked list with all the stuff to free
 typedef struct s_free
@@ -136,6 +136,10 @@ int					break_heredoc(t_redir *redirs, char *buffer);
 
 // redirection
 void				redirection(t_hell *hell, t_proc *head, int i);
+void				redirs_error(t_hell *hell, char *pathordel, char *msg,
+						int errnum);
+int					open_fd(t_hell *hell, char *path, int redir_type);
+int					is_directory(char *cmd);
 
 // single command
 void				single_cmd(t_hell *hell, t_proc *head);
@@ -166,8 +170,8 @@ char				*get_exp(t_hell *hell, t_proc *proc, char *str, int *i);
 int					get_quotelen(char *cmd);
 void				purge_quotes(t_hell *hell, t_proc *proc, t_token **v);
 void				parse_redirs(t_hell *hell, t_proc *proc, t_token **v);
-int					gen_redir(t_hell *hell, t_proc *proc,
-						t_redir *red, t_token **token);
+int					gen_redir(t_hell *hell, t_proc *proc, t_redir *red,
+						t_token **token);
 
 // Alloctracker
 void				*ft_malloc(t_hell *hell, t_free **head, void *obj);
