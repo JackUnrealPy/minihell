@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:13:40 by agara             #+#    #+#             */
-/*   Updated: 2025/06/12 17:53:36 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 21:59:25 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,10 @@ int					built_err(t_hell *hell, char *type, char *msg, int exitnum);
 
 // environment
 char				*get_key(char *new);
-int					is_append(char *envp, char *key, char *new, int len);
-int					is_replace(char *envp, char *key, char *new, int len);
+int					is_append(char *envp, char *key, char *new);
+int					is_replace(char *envp, char *key, char *new);
+int					ft_append(char *new, char *key, char *cpy);
+int					ft_replace(char *new, char **cpy, int a);
 char				**ft_double_strdup(t_hell *hell, char **envp);
 char				*ft_getenv(char *key, char **envp, int print_key);
 char				**ft_realloc_envp(char **envp, int new_element, char **new);

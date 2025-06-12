@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:28 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/11 19:30:35 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 21:14:23 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ int	expand_heredoc(t_hell *hell, t_proc *head, char **buffer, int pos)
 	val = get_exp(hell, head, *buffer + pos, &j);
 	res = ft_calloc(sizeof(char), ft_strlen(*buffer) - j + ft_strlen(val) + 1);
 	if (!res)
+	{
+		close(head->hdoc_fd);
 		jump_ship(hell, 1);
+	}
 	ft_memcpy(res, *buffer, pos);
 	ft_memcpy(res + pos, val, ft_strlen(val));
 	ft_memcpy(res + ft_strlen(val) + pos,

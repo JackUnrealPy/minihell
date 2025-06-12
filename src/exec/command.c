@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:17:46 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/11 16:24:07 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 21:17:30 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ void	no_env_cmd(t_hell *hell, t_proc *head)
 	if (access(cmd, R_OK | X_OK) == 0)
 		head->cmd_path = ft_malloc(hell, head->freeme, cmd);
 	else
-		return (error_msg(hell, head->cmd[0], ": No such file or directory",
-				127));
+		return (free(cmd), error_msg(hell, head->cmd[0], \
+			": No such file or directory", 127));
 }
 
 void	test_cmds(t_hell *hell, t_proc *head)
@@ -81,8 +81,6 @@ void	test_cmds(t_hell *hell, t_proc *head)
 				127));
 	path = (char **)ft_mallocarr(hell, head->freeme, (void **)ft_split(path_env,
 				":"));
-	if (!path)
-		return (error_msg(hell, NULL, "Memory allocation failed", 1));
 	path_cmd = ft_malloc(hell, head->freeme, ft_strjoin("/", head->cmd[0]));
 	try_paths(hell, head, path, path_cmd);
 	if (!head->cmd_path)

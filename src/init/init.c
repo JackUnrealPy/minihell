@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:49:56 by agara             #+#    #+#             */
-/*   Updated: 2025/06/09 13:59:59 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 19:52:52 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,7 @@ int	init(t_hell *hell, char **envp)
 	hell->head = malloc(sizeof(t_proc *));
 	if (!hell->head)
 	{
-		ft_freeme(hell->envp);
-		free(hell->freeme);
-		free(hell->head);
+		throw_garbage(hell->freeme);
 		ft_putstr_fd("Memory allocation failed\n", 2);
 		exit(1);
 	}

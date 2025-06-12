@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 04:18:19 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/08 18:14:34 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 22:05:41 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,42 +67,60 @@ char	**ft_double_strdup(t_hell *hell, char **envp)
 	return (my_env);
 }
 
-void	fill_env_cpy(char **cpy, char *new, char *key, int found)
+int	fill_env_cpy(char **cpy, char *new, char *key, int found)
 {
-	int		len;
 	int		a;
-	char	*tmp;
 
-	len = ft_strlen(key);
 	a = -1;
 	while (cpy[++a] && !found)
 	{
-		if (is_append(cpy[a], key, new, len))
+		if (is_append(cpy[a], key, new))
 		{
-			tmp = cpy[a];
-			cpy[a] = ft_strjoin(cpy[a], new + len + 1);
-			free(tmp);
+			if (ft_append(new, key, cpy[a]) < 0)
+				return (0);
 			found = 1;
 		}
-		if (is_replace(cpy[a], key, new, len))
+		if (is_replace(cpy[a], key, new))
 		{
-			free(cpy[a]);
-			cpy[a] = ft_strdup(new);
+			if (ft_replace(new, cpy, a) < 0)
+				return (0);
 			found = 1;
 		}
 	}
 	if (!found)
+	{
 		cpy[a] = ft_strdup(new);
+		if (!cpy[a])
+			return (0);
+	}
+	return (1);
+}
+
+char	**set_new_envp(char **new, char **cpy)
+{
+	int		i;
+	char	*key;
+
+	key = NULL;
+	i = 0;
+	while (new[i])
+	{
+		key = get_key(new[i]);
+		if (!key)
+			return (ft_freeme(cpy), NULL);
+		if (!fill_env_cpy(cpy, new[i], key, 0))
+			return (free(key), ft_freeme(cpy), NULL);
+		free(key);
+		i++;
+	}
+	return (cpy);
 }
 
 char	**ft_realloc_envp(char **envp, int new_element, char **new)
 {
 	int		a;
 	char	**cpy;
-	char	*key;
-	int		i;
 
-	i = 0;
 	a = 0;
 	while (envp[a])
 		a++;
@@ -111,15 +129,10 @@ char	**ft_realloc_envp(char **envp, int new_element, char **new)
 		return (NULL);
 	a = -1;
 	while (envp[++a])
-		cpy[a] = ft_strdup(envp[a]);
-	while (new[i])
 	{
-		key = get_key(new[i]);
-		if (!key)
-			return (NULL);
-		fill_env_cpy(cpy, new[i], key, 0);
-		free(key);
-		i++;
+		cpy[a] = ft_strdup(envp[a]);
+		if (!cpy[a])
+			return (ft_freeme(cpy), NULL);
 	}
-	return (cpy);
+	return (set_new_envp(new, cpy));
 }
