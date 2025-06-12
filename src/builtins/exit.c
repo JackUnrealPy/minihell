@@ -6,7 +6,7 @@
 /*   By: nrumpfhu <nrumpfhu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:59:12 by nrumpfhu          #+#    #+#             */
-/*   Updated: 2025/06/12 13:52:46 by nrumpfhu         ###   ########.fr       */
+/*   Updated: 2025/06/12 13:57:49 by nrumpfhu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int	error_check(const char *str)
 	{
 		if (!ft_isdigit(str[i+a]))
 		{
-			if (a > 0 && all_whitespace((char *)str+i+a))
+			if ((a > 0 || str[i+a-1] == '0') && all_whitespace((char *)str+i+a))
 				break;
 			return (1);
 		}
